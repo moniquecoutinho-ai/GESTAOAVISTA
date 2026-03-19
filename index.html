@@ -625,17 +625,15 @@ let sigD={};
 
 function doLogin(){
   const u=document.getElementById('loginUser').value.trim().toLowerCase();
-  const p=document.getElementById('loginPass').value.trim();
-  const uOk=u==='gmanjos';
-  const pOk=p==='Avatim2026';
-  if(uOk && pOk){
+  const p=document.getElementById('loginPass').value.trim().toLowerCase();
+  if(u==='gmanjos' && p==='avatim2026'){
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('app').style.display='block';
     initApp();
   } else {
     const errEl=document.getElementById('loginError');
     errEl.style.display='block';
-    errEl.textContent='Usuário ou senha incorretos. Digitado: ['+u+'] / ['+p+']';
+    errEl.textContent='Incorreto. Digitado: ['+u+'] / ['+p+']';
   }
 }
 document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
