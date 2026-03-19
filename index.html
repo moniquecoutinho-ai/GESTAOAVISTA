@@ -791,12 +791,12 @@ function submitAval(){
   let t=0,cnt=0;const crit={};
   Object.entries(FCAT).forEach(([cat,items])=>{crit[cat]=[];items.forEach(item=>{const k=cat+'|'+item;const n=S.fstars[k]||0;t+=n;cnt++;crit[cat].push({l:item,n,c:S.fcomm[k]||''})})});
   const m=cnt*5,pct=Math.round((t/m)*100),cl=getClf(pct);
-  const aval={id:Date.now(),tipo:'avaliacao',loja,data,nome,cargo:document.getElementById('fFC').value,av:document.getElementById('fFA').value,periodo:document.getElementById('fFP').value,score:t,max:m,pct,clf:cl.l,crit,pm:{obj:document.getElementById('pmObj').value,acao:document.getElementById('pmAcao').value,prazo:document.getElementById('pmPrazo').value,status:document.getElementById('pmStatus').value},pos:document.getElementById('fFFpos').value,dev:document.getElementById('fFFdev').value,msg:document.getElementById('fFFmsg').value,sAv:sigD.sigFAv,sFn:sigD.sigFFn,acordos:document.getElementById('fFAcordos').value,sigAcAv:sigD.sigAcAv,sigAcFn:sigD.sigAcFn,pdi:window._pdiGerado||''};
+  const aval={id:Date.now(),tipo:'avaliacao',loja,data,nome,cargo:document.getElementById('fFC').value,av:document.getElementById('fFA').value,periodo:document.getElementById('fFP').value,score:t,max:m,pct,clf:cl.l,crit,pm:{obj:document.getElementById('pmObj').value,acao:document.getElementById('pmAcao').value,prazo:document.getElementById('pmPrazo').value,status:document.getElementById('pmStatus').value},pos:document.getElementById('fFFpos').value,dev:document.getElementById('fFFdev').value,msg:document.getElementById('fFFmsg').value,sAv:sigD.sigFAv,sFn:sigD.sigFFn,acordos:document.getElementById('fFAcordos').value,sigAcAv:sigD.sigAcAv,sigAcFn:sigD.sigAcFn,pdi:window._pdiObj||null};
   S.avals.unshift(aval);sv();resetAF();showPage('historico');renderDash();renderHist();renderRank();showToast('⭐ Avaliação salva!');
 }
 function resetAF(){
   ['fFN','fFC','fFP','pmObj','pmAcao','pmPrazo','fFFpos','fFFdev','fFFmsg','fFAcordos'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
-  document.getElementById('pmStatus').value='';buildFuncCrit();clearSig('sigFAv');clearSig('sigFFn');clearSig('sigAcAv');clearSig('sigAcFn');window._pdiGerado='';document.getElementById('pdiSection').style.display='none';
+  document.getElementById('pmStatus').value='';buildFuncCrit();clearSig('sigFAv');clearSig('sigFFn');clearSig('sigAcAv');clearSig('sigAcFn');window._pdiGerado='';window._pdiObj=null;document.getElementById('pdiSection').style.display='none';
 }
 
 function renderDash(){
@@ -838,6 +838,7 @@ function renderHist(){
           <span class="tag">${r.score}/${r.max}pts</span>
           ${r.pct>=80?'<span class="tag green">✅ Excelente</span>':r.pct>=60?'<span class="tag">🟡 Regular</span>':'<span class="tag red">⚠️ Atenção</span>'}
           ${!isV?`<span class="tag blue">${clf.e} ${clf.l}</span>`:''}
+          ${(!isV&&r.pdi&&r.pdi.prioridades&&r.pdi.prioridades.length)?'<span class="tag" style="background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.3);color:var(--gold-dark)">🚀 PDI</span>':''}
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px">
@@ -887,6 +888,7 @@ function openMod(id,tipo){
     if(pm.obj||pm.acao)html+=`<div class="report-section"><h3>📈 Plano de Melhoria</h3><div style="background:var(--white);border:1px solid #EDE8E0;border-radius:9px;padding:12px;font-size:12px">${pm.obj?`<div><strong>Objetivo:</strong> ${pm.obj}</div>`:''}${pm.acao?`<div style="margin-top:4px"><strong>Ação:</strong> ${pm.acao}</div>`:''}${pm.prazo||pm.status?`<div style="margin-top:6px;display:flex;gap:6px"><span class="tag">⏱️ ${pm.prazo||'—'}</span><span class="tag blue">${pm.status||'—'}</span></div>`:''}</div></div>`;
     if(a.pos)html+=`<div class="report-section"><h3>👍 Pontos Fortes</h3><p style="font-size:12px;line-height:1.6;padding:9px;background:rgba(90,138,106,.08);border-radius:7px;border:1px solid rgba(90,138,106,.2)">${a.pos}</p></div>`;
     if(a.dev)html+=`<div class="report-section"><h3>⚠️ Desenvolvimento</h3><p style="font-size:12px;line-height:1.6;padding:9px;background:rgba(192,57,43,.08);border-radius:7px;border:1px solid rgba(192,57,43,.2)">${a.dev}</p></div>`;
+    if(a.pdi){html+=`<div class="report-section"><h3 style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700;border-bottom:2px solid var(--gold-light);padding-bottom:6px;margin-bottom:12px">🚀 PDI — Plano de Desenvolvimento Individual</h3>`+renderPDI(a.pdi)+`</div>`;}
     if(a.msg)html+=`<div class="report-section"><h3>💌 Mensagem</h3><p style="font-size:12px;font-style:italic;line-height:1.6;padding:9px;background:rgba(201,168,76,.08);border-radius:7px;border:1px solid rgba(201,168,76,.2)">"${a.msg}"</p></div>`;
     if(a.acordos)html+=`<div class="report-section"><h3>📝 Contrato de Acordos</h3><p style="font-size:12px;line-height:1.6;padding:9px;background:rgba(201,168,76,.08);border-radius:7px;border:1px solid rgba(201,168,76,.2)">${a.acordos}</p></div>`;
     if(a.sAv||a.sFn){html+=`<div class="report-section"><h3>✍️ Assinaturas</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">`;if(a.sAv)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">AVALIADOR(A)</div><img src="${a.sAv}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;if(a.sFn)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">FUNCIONÁRIA</div><img src="${a.sFn}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;html+=`</div></div>`;
@@ -927,7 +929,38 @@ function expRec(id,tipo){
     if(a.acordos)h+=`<h2>📝 Contrato de Acordos</h2><div class="nb" style="border-left:4px solid #C9A84C">${a.acordos}</div>`;
     if(a.pos)h+=`<h2>👍 Pontos Fortes</h2><div class="nb">${a.pos}</div>`;
     if(a.dev)h+=`<h2>⚠️ Desenvolvimento</h2><div class="nb">${a.dev}</div>`;
-    if(a.msg)h+=`<h2>💌 Mensagem</h2><div class="nb" style="font-style:italic">"${a.msg}"</div>`;
+    if(a.pdi&&a.pdi.prioridades&&a.pdi.prioridades.length){
+    h+=`<h2>🚀 PDI — Plano de Desenvolvimento Individual</h2>`;
+    h+=`<div class="nb"><strong>Classificação:</strong> ${a.pdi.classificacao} (${a.pdi.pct}%)</div>`;
+    h+=`<p style="font-size:12px;line-height:1.6;margin-bottom:10px">${a.pdi.diagnostico}</p>`;
+    if(a.pdi.fortes&&a.pdi.fortes.length){
+      h+=`<h2>💪 Forças a Potencializar</h2><div class="cg">`;
+      a.pdi.fortes.forEach(f=>{h+=`<div class="cr ok">✨ ${f}</div>`});
+      h+=`</div>`;
+    }
+    h+=`<h2>🎯 Ações Prioritárias</h2>`;
+    a.pdi.prioridades.forEach((p,i)=>{
+      h+=`<div class="nb" style="border-left:4px solid #C9A84C;margin-bottom:10px">`;
+      h+=`<strong>${i+1}. ${p.item}</strong> — Nota ${p.nota}/5 · ${p.prazo}<br>`;
+      h+=`📌 ${p.acao}<br>`;
+      h+=`📚 ${p.recurso}<br>`;
+      h+=`📈 Indicador: ${p.ind}`;
+      h+=`</div>`;
+    });
+    if(a.pdi.plano){
+      h+=`<h2>🗓️ Plano 30/60/90 dias</h2><div class="cg">`;
+      [['d30','30 dias'],['d60','60 dias'],['d90','90 dias']].forEach(([k,label])=>{
+        const p=a.pdi.plano[k];if(!p)return;
+        h+=`<div class="cr"><strong>${label} · ${p.foco}</strong><br>`;
+        p.acoes.forEach(ac=>{h+=`• ${ac}<br>`});
+        h+=`<em>${p.entrega}</em></div>`;
+      });
+      h+=`</div>`;
+    }
+    if(a.pdi.acordo)h+=`<div class="nb">🤝 <strong>Acordo:</strong> ${a.pdi.acordo}</div>`;
+    if(a.pdi.msg)h+=`<div class="nb" style="font-style:italic;background:#1A1410;color:#E8D5A3;border:none">"${a.pdi.msg}"</div>`;
+  }
+  if(a.msg)h+=\`<h2>💌 Mensagem</h2><div class="nb" style="font-style:italic">"\${a.msg}"</div>\`;
     if(a.sigAcAv||a.sigAcFn){h+=`<h2>✍️ Assinaturas do Contrato de Acordos</h2><div class="sa">`;if(a.sigAcAv)h+=`<div class="sb2"><div class="sl">Avaliador(a) — Testemunha</div><img class="sig" src="${a.sigAcAv}"/></div>`;if(a.sigAcFn)h+=`<div class="sb2"><div class="sl">Funcionária — Ciente e de acordo</div><img class="sig" src="${a.sigAcFn}"/></div>`;h+=`</div>`}
     h+=buildEF(null,null,a.sAv,a.sFn,a.av,a.nome);
     dlHTML(h,`Avaliacao_${a.nome.replace(/ /g,'_')}_${a.data}.html`);
@@ -1177,7 +1210,18 @@ function gerarPDI(){
     'Crítico':`${nome}, este é um momento difícil, mas também de grande oportunidade. Cada pequena melhoria conta. A Avatim não desistiu de você — e esperamos que você não desista de si mesma. Uma ação por dia é suficiente para começar a virada. 💪`
   };
 
-  window._pdiGerado=JSON.stringify({diagnostico,perfil:perfis[clf.l],fortes:topFortes,prioridades,plano,acordo:acordos[clf.l],msg:msgs[clf.l]});
+  window._pdiObj={
+    classificacao:clf.l,
+    pct,
+    diagnostico,
+    perfil:perfis[clf.l],
+    fortes:topFortes,
+    prioridades,
+    plano,
+    acordo:acordos[clf.l],
+    msg:msgs[clf.l]
+  };
+  window._pdiGerado=JSON.stringify(window._pdiObj);
 
   // Renderizar
   const pctColor=pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
@@ -1258,6 +1302,83 @@ function mostrarPDI(){
 }
 
 
+
+function renderPDI(pdi){
+  if(!pdi)return'';
+  const pctColor=pdi.pct>=80?'var(--green)':pdi.pct>=60?'var(--gold)':'var(--red)';
+  const clf=getClf(pdi.pct);
+  let h=`
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:13px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:11px">
+    <div style="font-size:34px">${clf.e}</div>
+    <div><div style="font-size:10px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${pdi.classificacao} · ${pdi.pct}%</div>
+    <div style="font-size:12px;font-style:italic;color:var(--dark);margin-top:2px">${pdi.perfil}</div></div>
+  </div>
+  <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:10px;padding:14px;margin-bottom:12px">
+    <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">📊 Diagnóstico</div>
+    <div style="font-size:12px;line-height:1.7;color:var(--dark)">${pdi.diagnostico}</div>
+  </div>`;
+
+  if(pdi.fortes&&pdi.fortes.length){
+    h+=`<div style="margin-bottom:12px">
+    <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">💪 Forças a Potencializar</div>
+    ${pdi.fortes.map(p=>`<div style="background:rgba(90,138,106,.08);border:1px solid rgba(90,138,106,.25);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--dark);line-height:1.5;margin-bottom:5px">✨ ${p}</div>`).join('')}
+    </div>`;
+  }
+
+  if(pdi.prioridades&&pdi.prioridades.length){
+    h+=`<div style="margin-bottom:12px">
+    <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🎯 Ações Prioritárias</div>`;
+    pdi.prioridades.forEach((p,i)=>{
+      const cor=p.nota<=2?'var(--red)':p.nota===3?'var(--gold)':'var(--green)';
+      const bgcor=p.nota<=2?'rgba(192,57,43,.08)':p.nota===3?'rgba(201,168,76,.08)':'rgba(90,138,106,.08)';
+      h+=`<div style="background:${bgcor};border:1px solid ${p.nota<=2?'rgba(192,57,43,.2)':p.nota===3?'rgba(201,168,76,.2)':'rgba(90,138,106,.2)'};border-left:3px solid ${cor};border-radius:9px;padding:12px;margin-bottom:9px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap">
+          <span style="font-size:11px;font-weight:700;color:var(--dark)">${i+1}. ${p.item}</span>
+          <span style="background:${p.nota<=2?'rgba(192,57,43,.12)':p.nota===3?'rgba(201,168,76,.12)':'rgba(90,138,106,.12)'};color:${cor};border-radius:18px;padding:2px 8px;font-size:10px;font-weight:700">${p.nota}/5 · ${p.prazo}</span>
+        </div>
+        <div style="font-size:12px;color:var(--dark);margin-bottom:5px;line-height:1.5">📌 ${p.acao}</div>
+        <div style="font-size:11px;color:var(--blue);margin-bottom:4px">📚 ${p.recurso}</div>
+        <div style="font-size:11px;color:var(--mid);padding-top:5px;border-top:1px solid rgba(0,0,0,.06)">📈 ${p.ind}</div>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+
+  if(pdi.plano){
+    h+=`<div style="margin-bottom:12px">
+    <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🗓️ Plano 30 · 60 · 90 dias</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
+    ${[
+      {d:'30 dias',k:'d30',c:'var(--green)',bg:'rgba(90,138,106,.08)',bc:'rgba(90,138,106,.2)'},
+      {d:'60 dias',k:'d60',c:'var(--gold-dark)',bg:'rgba(201,168,76,.08)',bc:'rgba(201,168,76,.2)'},
+      {d:'90 dias',k:'d90',c:'var(--blue)',bg:'rgba(90,122,154,.08)',bc:'rgba(90,122,154,.2)'}
+    ].map(m=>{
+      const p=pdi.plano[m.k];if(!p)return'';
+      return`<div style="background:${m.bg};border:1px solid ${m.bc};border-radius:8px;padding:10px">
+        <div style="font-size:9px;font-weight:700;color:${m.c};margin-bottom:5px;text-transform:uppercase">${m.d} · ${p.foco}</div>
+        ${p.acoes.map(a=>`<div style="font-size:10px;color:var(--dark);margin-bottom:3px;line-height:1.4">• ${a}</div>`).join('')}
+        <div style="font-size:10px;color:var(--mid);margin-top:5px;padding-top:5px;border-top:1px solid ${m.bc};font-style:italic">${p.entrega}</div>
+      </div>`;
+    }).join('')}
+    </div></div>`;
+  }
+
+  if(pdi.acordo){
+    h+=`<div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:12px;margin-bottom:12px">
+    <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">🤝 Acordo de Crescimento</div>
+    <div style="font-size:12px;color:var(--dark);line-height:1.6">${pdi.acordo}</div>
+    </div>`;
+  }
+
+  if(pdi.msg){
+    h+=`<div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:10px;padding:16px;text-align:center">
+    <div style="font-size:20px;margin-bottom:7px">🌸</div>
+    <div style="font-size:12px;font-style:italic;color:var(--gold-light);line-height:1.7">"${pdi.msg}"</div>
+    </div>`;
+  }
+
+  return h;
+}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
 </script>
 </body>
