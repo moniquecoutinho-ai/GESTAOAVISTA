@@ -571,69 +571,29 @@ const CHK={
 
 const ATN=[{id:'com',l:'Comunicação visual atualizada',p:8},{id:'abr',l:'Abordagem ativa e cordial',p:8},{id:'tec',l:'Conhecimento técnico dos produtos',p:8},{id:'val',l:'Foco em valor e benefícios',p:8},{id:'adi',l:'Produto adicional oferecido',p:6},{id:'fec',l:'Técnicas de fechamento aplicadas',p:6},{id:'wha',l:'Ação de venda via WhatsApp',p:5}];
 
-const FCAT={
-  '💰 RESULTADOS DE VENDAS':[
-    'Atingimento de metas',
-    'Ticket médio e itens por venda',
-    'Taxa de conversão',
-    'Venda adicional (cross sell)',
-    'Consistência de resultados'
-  ],
-  '💎 ATENDIMENTO AO CLIENTE':[
-    'Abordagem e receptividade',
-    'Escuta ativa e empatia',
-    'Conhecimento técnico dos produtos',
-    'Experiência e encantamento do cliente',
-    'Resolução de objeções',
-    'Fidelização e pós-venda'
-  ],
-  '🌟 COMPORTAMENTO E ATITUDE':[
-    'Responsabilidade e autonomia',
-    'Proatividade e iniciativa',
-    'Colaboração e trabalho em equipe',
-    'Resiliência sob pressão',
-    'Postura e presença profissional',
-    'Abertura a feedbacks'
-  ],
-  '⏰ ASSIDUIDADE':[
-    'Pontualidade',
-    'Frequência e presença',
-    'Aviso antecipado de ausência'
-  ],
-  '🏪 EXECUÇÃO E LOJA':[
-    'Organização e visual da loja',
-    'Reposição e gestão de produtos',
-    'Execução de campanhas e ações',
-    'Cumprimento de processos e rotinas',
-    'Atenção aos indicadores da loja'
-  ]
-};
+const FCAT={'💰 RESULTADOS DE VENDAS':['Atingimento de metas','Ticket médio e itens por venda','Taxa de conversão','Venda adicional (cross sell)','Consistência de resultados'],'💎 ATENDIMENTO AO CLIENTE':['Abordagem e receptividade','Escuta ativa e empatia','Conhecimento técnico dos produtos','Experiência e encantamento do cliente','Resolução de objeções','Fidelização e pós-venda'],'🌟 COMPORTAMENTO E ATITUDE':['Responsabilidade e autonomia','Proatividade e iniciativa','Colaboração e trabalho em equipe','Resiliência sob pressão','Postura e presença profissional','Abertura a feedbacks'],'⏰ ASSIDUIDADE':['Pontualidade','Frequência e presença','Aviso antecipado de ausência'],'🏪 EXECUÇÃO E LOJA':['Organização e visual da loja','Reposição e gestão de produtos','Execução de campanhas e ações','Cumprimento de processos e rotinas','Atenção aos indicadores da loja']};
 
 const MEDALS=[{id:'bs',e:'🌸',t:'Boas Sensações',d:'Melhor atendimento ao cliente'},{id:'op',e:'✨',t:'Ouro Puro',d:'Maior pontuação geral de loja'},{id:'li',e:'🏆',t:'Loja Impecável',d:'Melhor limpeza e organização'},{id:'ve',e:'⭐',t:'Vendedora Estrela',d:'Melhor avaliação de funcionária'},{id:'mb',e:'🎯',t:'Bravura em Vendas',d:'Maior cumprimento de metas'},{id:'va',e:'🎨',t:'Arte da Vitrine',d:'Melhor apresentação visual'}];
 
 const CLFS=[{min:90,l:'Excelente',c:'classif-excelente',e:'🌟'},{min:75,l:'Muito Bom',c:'classif-muito-bom',e:'✅'},{min:60,l:'Bom',c:'classif-bom',e:'👍'},{min:45,l:'Precisa Melhorar',c:'classif-melhorar',e:'⚠️'},{min:0,l:'Crítico',c:'classif-critico',e:'🔴'}];
 
-let S={
-  visits:JSON.parse(localStorage.getItem('av_v')||'[]'),
-  avals:JSON.parse(localStorage.getItem('av_a')||'[]'),
-  chk:{},atn:{},fstars:{},fcomm:{},photos:[null,null],
-  vLoja:'Shopping Mooca',fLoja:'Shopping Mooca',
-  rMonth:new Date(),rTab:'lojas'
-};
+let S={visits:JSON.parse(localStorage.getItem('av_v')||'[]'),avals:JSON.parse(localStorage.getItem('av_a')||'[]'),chk:{},atn:{},fstars:{},fcomm:{},photos:[null,null],vLoja:'Shopping Mooca',fLoja:'Shopping Mooca',rMonth:new Date(),rTab:'lojas'};
 const sv=()=>{localStorage.setItem('av_v',JSON.stringify(S.visits));localStorage.setItem('av_a',JSON.stringify(S.avals))};
 let sigD={};
 
 function doLogin(){
-  const u=document.getElementById('loginUser').value.trim().toLowerCase();
-  const p=document.getElementById('loginPass').value.trim().toLowerCase();
-  if(u==='gmanjos' && p==='avatim2026'){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('app').style.display='block';
+  var u = document.getElementById('loginUser').value;
+  var p = document.getElementById('loginPass').value;
+  u = u.replace(/\s/g,'').toLowerCase();
+  p = p.replace(/\s/g,'').toLowerCase();
+  if(u === 'gmanjos' && p === 'avatim2026'){
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
     initApp();
   } else {
-    const errEl=document.getElementById('loginError');
-    errEl.style.display='block';
-    errEl.textContent='Incorreto. Digitado: ['+u+'] / ['+p+']';
+    var e = document.getElementById('loginError');
+    e.style.display = 'block';
+    e.textContent = 'Incorreto! Usuario:[' + u + '] Senha:[' + p + ']';
   }
 }
 document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
@@ -1047,7 +1007,7 @@ function expRec(id,tipo){
     if(a.pdi.acordo)h+=`<div class="nb">🤝 <strong>Acordo:</strong> ${a.pdi.acordo}</div>`;
     if(a.pdi.msg)h+=`<div class="nb" style="font-style:italic;background:#1A1410;color:#E8D5A3;border:none">"${a.pdi.msg}"</div>`;
   }
-  if(a.msg)h+=\`<h2>💌 Mensagem</h2><div class="nb" style="font-style:italic">"\${a.msg}"</div>\`;
+  if(a.msg)h+=`<h2>💌 Mensagem</h2><div class="nb" style="font-style:italic">"${a.msg}"</div>`;
     if(a.sigAcAv||a.sigAcFn){h+=`<h2>✍️ Assinaturas do Contrato de Acordos</h2><div class="sa">`;if(a.sigAcAv)h+=`<div class="sb2"><div class="sl">Avaliador(a) — Testemunha</div><img class="sig" src="${a.sigAcAv}"/></div>`;if(a.sigAcFn)h+=`<div class="sb2"><div class="sl">Funcionária — Ciente e de acordo</div><img class="sig" src="${a.sigAcFn}"/></div>`;h+=`</div>`}
     h+=buildEF(null,null,a.sAv,a.sFn,a.av,a.nome);
     dlHTML(h,`Avaliacao_${a.nome.replace(/ /g,'_')}_${a.data}.html`);
