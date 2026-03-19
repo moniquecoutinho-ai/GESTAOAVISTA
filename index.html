@@ -772,11 +772,50 @@ function prevPhoto(inp,pid,idx){
 function submitVisita(){
   const loja=document.getElementById('fLoja').value,data=document.getElementById('fData').value,av=document.getElementById('fAvaliador').value;
   if(!loja||!data||!av){showToast('⚠️ Preencha os dados básicos');return}
+
+  // Snapshot antes de qualquer reset
+  const chkSnap={...S.chk};
+  const atnSnap={...S.atn};
+  const photosSnap=[S.photos[0],S.photos[1]];
+
   let t=0,m=0;const chks={};
-  Object.keys(CHK).forEach(s=>{chks[s]=[];CHK[s].forEach((it,i)=>{m+=it.p;const v=S.chk[s+'_'+i];if(v===true)t+=it.p;chks[s].push({l:it.l,p:it.p,v})})});
-  const atns={};ATN.forEach(r=>{m+=r.p;const v=S.atn[r.id];if(v==='SIM')t+=r.p;else if(v==='PARCIAL')t+=Math.floor(r.p*.5);atns[r.id]={l:r.l,p:r.p,v}});
-  const visit={id:Date.now(),tipo:'visita',loja,data,av,vend:document.getElementById('fVendedora').value,score:t,max:m,pct:Math.round((t/m)*100),chks,atns,pos:document.getElementById('fPositivo').value,mel:document.getElementById('fMelhoria').value,res:document.getElementById('fResumo').value,sAv:sigD.sigAv,sVn:sigD.sigVn,pA:S.photos[0],pD:S.photos[1]};
-  S.visits.unshift(visit);sv();resetVF();showPage('historico');renderDash();renderHist();renderRank();showToast('✨ Visita salva!');
+  Object.keys(CHK).forEach(s=>{
+    chks[s]=[];
+    CHK[s].forEach((it,i)=>{
+      m+=it.p;
+      const v=chkSnap[s+'_'+i];
+      if(v===true)t+=it.p;
+      chks[s].push({l:it.l,p:it.p,v});
+    });
+  });
+  const atns={};
+  ATN.forEach(r=>{
+    m+=r.p;
+    const v=atnSnap[r.id];
+    if(v==='SIM')t+=r.p;
+    else if(v==='PARCIAL')t+=Math.floor(r.p*.5);
+    atns[r.id]={l:r.l,p:r.p,v};
+  });
+
+  const visit={
+    id:Date.now(),tipo:'visita',loja,data,av,
+    vend:document.getElementById('fVendedora').value,
+    score:t,max:m,pct:Math.round((t/m)*100),
+    chks,atns,
+    pos:document.getElementById('fPositivo').value,
+    mel:document.getElementById('fMelhoria').value,
+    res:document.getElementById('fResumo').value,
+    sAv:sigD.sigAv,sVn:sigD.sigVn,
+    pA:photosSnap[0],pD:photosSnap[1]
+  };
+
+  // Salvar PRIMEIRO, resetar DEPOIS
+  S.visits.unshift(visit);
+  sv();
+  resetVF();
+  showPage('historico');
+  renderDash();renderHist();renderRank();
+  showToast('✨ Visita salva!');
 }
 function resetVF(){
   document.getElementById('fVendedora').value='';
@@ -788,11 +827,57 @@ function resetVF(){
 function submitAval(){
   const nome=document.getElementById('fFN').value,loja=document.getElementById('fFL').value,data=document.getElementById('fFD').value;
   if(!nome||!loja||!data){showToast('⚠️ Preencha nome, loja e data');return}
+
+  // Capturar snapshot das notas e comentários ANTES de qualquer reset
+  const starsSnap={...S.fstars};
+  const commSnap={...S.fcomm};
+
   let t=0,cnt=0;const crit={};
-  Object.entries(FCAT).forEach(([cat,items])=>{crit[cat]=[];items.forEach(item=>{const k=cat+'|'+item;const n=S.fstars[k]||0;t+=n;cnt++;crit[cat].push({l:item,n,c:S.fcomm[k]||''})})});
+  Object.entries(FCAT).forEach(([cat,items])=>{
+    crit[cat]=[];
+    items.forEach(item=>{
+      const k=cat+'|'+item;
+      // Lê do snapshot — imune a resets
+      const n=starsSnap[k]||0;
+      const c=commSnap[k]||'';
+      t+=n;cnt++;
+      crit[cat].push({l:item,n,c});
+    });
+  });
+
   const m=cnt*5,pct=Math.round((t/m)*100),cl=getClf(pct);
-  const aval={id:Date.now(),tipo:'avaliacao',loja,data,nome,cargo:document.getElementById('fFC').value,av:document.getElementById('fFA').value,periodo:document.getElementById('fFP').value,score:t,max:m,pct,clf:cl.l,crit,pm:{obj:document.getElementById('pmObj').value,acao:document.getElementById('pmAcao').value,prazo:document.getElementById('pmPrazo').value,status:document.getElementById('pmStatus').value},pos:document.getElementById('fFFpos').value,dev:document.getElementById('fFFdev').value,msg:document.getElementById('fFFmsg').value,sAv:sigD.sigFAv,sFn:sigD.sigFFn,acordos:document.getElementById('fFAcordos').value,sigAcAv:sigD.sigAcAv,sigAcFn:sigD.sigAcFn,pdi:window._pdiObj||null};
-  S.avals.unshift(aval);sv();resetAF();showPage('historico');renderDash();renderHist();renderRank();showToast('⭐ Avaliação salva!');
+
+  // Capturar todos os campos antes do reset
+  const aval={
+    id:Date.now(),tipo:'avaliacao',loja,data,nome,
+    cargo:document.getElementById('fFC').value,
+    av:document.getElementById('fFA').value,
+    periodo:document.getElementById('fFP').value,
+    score:t,max:m,pct,clf:cl.l,crit,
+    pm:{
+      obj:document.getElementById('pmObj').value,
+      acao:document.getElementById('pmAcao').value,
+      prazo:document.getElementById('pmPrazo').value,
+      status:document.getElementById('pmStatus').value
+    },
+    pos:document.getElementById('fFFpos').value,
+    dev:document.getElementById('fFFdev').value,
+    msg:document.getElementById('fFFmsg').value,
+    sAv:sigD.sigFAv,
+    sFn:sigD.sigFFn,
+    acordos:document.getElementById('fFAcordos').value,
+    sigAcAv:sigD.sigAcAv,
+    sigAcFn:sigD.sigAcFn,
+    pdi:window._pdiObj?JSON.parse(JSON.stringify(window._pdiObj)):null
+  };
+
+  // Salvar PRIMEIRO, resetar DEPOIS
+  S.avals.unshift(aval);
+  sv();
+  resetAF();
+  showPage('historico');
+  renderDash();renderHist();renderRank();
+  showToast('⭐ Avaliação salva!');
 }
 function resetAF(){
   ['fFN','fFC','fFP','pmObj','pmAcao','pmPrazo','fFFpos','fFFdev','fFFmsg','fFAcordos'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
