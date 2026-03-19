@@ -571,7 +571,43 @@ const CHK={
 
 const ATN=[{id:'com',l:'Comunicação visual atualizada',p:8},{id:'abr',l:'Abordagem ativa e cordial',p:8},{id:'tec',l:'Conhecimento técnico dos produtos',p:8},{id:'val',l:'Foco em valor e benefícios',p:8},{id:'adi',l:'Produto adicional oferecido',p:6},{id:'fec',l:'Técnicas de fechamento aplicadas',p:6},{id:'wha',l:'Ação de venda via WhatsApp',p:5}];
 
-const FCAT={'💰 RESULTADOS DE VENDAS':['Atingimento de metas','Ticket médio','Conversão de clientes','Cross sell / Upsell','Conhecimento de produtos','Capacidade de recomendação'],'💎 ATENDIMENTO AO CLIENTE':['Cordialidade','Abordagem inicial','Escuta ativa','Experiência do cliente','Resolução de problemas','Pós-venda'],'🌟 COMPORTAMENTO PROFISSIONAL':['Responsabilidade','Comprometimento','Trabalho em equipe','Proatividade','Organização','Respeito às normas'],'⏰ ASSIDUIDADE':['Pontualidade','Frequência e presença','Aviso antecipado de ausência'],'🏪 EXECUÇÃO DE LOJA':['Organização da loja','Reposição de produtos','Visual merchandising','Conhecimento de campanhas','Cumprimento de processos']};
+const FCAT={
+  '💰 RESULTADOS DE VENDAS':[
+    'Atingimento de metas',
+    'Ticket médio e itens por venda',
+    'Taxa de conversão',
+    'Venda adicional (cross sell)',
+    'Consistência de resultados'
+  ],
+  '💎 ATENDIMENTO AO CLIENTE':[
+    'Abordagem e receptividade',
+    'Escuta ativa e empatia',
+    'Conhecimento técnico dos produtos',
+    'Experiência e encantamento do cliente',
+    'Resolução de objeções',
+    'Fidelização e pós-venda'
+  ],
+  '🌟 COMPORTAMENTO E ATITUDE':[
+    'Responsabilidade e autonomia',
+    'Proatividade e iniciativa',
+    'Colaboração e trabalho em equipe',
+    'Resiliência sob pressão',
+    'Postura e presença profissional',
+    'Abertura a feedbacks'
+  ],
+  '⏰ ASSIDUIDADE':[
+    'Pontualidade',
+    'Frequência e presença',
+    'Aviso antecipado de ausência'
+  ],
+  '🏪 EXECUÇÃO E LOJA':[
+    'Organização e visual da loja',
+    'Reposição e gestão de produtos',
+    'Execução de campanhas e ações',
+    'Cumprimento de processos e rotinas',
+    'Atenção aos indicadores da loja'
+  ]
+};
 
 const MEDALS=[{id:'bs',e:'🌸',t:'Boas Sensações',d:'Melhor atendimento ao cliente'},{id:'op',e:'✨',t:'Ouro Puro',d:'Maior pontuação geral de loja'},{id:'li',e:'🏆',t:'Loja Impecável',d:'Melhor limpeza e organização'},{id:'ve',e:'⭐',t:'Vendedora Estrela',d:'Melhor avaliação de funcionária'},{id:'mb',e:'🎯',t:'Bravura em Vendas',d:'Maior cumprimento de metas'},{id:'va',e:'🎨',t:'Arte da Vitrine',d:'Melhor apresentação visual'}];
 
@@ -990,6 +1026,215 @@ function restoreData(input){
     input.value='';
   };
   reader.readAsText(file);
+}
+
+
+function mostrarPDI(){
+  document.getElementById('pdiSection').style.display='block';
+  document.getElementById('pdiSection').scrollIntoView({behavior:'smooth'});
+}
+
+async function gerarPDI(){
+  const nome=document.getElementById('fFN').value||'a funcionária';
+  const cargo=document.getElementById('fFC').value||'Vendedora';
+  const loja=document.getElementById('fFL').value;
+  const periodo=document.getElementById('fFP').value||'este período';
+  const feedbackPos=document.getElementById('fFFpos').value||'';
+  const feedbackDev=document.getElementById('fFFdev').value||'';
+
+  // Coletar notas por categoria
+  const notasPorCat={};
+  let totalPontos=0,totalCrit=0;
+  Object.entries(FCAT).forEach(([cat,items])=>{
+    const notas=items.map(item=>S.fstars[cat+'|'+item]||0);
+    const soma=notas.reduce((a,b)=>a+b,0);
+    const media=(soma/notas.length).toFixed(1);
+    notasPorCat[cat]={media,soma,itens:items.map((item,i)=>({item,nota:notas[i]}))};
+    totalPontos+=soma;
+    totalCrit+=notas.length;
+  });
+
+  const pct=Math.round((totalPontos/(totalCrit*5))*100);
+  const clf=getClf(pct);
+
+  // Identificar pontos fortes (nota >= 4) e críticos (nota <= 2)
+  const fortes=[], criticos=[], medios=[];
+  Object.entries(notasPorCat).forEach(([cat,d])=>{
+    d.itens.forEach(x=>{
+      if(x.nota>=4) fortes.push({cat,item:x.item,nota:x.nota});
+      else if(x.nota<=2 && x.nota>0) criticos.push({cat,item:x.item,nota:x.nota});
+      else if(x.nota===3) medios.push({cat,item:x.item,nota:x.nota});
+    });
+  });
+
+  let resumoNotas='';
+  Object.entries(notasPorCat).forEach(([cat,d])=>{
+    resumoNotas+=`\n${cat} (média ${d.media}/5):\n`;
+    d.itens.forEach(x=>resumoNotas+=`  - ${x.item}: ${x.nota}/5\n`);
+  });
+
+  const btn=document.getElementById('btnGerarPDI');
+  btn.disabled=true;
+  btn.textContent='⏳ Gerando...';
+  document.getElementById('pdiLoadingBadge').textContent='analisando...';
+  document.getElementById('pdiContent').innerHTML='<div style="text-align:center;padding:36px;color:var(--mid)"><div style="font-size:32px;margin-bottom:12px">✨</div><div style="font-size:13px">Criando PDI personalizado para '+nome+'...</div></div>';
+
+  try{
+    const response=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:2000,
+        messages:[{
+          role:"user",
+          content:`Você é um especialista em Desenvolvimento Humano e Gestão de Pessoas no varejo premium, com base nas metodologias de:
+- Marcus Buckingham & Donald Clifton (Now, Discover Your Strengths / Gallup StrengthsFinder): foco em potencializar forças, não apenas corrigir fraquezas
+- Ken Blanchard (O Gerente Minuto / Liderança Situacional): metas claras, feedback imediato, planos adaptados ao nível de maturidade
+- Daniel Pink (Motivação 3.0): autonomia, maestria e propósito como motores do desenvolvimento
+- Carol Dweck (Mindset): growth mindset, esforço e aprendizado contínuo como base do crescimento
+- Marshall Goldsmith (What Got You Here Won't Get You There): comportamentos específicos que travam o crescimento
+- Patrick Lencioni (As 5 Disfunções de uma Equipe): confiança, responsabilidade e comprometimento coletivo
+
+CONTEXTO DA AVALIAÇÃO:
+- Funcionária: ${nome}
+- Cargo: ${cargo}
+- Loja: ${loja} (marca Avatim — cosméticos e perfumaria premium)
+- Período avaliado: ${periodo}
+- Classificação geral: ${clf.l} (${pct}%)
+
+NOTAS POR CRITÉRIO:
+${resumoNotas}
+
+${feedbackPos ? 'PONTOS FORTES OBSERVADOS PELO AVALIADOR:\n' + feedbackPos : ''}
+${feedbackDev ? 'ÁREAS DE DESENVOLVIMENTO OBSERVADAS:\n' + feedbackDev : ''}
+
+ITENS COM ALTA PERFORMANCE (nota 4-5): ${fortes.map(f=>f.item+' ('+f.nota+')').join(', ')||'nenhum avaliado ainda'}
+ITENS CRÍTICOS (nota 1-2): ${criticos.map(c=>c.item+' ('+c.nota+')').join(', ')||'nenhum crítico'}
+
+Com base nessa análise, crie um PDI (Plano de Desenvolvimento Individual) profissional, humano e motivador. Retorne APENAS um JSON válido, sem texto antes ou depois, sem markdown:
+
+{
+  "diagnostico": "Parágrafo rico (4-5 frases) sobre o perfil de ${nome}, destacando seu momento atual, potencial e o que a torna única. Use linguagem humana, empática e inspiradora.",
+  "perfilComportamental": "1 frase que resume o estilo predominante da funcionária (ex: Executora comprometida com foco em resultado, mas que ainda desenvolve sua influência com o cliente)",
+  "pontosFortesDestaque": ["força 1 com contexto", "força 2 com contexto", "força 3 com contexto"],
+  "prioridades": [
+    {
+      "area": "nome do critério",
+      "categoria": "categoria da avaliação",
+      "nota": 0,
+      "porque": "por que isso impacta o resultado dela e da loja (1 frase baseada nos frameworks)",
+      "acao": "ação prática, específica e executável — o que fazer, como fazer",
+      "recurso": "livro, podcast, prática ou dinâmica recomendada",
+      "prazo": "30 dias",
+      "indicador": "como medir objetivamente o progresso"
+    }
+  ],
+  "plano3060_90": {
+    "dias30": {"foco": "tema do mês", "acoes": ["ação 1", "ação 2"], "entrega": "o que deve ser perceptível em 30 dias"},
+    "dias60": {"foco": "tema do mês", "acoes": ["ação 1", "ação 2"], "entrega": "o que deve ser perceptível em 60 dias"},
+    "dias90": {"foco": "tema do mês", "acoes": ["ação 1", "ação 2"], "entrega": "o que deve ser perceptível em 90 dias"}
+  },
+  "acordoCrescimento": "Uma frase de compromisso mútuo — o que a empresa/gestora se compromete a oferecer e o que se espera da funcionária em troca",
+  "mensagemMotivacional": "Mensagem pessoal, calorosa e inspiradora para ${nome}. Use o nome dela. Conecte com o propósito da Avatim (beleza, aroma, experiência sensorial). Máximo 3 frases."
+}
+
+IMPORTANTE: Retorne APENAS o JSON puro. Sem texto antes, sem texto depois, sem blocos de código markdown.`
+        }]
+      })
+    });
+
+    const data=await response.json();
+    if(!data.content||!data.content[0]){throw new Error('Resposta vazia da API')}
+    const text=data.content[0].text.trim();
+    const jsonStr=text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    const pdi=JSON.parse(jsonStr);
+    window._pdiGerado=JSON.stringify(pdi);
+
+    // Renderizar PDI
+    const pctColor=pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
+
+    let html=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:12px">
+      <div style="font-size:36px">${clf.e}</div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${clf.l} · ${pct}%</div>
+        <div style="font-size:12px;font-style:italic;color:var(--mid);margin-top:3px">${pdi.perfilComportamental}</div>
+      </div>
+    </div>
+
+    <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:11px;padding:16px;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📊 Diagnóstico</div>
+      <div style="font-size:13px;line-height:1.7;color:var(--dark)">${pdi.diagnostico}</div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">💪 Forças a Potencializar</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${pdi.pontosFortesDestaque.map(p=>`<div style="background:rgba(90,138,106,.08);border:1px solid rgba(90,138,106,.25);border-radius:9px;padding:9px 13px;font-size:12px;color:var(--dark);line-height:1.5">✨ ${p}</div>`).join('')}
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🎯 Prioridades de Desenvolvimento</div>
+      ${pdi.prioridades.map((p,idx)=>`
+        <div style="background:var(--white);border:1px solid #EDE8E0;border-left:3px solid ${p.nota<=2?'var(--red)':p.nota===3?'var(--gold)':'var(--green)'};border-radius:9px;padding:14px;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap">
+            <span style="font-size:12px;font-weight:700;color:var(--dark)">${p.area}</span>
+            <span style="background:${p.nota<=2?'rgba(192,57,43,.1)':p.nota===3?'rgba(201,168,76,.1)':'rgba(90,138,106,.1)'};color:${p.nota<=2?'var(--red)':p.nota===3?'var(--gold-dark)':'var(--green)'};border-radius:18px;padding:2px 9px;font-size:10px;font-weight:700">${p.nota}/5</span>
+            <span style="background:rgba(90,122,154,.1);color:var(--blue);border-radius:18px;padding:2px 9px;font-size:10px">${p.prazo}</span>
+          </div>
+          <div style="font-size:11px;color:var(--mid);margin-bottom:6px;font-style:italic">💡 ${p.porque}</div>
+          <div style="font-size:12px;color:var(--dark);margin-bottom:5px">📌 <strong>Ação:</strong> ${p.acao}</div>
+          ${p.recurso?`<div style="font-size:11px;color:var(--blue)">📚 ${p.recurso}</div>`:''}
+          <div style="font-size:11px;color:var(--mid);margin-top:5px;padding-top:5px;border-top:1px solid #F0EBE3">📈 <strong>Indicador:</strong> ${p.indicador}</div>
+        </div>`).join('')}
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🗓️ Plano 30 · 60 · 90 dias</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        ${[
+          {d:'30',k:'dias30',c:'var(--green)',bg:'rgba(90,138,106,.08)',bc:'rgba(90,138,106,.2)'},
+          {d:'60',k:'dias60',c:'var(--gold-dark)',bg:'rgba(201,168,76,.08)',bc:'rgba(201,168,76,.2)'},
+          {d:'90',k:'dias90',c:'var(--blue)',bg:'rgba(90,122,154,.08)',bc:'rgba(90,122,154,.2)'}
+        ].map(m=>{
+          const p=pdi.plano3060_90[m.k];
+          return`<div style="background:${m.bg};border:1px solid ${m.bc};border-radius:9px;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:${m.c};margin-bottom:6px">${m.d} DIAS · ${p.foco.toUpperCase()}</div>
+            ${p.acoes.map(a=>`<div style="font-size:11px;color:var(--dark);margin-bottom:4px;line-height:1.4">• ${a}</div>`).join('')}
+            <div style="font-size:10px;color:var(--mid);margin-top:7px;padding-top:6px;border-top:1px solid ${m.bc};font-style:italic">${p.entrega}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:11px;padding:14px;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🤝 Acordo de Crescimento</div>
+      <div style="font-size:12px;color:var(--dark);line-height:1.6">${pdi.acordoCrescimento}</div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:11px;padding:18px;text-align:center">
+      <div style="font-size:22px;margin-bottom:8px">🌸</div>
+      <div style="font-size:13px;font-style:italic;color:var(--gold-light);line-height:1.7">"${pdi.mensagemMotivacional}"</div>
+    </div>`;
+
+    document.getElementById('pdiContent').innerHTML=html;
+    document.getElementById('pdiLoadingBadge').textContent='✅ pronto!';
+    btn.textContent='🔄 Gerar novamente';
+    btn.disabled=false;
+    showToast('🚀 PDI gerado!');
+
+  }catch(err){
+    console.error('Erro PDI:',err);
+    document.getElementById('pdiContent').innerHTML=`<div style="color:var(--red);padding:20px;text-align:center;font-size:13px">
+      ❌ Não foi possível gerar o PDI.<br><small style="color:var(--mid)">${err.message}</small>
+      <br><br><button class="btn-sm" onclick="gerarPDI()">Tentar novamente</button>
+    </div>`;
+    document.getElementById('pdiLoadingBadge').textContent='❌ erro';
+    btn.textContent='✨ Gerar PDI';
+    btn.disabled=false;
+  }
 }
 
 
