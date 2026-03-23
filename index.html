@@ -839,11 +839,11 @@ function submitAval(){
   resetAF();
   showPage('historico');
   renderDash();renderHist();renderRank();
-  showToast('⭐ Avaliação salva!');
+  showToast('⭐ Avaliação salva! ' + aval.pct + '% · ' + aval.score + '/' + aval.max + ' pts');
 }
 function resetAF(){
   ['fFN','fFC','fFP','pmObj','pmAcao','pmPrazo','fFFpos','fFFdev','fFFmsg','fFAcordos'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
-  document.getElementById('pmStatus').value='';buildFuncCrit();clearSig('sigFAv');clearSig('sigFFn');clearSig('sigAcAv');clearSig('sigAcFn');window._pdiGerado='';window._pdiObj=null;document.getElementById('pdiSection').style.display='none';
+  document.getElementById('pmStatus').value='';buildFuncCrit();clearSig('sigFAv');clearSig('sigFFn');clearSig('sigAcAv');clearSig('sigAcFn');window._pdiGerado='';window._pdiObj=null;document.getElementById('pdiContent').innerHTML='Clique em "Gerar PDI" para criar um plano personalizado baseado nas notas desta avaliação.';document.getElementById('pdiLoadingBadge').textContent='';document.getElementById('btnGerarPDI').textContent='✨ Gerar PDI';document.getElementById('btnGerarPDI').disabled=false;
 }
 
 function renderDash(){
@@ -1337,16 +1337,10 @@ function gerarPDI(){
 }
 
 
-function mostrarPDI(){
-  document.getElementById('pdiSection').style.display='block';
-  document.getElementById('pdiSection').scrollIntoView({behavior:'smooth'});
-}
 
 
-function mostrarPDI(){
-  document.getElementById('pdiSection').style.display='block';
-  document.getElementById('pdiSection').scrollIntoView({behavior:'smooth'});
-}
+
+
 
 
 
