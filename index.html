@@ -301,7 +301,8 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="showPage('dashboard')">📊 Dashboard</button>
       <button class="nav-tab" onclick="showPage('nova-visita')">🏪 Visita Loja</button>
-      <button class="nav-tab" onclick="showPage('avaliacao-func')">👩 Avaliação</button>
+      <button class="nav-tab" onclick="showPage('avaliacao-func')">👩 Vendedora</button>
+      <button class="nav-tab" onclick="showPage('avaliacao-lider')">👑 Líder</button>
       <button class="nav-tab" onclick="showPage('historico')">📋 Histórico</button>
       <button class="nav-tab" onclick="showPage('ranking')">🏆 Ranking</button>
     </div>
@@ -493,6 +494,98 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
     </div>
   </div>
 
+
+  <!-- AVALIAÇÃO LÍDER -->
+  <div class="page" id="page-avaliacao-lider">
+    <div class="page-title">Avaliação de Líder</div>
+    <div class="page-sub">Avaliação de desempenho — Vendedor(a) Líder · nota de 1 a 5 estrelas</div>
+    <div class="loja-tabs-wrap">
+      <div style="font-size:10px;font-weight:600;color:var(--mid);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">Selecione a Loja</div>
+      <div class="loja-tabs" id="liderLojaTabs">
+        <div class="loja-tab active" onclick="selLiderLoja(this,'Shopping Mooca')">🛍️ Shopping Mooca</div>
+        <div class="loja-tab" onclick="selLiderLoja(this,'Jardim Paulista Lorena')">🌿 Lorena</div>
+        <div class="loja-tab" onclick="selLiderLoja(this,'Vila Leopoldina')">🦋 Leopoldina</div>
+        <div class="loja-tab" onclick="selLiderLoja(this,'Perdizes')">🌸 Perdizes</div>
+        <div class="loja-tab" onclick="selLiderLoja(this,'Santana')">⭐ Santana</div>
+        <div class="loja-tab" onclick="selLiderLoja(this,'Alto de Pinheiros')">🌳 Alto Pinheiros</div>
+        <div class="loja-tab" onclick="selLiderLoja(this,'Shop Ibirapuera')">✨ Ibirapuera</div>
+      </div>
+    </div>
+    <div class="form-progress">
+      <div style="font-size:11px;color:var(--mid);min-width:80px">Pontuação</div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="liderBar" style="width:0%"></div></div>
+      <div class="score-display" id="liderScore">0</div>
+      <div style="font-size:11px;color:var(--mid);min-width:100px;text-align:right" id="liderClassifEl"></div>
+    </div>
+    <div class="visit-form">
+      <div class="form-section">
+        <div class="form-section-title">📋 Dados da Avaliação</div>
+        <div class="form-row">
+          <div class="form-group"><label>Loja</label><input type="text" id="fLL" readonly style="background:#F5F0E8;font-weight:600" value="Shopping Mooca"/></div>
+          <div class="form-group"><label>Data</label><input type="date" id="fLD"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Nome do(a) Líder</label><input type="text" id="fLN" placeholder="Nome completo"/></div>
+          <div class="form-group"><label>Tempo no cargo</label><input type="text" id="fLT" placeholder="Ex: 6 meses, 1 ano..."/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Avaliador(a)</label><input type="text" id="fLA" value="GManjos"/></div>
+          <div class="form-group"><label>Período</label><input type="text" id="fLP" placeholder="Ex: Março 2026"/></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title">⭐ Critérios de Avaliação <small style="font-size:10px;font-weight:400;color:var(--mid)">&nbsp;1=Crítico · 2=Precisa melhorar · 3=Bom · 4=Muito bom · 5=Excelente</small></div>
+        <div id="liderCriterios"></div>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title">📈 Plano de Desenvolvimento</div>
+        <div class="melhoria-grid">
+          <div class="melhoria-item"><label>Objetivo de liderança</label><textarea id="lPmObj" placeholder="O que precisa desenvolver como líder..."></textarea></div>
+          <div class="melhoria-item"><label>Ação necessária</label><textarea id="lPmAcao" placeholder="Como vai desenvolver..."></textarea></div>
+          <div class="melhoria-item"><label>Prazo</label><input type="text" id="lPmPrazo" placeholder="Ex: 30 dias"/></div>
+          <div class="melhoria-item"><label>Status</label>
+            <select id="lPmStatus"><option value="">Selecione</option><option>Em andamento</option><option>Concluído</option><option>Pendente</option><option>Cancelado</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title">💬 Feedback Geral</div>
+        <div class="form-group"><label>Pontos fortes de liderança</label><textarea id="lFFpos" placeholder="Destaque os pontos fortes como líder..."></textarea></div>
+        <div class="form-group"><label>Pontos de desenvolvimento</label><textarea id="lFFdev" placeholder="O que precisa desenvolver na liderança..."></textarea></div>
+        <div class="form-group"><label>Mensagem para o(a) líder</label><textarea id="lFFmsg" placeholder="Mensagem de orientação ou motivação..."></textarea></div>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title">✍️ Assinaturas</div>
+        <div class="sig-container">
+          <div><div class="sig-label">Avaliador(a)</div><canvas class="sig-canvas" id="sigLAv" width="400" height="100"></canvas><div class="sig-actions"><button class="btn-sm" onclick="clearSig('sigLAv')">Limpar</button></div></div>
+          <div><div class="sig-label">Líder</div><canvas class="sig-canvas" id="sigLFn" width="400" height="100"></canvas><div class="sig-actions"><button class="btn-sm" onclick="clearSig('sigLFn')">Limpar</button></div></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title">📝 Contrato de Acordos</div>
+        <div class="form-group">
+          <label>Acordos combinados nesta avaliação</label>
+          <textarea id="lAcordos" placeholder="Descreva os acordos de liderança estabelecidos..." style="min-height:120px"></textarea>
+        </div>
+        <div style="margin-top:8px;padding:10px 14px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:9px;font-size:11px;color:var(--mid)">
+          ✍️ Ao assinar abaixo, o(a) líder confirma que leu, entendeu e concorda com os acordos acima.
+        </div>
+        <div class="sig-container" style="margin-top:12px">
+          <div><div class="sig-label">Avaliador(a) — Testemunha</div><canvas class="sig-canvas" id="sigLAcAv" width="400" height="100"></canvas><div class="sig-actions"><button class="btn-sm" onclick="clearSig('sigLAcAv')">Limpar</button></div></div>
+          <div><div class="sig-label">Líder — Ciente e de acordo</div><canvas class="sig-canvas" id="sigLAcFn" width="400" height="100"></canvas><div class="sig-actions"><button class="btn-sm" onclick="clearSig('sigLAcFn')">Limpar</button></div></div>
+        </div>
+      </div>
+      <div class="form-section" id="liderPdiSection">
+        <div class="form-section-title">🚀 PDI — Plano de Desenvolvimento do Líder <span id="liderPdiLoadingBadge" style="font-size:10px;font-weight:400;color:var(--mid);margin-left:6px"></span></div>
+        <div id="liderPdiContent" style="font-size:13px;color:var(--mid);text-align:center;padding:20px">
+          Clique em "Gerar PDI" para criar um plano personalizado de liderança.
+        </div>
+        <button id="btnGerarPDILider" class="btn-submit" style="margin-top:12px;padding:12px;font-size:13px" onclick="gerarPDILider()">✨ Gerar PDI</button>
+      </div>
+      <button class="btn-submit" onclick="submitLider()">👑 SALVAR AVALIAÇÃO DO LÍDER 👑</button>
+    </div>
+  </div>
+
   <!-- HISTÓRICO -->
   <div class="page" id="page-historico">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
@@ -540,7 +633,10 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
       <span style="font-size:20px">🏪</span><span style="font-size:9px">Visita</span>
     </button>
     <button onclick="showPage('avaliacao-func')" id="bn2" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:56px">
-      <span style="font-size:20px">👩</span><span style="font-size:9px">Avaliar</span>
+      <span style="font-size:20px">👩</span><span style="font-size:9px">Vendedora</span>
+    </button>
+    <button onclick="showPage('avaliacao-lider')" id="bn5" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:56px">
+      <span style="font-size:20px">👑</span><span style="font-size:9px">Líder</span>
     </button>
     <button onclick="showPage('historico')" id="bn3" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:56px">
       <span style="font-size:20px">📋</span><span style="font-size:9px">Histórico</span>
@@ -619,7 +715,8 @@ function initApp(){
   document.getElementById('fData').value=ds;document.getElementById('fFD').value=ds;
   document.getElementById('monthDisplay').textContent=S.rMonth.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
   buildChk();buildAtn();buildFuncCrit();
-  ['sigAv','sigVn','sigFAv','sigFFn','sigAcAv','sigAcFn'].forEach(setupCanvas);
+  ['sigAv','sigVn','sigFAv','sigFFn','sigAcAv','sigAcFn','sigLAv','sigLFn','sigLAcAv','sigLAcFn'].forEach(setupCanvas);
+  buildLiderCrit();
   renderDash();renderHist();renderRank();
 }
 
@@ -871,14 +968,14 @@ function renderHist(){
   if(all.length===0){list.innerHTML='';empty.style.display='block';return}
   empty.style.display='none';
   list.innerHTML=all.map(r=>{
-    const isV=r._t==='visita';const sc=r.pct>=80?'#5A8A6A':r.pct>=60?'#C9A84C':'#C0392B';
+    const isV=r._t==='visita';const isL=r._t==='lider';const sc=r.pct>=80?'#5A8A6A':r.pct>=60?'#C9A84C':'#C0392B';
     const title=isV?r.loja:`${r.nome||'—'} · ${r.loja}`;
     const sub=isV?`${new Date(r.data).toLocaleDateString('pt-BR')} · ${r.av} · ${r.vend||'—'}`:`${new Date(r.data).toLocaleDateString('pt-BR')} · ${r.cargo||'—'} · ${r.periodo||'—'}`;
     const clf=isV?'':getClf(r.pct);
     return`<div class="visit-card" onclick="openMod(${r.id},'${r._t}')">
       <div class="visit-score-circle" style="background:linear-gradient(135deg,${sc},${sc}BB)">${r.pct}%</div>
       <div class="visit-info">
-        <div class="visit-store">${isV?'🏪':'👩'} ${title}</div>
+        <div class="visit-store">${isV?'🏪':isL?'👑':'👩'} ${title}</div>
         <div class="visit-meta">${sub}</div>
         <div class="visit-badges">
           <span class="tag">${isV?'visita':'avaliação'}</span>
@@ -1063,7 +1160,7 @@ function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  const m={dashboard:0,'nova-visita':1,'avaliacao-func':2,historico:3,ranking:4};
+  const m={dashboard:0,'nova-visita':1,'avaliacao-func':2,'avaliacao-lider':2,historico:3,ranking:4};
   const tabs=document.querySelectorAll('.nav-tab');
   if(m[id]!==undefined)tabs[m[id]].classList.add('active');
   // Bottom nav ativo
@@ -1420,6 +1517,277 @@ function renderPDI(pdi){
 
   return h;
 }
+
+// ===== AVALIAÇÃO LÍDER =====
+const FCAT_LIDER={
+  '🎯 RESULTADOS E METAS':['Atingimento da meta da loja','Gestão do ticket médio da equipe','Acompanhamento de indicadores diários','Planejamento de ações para bater meta','Consistência e previsibilidade de resultados'],
+  '👥 LIDERANÇA DE EQUIPE':['Engajamento e motivação da equipe','Gestão de conflitos e clima da loja','Desenvolvimento das vendedoras','Delegação e distribuição de tarefas','Feedback contínuo e construtivo','Exemplo e postura de liderança'],
+  '🏪 GESTÃO DA LOJA':['Abertura e fechamento de acordo com processos','Organização, limpeza e visual da loja','Controle de estoque e reposição','Execução de campanhas e ações da marca','Cumprimento de normas e procedimentos'],
+  '💬 COMUNICAÇÃO E RELACIONAMENTO':['Comunicação clara com a equipe','Alinhamento com a gestora regional','Atendimento a clientes estratégicos','Resolução de problemas e reclamações','Transparência e honestidade'],
+  '🌱 DESENVOLVIMENTO PESSOAL':['Autoconhecimento e autocrítica','Abertura a feedbacks da liderança','Gestão emocional e resiliência','Visão de negócio e dono da loja','Proatividade e iniciativa estratégica']
+};
+
+const BANCO_ACOES_LIDER={
+  'Atingimento da meta da loja':{acao:'Criar painel visual de acompanhamento diário da meta. Reunião de 10 min com a equipe ao abrir a loja: meta do dia, resultado ontem, foco do turno.',recurso:'Livro: Execução — Larry Bossidy & Ram Charan',ind:'Meta da loja atingida em ≥ 80% dos dias do mês'},
+  'Gestão do ticket médio da equipe':{acao:'Treinar a equipe semanalmente em técnicas de venda adicional. Criar ranking interno de ticket médio para estimular competição saudável.',recurso:'Técnica: SPIN Selling + Kit sugestão do mês',ind:'Ticket médio da loja crescendo ≥ 10% ao mês'},
+  'Acompanhamento de indicadores diários':{acao:'Consultar painel de indicadores 3x ao dia (abertura, meio e fechamento). Comunicar à equipe os números em tempo real.',recurso:'Hábito: Dashboard Avatim atualizado diariamente',ind:'Conhece e comunica todos os indicadores sem consultar'},
+  'Planejamento de ações para bater meta':{acao:'No início de cada semana, montar 1 plano de ação específico com táticas para a semana. Revisar na sexta o que funcionou.',recurso:'Ferramenta: Método PDCA aplicado ao varejo',ind:'Plano semanal documentado e executado'},
+  'Consistência e previsibilidade de resultados':{acao:'Analisar os dias/turnos de pior performance e criar estratégia específica para esses momentos.',recurso:'Livro: As Leis do Líder — John Maxwell',ind:'Variação de resultado entre dias reduzindo mês a mês'},
+  'Engajamento e motivação da equipe':{acao:'Reconhecer publicamente 1 conquista de cada vendedora por semana. Criar ritual de celebração de metas atingidas.',recurso:'Livro: O Gerente Minuto — Ken Blanchard',ind:'Percepção positiva da equipe em pesquisa de clima'},
+  'Gestão de conflitos e clima da loja':{acao:'Abordar conflitos em até 24h, de forma privada e empática. Criar acordo de convivência com a equipe.',recurso:'Livro: Comunicação Não-Violenta — Marshall Rosenberg',ind:'Zero conflitos não resolvidos ou escalados desnecessariamente'},
+  'Desenvolvimento das vendedoras':{acao:'Fazer 1 observação de atendimento por semana com cada vendedora e dar feedback estruturado na hora.',recurso:'Metodologia: Feedforward — Marshall Goldsmith',ind:'Melhora mensurável nas avaliações das vendedoras'},
+  'Delegação e distribuição de tarefas':{acao:'Mapear as forças de cada vendedora e delegar tarefas alinhadas ao perfil de cada uma. Evitar centralizar tudo.',recurso:'Livro: As 5 Disfunções de uma Equipe — Patrick Lencioni',ind:'Equipe executa rotinas sem precisar ser solicitada'},
+  'Feedback contínuo e construtivo':{acao:'Praticar o modelo SBI (Situação-Comportamento-Impacto) em todos os feedbacks. Dar pelo menos 1 feedback positivo e 1 de desenvolvimento por semana.',recurso:'Modelo: SBI Feedback — Center for Creative Leadership',ind:'Feedbacks dados e registrados semanalmente'},
+  'Exemplo e postura de liderança':{acao:'Revisitar diariamente: estou sendo o exemplo que quero ver na minha equipe? Postura, atendimento, pontualidade e energia.',recurso:'Livro: As 21 Irrefutáveis Leis da Liderança — John Maxwell',ind:'Equipe espelha comportamentos positivos da líder'},
+  'Abertura e fechamento de acordo com processos':{acao:'Criar checklist de abertura e fechamento e validar diariamente. Treinar a substituta para executar na ausência.',recurso:'Metodologia: 5S + Checklist operacional Avatim',ind:'100% dos checklists concluídos sem pendências'},
+  'Organização, limpeza e visual da loja':{acao:'Inspeção visual da loja a cada 2 horas durante o turno. Corrigir imediatamente qualquer desvio do padrão visual.',recurso:'Padrão: Manual de Visual Merchandising Avatim',ind:'Loja em conformidade com o padrão visual em 100% das inspeções'},
+  'Controle de estoque e reposição':{acao:'Verificar estoque crítico toda manhã. Acionar pedido de reposição antes de zerar. Manter lista de produtos de alto giro.',recurso:'Prática: Kanban visual + planilha de mínimos de estoque',ind:'Zero rupturas de produtos estratégicos'},
+  'Execução de campanhas e ações da marca':{acao:'Ler o briefing de campanha com antecedência, briefar a equipe e garantir execução no prazo e padrão.',recurso:'Guia: Manual de campanhas Avatim',ind:'100% das campanhas executadas no prazo e padrão'},
+  'Cumprimento de normas e procedimentos':{acao:'Revisar mensalmente o manual de normas com a equipe. Tratar desvios como oportunidade de alinhamento, não punição.',recurso:'Normas operacionais Avatim + reunião mensal de alinhamento',ind:'Zero desvios críticos de procedimentos no mês'},
+  'Comunicação clara com a equipe':{acao:'Fazer briefing de equipe diário (5-10 min). Usar WhatsApp do grupo apenas para informações relevantes.',recurso:'Livro: Comunicação — Brian Tracy',ind:'Equipe tem clareza sobre metas, prioridades e informações do dia'},
+  'Alinhamento com a gestora regional':{acao:'Enviar relatório semanal resumido à gestora regional: resultado, destaque positivo e 1 ponto de atenção.',recurso:'Hábito: Check-in semanal estruturado',ind:'Gestora regional informada e alinhada sem precisar cobrar'},
+  'Atendimento a clientes estratégicos':{acao:'Identificar os top 20 clientes da loja e criar estratégia de relacionamento personalizado para cada.',recurso:'Ferramenta: CRM no WhatsApp Business com etiquetas VIP',ind:'Aumento no retorno e ticket dos clientes estratégicos'},
+  'Resolução de problemas e reclamações':{acao:'Protocolo de 3 passos para reclamações: ouvir sem interromper, pedir desculpas genuínas, oferecer solução imediata.',recurso:'Livro: Satisfação Garantida — Tony Hsieh',ind:'100% das reclamações resolvidas no mesmo dia'},
+  'Transparência e honestidade':{acao:'Compartilhar resultados reais com a equipe, inclusive em dias difíceis. Construir cultura de verdade e confiança.',recurso:'Livro: Extrema Honestidade — Kim Scott (Radical Candor)',ind:'Equipe sente segurança para trazer problemas à líder'},
+  'Autoconhecimento e autocrítica':{acao:'Fazer autoavaliação semanal: o que fiz bem, o que faria diferente, o que aprendi. Anotar em diário de liderança.',recurso:'Livro: O Líder Que Não Tinha Título — Robin Sharma',ind:'Diário de liderança preenchido semanalmente'},
+  'Abertura a feedbacks da liderança':{acao:'Ao receber feedback, praticar escuta ativa sem defender. Agradecer, anotar e implementar em até 7 dias.',recurso:'Livro: Obrigado pelo Feedback — Douglas Stone & Sheila Heen',ind:'Aplicação visível de feedbacks recebidos da gestora'},
+  'Gestão emocional e resiliência':{acao:'Criar ritual de "reset" em dias difíceis. Desenvolver vocabulário emocional: nomear o que sente antes de reagir.',recurso:'Livro: Inteligência Emocional — Daniel Goleman',ind:'Manutenção de liderança equilibrada mesmo sob pressão'},
+  'Visão de negócio e dono da loja':{acao:'Analisar mensalmente os resultados da loja com olhar de dono: o que aumentaria a receita, reduziria custos ou melhoraria a experiência.',recurso:'Livro: A Mentalidade de Dono — Ram Charan',ind:'Propõe pelo menos 1 melhoria estratégica por mês à gestora'},
+  'Proatividade e iniciativa estratégica':{acao:'Não esperar problemas virem — antecipar. Semanalmente: identificar 1 risco ou oportunidade e agir antes.',recurso:'Livro: Faça Acontecer — Sheryl Sandberg',ind:'Ações proativas registradas e implementadas mensalmente'}
+};
+
+let S_lider={loja:'Shopping Mooca',stars:{},comm:{}};
+
+function selLiderLoja(el,l){
+  document.querySelectorAll('#liderLojaTabs .loja-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  S_lider.loja=l;
+  document.getElementById('fLL').value=l;
+}
+
+function buildLiderCrit(){
+  S_lider.stars={};S_lider.comm={};
+  const c=document.getElementById('liderCriterios');c.innerHTML='';
+  Object.entries(FCAT_LIDER).forEach(([cat,items])=>{
+    const h=document.createElement('div');h.className='cat-header';h.textContent=cat;c.appendChild(h);
+    items.forEach(item=>{
+      const k=cat+'|'+item;S_lider.stars[k]=0;S_lider.comm[k]='';
+      const row=document.createElement('div');row.className='star-row';
+      const wrap=document.createElement('div');wrap.style.cssText='display:flex;gap:3px;align-items:center';
+      const lbl=document.createElement('span');lbl.className='star-score-lbl';lbl.id='lsl'+encodeKey(k);lbl.textContent='0';
+      [1,2,3,4,5].forEach(n=>{
+        const b=document.createElement('button');b.className='star-btn';b.textContent='★';
+        b.onclick=()=>setStarLider(k,n);
+        wrap.appendChild(b);
+      });
+      wrap.appendChild(lbl);
+      const info=document.createElement('div');info.className='star-info';
+      info.innerHTML=`<div class="star-label-text">${item}</div>`;
+      const ta=document.createElement('textarea');ta.className='star-comment-input';ta.placeholder='Comentário opcional...';
+      ta.oninput=()=>{S_lider.comm[k]=ta.value};
+      info.appendChild(ta);
+      row.appendChild(info);row.appendChild(wrap);c.appendChild(row);
+    });
+  });
+  updLiderScore();
+}
+
+function setStarLider(k,n){
+  S_lider.stars[k]=n;
+  const ek=encodeKey(k);
+  const lbl=document.getElementById('lsl'+ek);if(lbl)lbl.textContent=n;
+  const row=lbl&&lbl.closest('.star-row');
+  if(row){row.querySelectorAll('.star-btn').forEach((b,i)=>{b.style.color=i<n?'var(--gold)':'#DDD5CA'})}
+  updLiderScore();
+}
+
+function updLiderScore(){
+  const vals=Object.values(S_lider.stars);
+  const t=vals.reduce((a,b)=>a+b,0);
+  const m=vals.length*5;
+  const pct=m>0?Math.round((t/m)*100):0;
+  document.getElementById('liderBar').style.width=pct+'%';
+  document.getElementById('liderScore').textContent=t;
+  const cl=getClf(pct);
+  document.getElementById('liderClassifEl').innerHTML=`<span class="classif-badge ${cl.c}">${cl.e} ${cl.l}</span>`;
+}
+
+function gerarPDILider(){
+  const nome=document.getElementById('fLN').value||'o(a) líder';
+  const loja=document.getElementById('fLL').value;
+  const btn=document.getElementById('btnGerarPDILider');
+  btn.disabled=true;btn.textContent='⏳ Gerando...';
+  document.getElementById('liderPdiLoadingBadge').textContent='analisando...';
+  document.getElementById('liderPdiContent').innerHTML='<div style="text-align:center;padding:36px;color:var(--mid)"><div style="font-size:32px;margin-bottom:12px">👑</div><div style="font-size:13px">Criando PDI de liderança para '+nome+'...</div></div>';
+
+  const starsSnap={...S_lider.stars};
+  let totalPontos=0,totalCrit=0;
+  const notasPorCat={};
+  const fortes=[],criticos=[],medios=[];
+
+  Object.entries(FCAT_LIDER).forEach(([cat,items])=>{
+    const notas=items.map(item=>starsSnap[cat+'|'+item]||0);
+    const soma=notas.reduce((a,b)=>a+b,0);
+    notasPorCat[cat]={media:parseFloat((soma/notas.length).toFixed(1)),itens:items.map((item,i)=>({item,nota:notas[i]}))};
+    totalPontos+=soma;totalCrit+=notas.length;
+    notas.forEach((n,i)=>{
+      if(n>=4)fortes.push({cat,item:items[i],nota:n});
+      else if(n>0&&n<=2)criticos.push({cat,item:items[i],nota:n});
+      else if(n===3)medios.push({cat,item:items[i],nota:n});
+    });
+  });
+
+  const pct=Math.round((totalPontos/(totalCrit*5))*100);
+  const clf=getClf(pct);
+
+  const candidatos=[...criticos,...medios,...fortes.filter(f=>f.nota<5)].slice(0,4);
+  const prioridades=candidatos.map(c=>{
+    const b=BANCO_ACOES_LIDER[c.item]||{
+      acao:`Desenvolver ${c.item.toLowerCase()} com prática intencional e busca de feedback semanal da gestora.`,
+      recurso:'Reflexão semanal com a gestora regional',
+      ind:'Melhora visível na próxima avaliação'
+    };
+    return{item:c.item,cat:c.cat,nota:c.nota,acao:b.acao,recurso:b.recurso,ind:b.ind,prazo:c.nota<=2?'30 dias':c.nota===3?'60 dias':'90 dias'};
+  });
+
+  const catMedias=Object.entries(notasPorCat).map(([cat,d])=>({cat,media:d.media})).sort((a,b)=>b.media-a.media);
+  const melhorCat=catMedias[0];
+  const piorCat=catMedias[catMedias.length-1];
+
+  const diagnosticos={
+    'Excelente':`${nome} demonstra liderança madura e resultados consistentes. Sua equipe é reflexo direto da sua gestão — organizada, engajada e orientada a resultado. Pelo modelo de Liderança Situacional de Blanchard, ela está no estágio de "líder delegadora": o momento de ampliar seu impacto além da loja e inspirar outras líderes.`,
+    'Muito Bom':`${nome} apresenta liderança sólida com pontos de excelência claros, especialmente em ${melhorCat.cat.replace(/[^\w\s]/g,'')}. Pelo framework de John Maxwell, ela já transpôs o nível de liderança por posição e está construindo liderança por relacionamento — o caminho para o próximo nível é desenvolver líderes dentro da equipe.`,
+    'Bom':`${nome} tem base consistente de liderança e mostra comprometimento real com o desenvolvimento da equipe. Carol Dweck nos ensina que líderes com Growth Mindset transformam desafios em aprendizado — e ${nome} tem esse potencial. Com foco em ${piorCat.cat.replace(/[^\w\s]/g,'')}, pode dar um salto significativo.`,
+    'Precisa Melhorar':`${nome} está construindo sua identidade como líder — um processo que exige tempo, apoio e estrutura. Daniel Pink aponta que líderes em desenvolvimento precisam de clareza de propósito e pequenas vitórias para ganhar confiança. Este PDI é um mapa: com as ações certas e o suporte da gestora, a evolução pode ser rápida.`,
+    'Crítico':`${nome} enfrenta desafios significativos na liderança que precisam de atenção imediata. Marshall Goldsmith lembra: o que trouxe até aqui pode não ser o que levará ao próximo nível. Este é um momento de transição — com intervenção estruturada, feedback direto e comprometimento real, a virada é possível.`
+  };
+
+  const perfis={
+    'Excelente':'Líder de alta performance com equipe engajada e resultados consistentes',
+    'Muito Bom':'Líder comprometida em evolução, com forte base relacional e resultados acima da média',
+    'Bom':'Líder em construção com boa base e espaço claro para desenvolvimento estratégico',
+    'Precisa Melhorar':'Líder em transição que precisa de estrutura, suporte próximo e pequenas vitórias',
+    'Crítico':'Liderança em fase crítica que requer intervenção imediata e acompanhamento intensivo'
+  };
+
+  const topFortes=fortes.sort((a,b)=>b.nota-a.nota).slice(0,3).map(f=>{
+    const textos={
+      'Engajamento e motivação da equipe':'Cria energia positiva na equipe — as vendedoras se sentem valorizadas e motivadas',
+      'Exemplo e postura de liderança':'Lidera pelo exemplo — o comportamento dela é o padrão que a equipe segue',
+      'Atingimento da meta da loja':'Forte orientação a resultado — mobiliza a equipe para bater metas consistentemente',
+      'Comunicação clara com a equipe':'Comunicação assertiva que alinha a equipe e evita ruídos e retrabalho',
+      'Desenvolvimento das vendedoras':'Investe genuinamente no crescimento da equipe — forma profissionais melhores',
+      'Transparência e honestidade':'Cria cultura de confiança — equipe sabe que pode contar com ela',
+      'Gestão emocional e resiliência':'Mantém equilíbrio emocional mesmo sob pressão — ancora a equipe nos momentos difíceis',
+    };
+    return textos[f.item]||`Destaque em ${f.item} — competência que fortalece a equipe e os resultados da loja`;
+  });
+  if(topFortes.length===0)topFortes.push('Comprometimento com o papel de líder','Disposição para crescer e receber feedback','Cuidado com a equipe e os resultados da loja');
+
+  const plano={
+    d30:{foco:'Diagnóstico e primeiras ações',acoes:['Alinhar expectativas com a gestora regional e revisar este PDI','Implementar 1 ritual de liderança diário (briefing de equipe)','Iniciar as ações prioritárias identificadas'],entrega:'Primeiros rituais de liderança instalados e equipe percebendo mudança'},
+    d60:{foco:'Desenvolvimento e consistência',acoes:['Executar plano de ação com consistência diária','Fazer observação de atendimento semanal com cada vendedora','Check-in quinzenal com a gestora regional para alinhamento'],entrega:'Melhora visível nos indicadores da loja e clima da equipe'},
+    d90:{foco:'Consolidação e nova liderança',acoes:['Revisar PDI com a gestora: o que evoluiu, o que ainda precisa de atenção','Identificar próximo nível de liderança a desenvolver','Começar a desenvolver uma sucessora dentro da equipe'],entrega:'Liderança consolidada e pelo menos uma vendedora em desenvolvimento acelerado'}
+  };
+
+  const acordos={
+    'Excelente':`A empresa reconhece a excelência de ${nome} e se compromete a oferecer novos desafios e visibilidade. ${nome} se compromete a continuar sendo referência e a desenvolver líderes dentro da equipe.`,
+    'Muito Bom':`A gestora se compromete a dar autonomia crescente e feedbacks estruturados. ${nome} se compromete a buscar o próximo nível de liderança e a compartilhar aprendizados com a equipe.`,
+    'Bom':`A empresa oferece suporte, treinamentos e acompanhamento próximo. ${nome} se compromete a executar as ações deste PDI com consistência e abertura para crescer.`,
+    'Precisa Melhorar':`A gestora se compromete a reuniões semanais de suporte e acompanhamento próximo. ${nome} se compromete a encarar este momento como oportunidade de virada na liderança.`,
+    'Crítico':`A empresa oferece suporte total e estrutura para recuperação. ${nome} se compromete a priorizar as ações críticas e comunicar dificuldades imediatamente à gestora.`
+  };
+
+  const msgs={
+    'Excelente':`${nome}, você chegou a um nível que exige muito de quem lidera. Na Avatim, cada loja tem uma líder que define o aroma da equipe — e você define o seu com maestria. Continue inspirando, continue crescendo. 👑`,
+    'Muito Bom':`${nome}, sua liderança já deixa marca. As vendedoras ao seu redor crescem por causa de você. Na Avatim, acreditamos que o melhor líder é aquele que forma outros líderes. Você está nesse caminho. ✨`,
+    'Bom':`${nome}, liderar é uma das coisas mais difíceis e mais bonitas que existem. Você está construindo algo sólido. Este PDI é um convite para ir mais longe — com apoio, estrutura e muita determinação. 💛`,
+    'Precisa Melhorar':`${nome}, toda grande líder já foi uma líder em construção. O que importa é a decisão de crescer. A Avatim acredita no seu potencial — e este PDI é prova disso. Um passo de cada vez. 🤝`,
+    'Crítico':`${nome}, este é um momento de escolha. Liderar é difícil, mas você não está sozinha. A Avatim oferece o suporte — cabe a você dar o primeiro passo. Uma ação por dia transforma a liderança. 💪`
+  };
+
+  window._pdiObjLider={classificacao:clf.l,pct,diagnostico:diagnosticos[clf.l]||diagnosticos['Bom'],perfil:perfis[clf.l],fortes:topFortes,prioridades,plano,acordo:acordos[clf.l],msg:msgs[clf.l]};
+
+  const pctColor=pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
+  let html=`
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:12px">
+    <div style="font-size:38px">${clf.e}</div>
+    <div><div style="font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${clf.l} · ${pct}%</div>
+    <div style="font-size:12px;font-style:italic;color:var(--dark);margin-top:3px">${perfis[clf.l]}</div></div>
+  </div>
+  <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:11px;padding:16px;margin-bottom:14px">
+    <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📊 Diagnóstico de Liderança</div>
+    <div style="font-size:13px;line-height:1.7;color:var(--dark)">${diagnosticos[clf.l]||diagnosticos['Bom']}</div>
+  </div>
+  ${topFortes.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">💪 Forças de Liderança</div>${topFortes.map(p=>`<div style="background:rgba(90,138,106,.08);border:1px solid rgba(90,138,106,.25);border-radius:9px;padding:9px 13px;font-size:12px;color:var(--dark);line-height:1.5;margin-bottom:6px">✨ ${p}</div>`).join('')}</div>`:''}
+  ${prioridades.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🎯 Prioridades de Desenvolvimento</div>${prioridades.map(p=>`<div style="background:var(--white);border:1px solid #EDE8E0;border-left:3px solid ${p.nota<=2?'var(--red)':p.nota===3?'var(--gold)':'var(--green)'};border-radius:9px;padding:14px;margin-bottom:10px"><div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap"><span style="font-size:12px;font-weight:700;color:var(--dark)">${p.item}</span><span style="background:${p.nota<=2?'rgba(192,57,43,.1)':p.nota===3?'rgba(201,168,76,.1)':'rgba(90,138,106,.1)'};color:${p.nota<=2?'var(--red)':p.nota===3?'var(--gold-dark)':'var(--green)'};border-radius:18px;padding:2px 9px;font-size:10px;font-weight:700">${p.nota}/5</span><span style="background:rgba(90,122,154,.1);color:var(--blue);border-radius:18px;padding:2px 9px;font-size:10px">${p.prazo}</span></div><div style="font-size:12px;color:var(--dark);margin-bottom:6px">📌 ${p.acao}</div><div style="font-size:11px;color:var(--blue);margin-bottom:5px">📚 ${p.recurso}</div><div style="font-size:11px;color:var(--mid);padding-top:6px;border-top:1px solid #F0EBE3">📈 ${p.ind}</div></div>`).join('')}</div>`:''}
+  <div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🗓️ Plano 30 · 60 · 90 dias</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${[{d:'30 dias',k:'d30',c:'var(--green)',bg:'rgba(90,138,106,.08)',bc:'rgba(90,138,106,.2)'},{d:'60 dias',k:'d60',c:'var(--gold-dark)',bg:'rgba(201,168,76,.08)',bc:'rgba(201,168,76,.2)'},{d:'90 dias',k:'d90',c:'var(--blue)',bg:'rgba(90,122,154,.08)',bc:'rgba(90,122,154,.2)'}].map(m=>{const p=plano[m.k];return`<div style="background:${m.bg};border:1px solid ${m.bc};border-radius:9px;padding:12px"><div style="font-size:10px;font-weight:700;color:${m.c};margin-bottom:6px;text-transform:uppercase">${m.d} · ${p.foco}</div>${p.acoes.map(a=>`<div style="font-size:11px;color:var(--dark);margin-bottom:4px;line-height:1.4">• ${a}</div>`).join('')}<div style="font-size:10px;color:var(--mid);margin-top:7px;padding-top:6px;border-top:1px solid ${m.bc};font-style:italic">${p.entrega}</div></div>`;}).join('')}</div></div>
+  <div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:11px;padding:14px;margin-bottom:14px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🤝 Acordo de Crescimento</div><div style="font-size:12px;color:var(--dark);line-height:1.6">${acordos[clf.l]}</div></div>
+  <div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:11px;padding:18px;text-align:center"><div style="font-size:22px;margin-bottom:8px">👑</div><div style="font-size:13px;font-style:italic;color:var(--gold-light);line-height:1.7">"${msgs[clf.l]}"</div></div>`;
+
+  document.getElementById('liderPdiContent').innerHTML=html;
+  document.getElementById('liderPdiLoadingBadge').textContent='✅ pronto!';
+  btn.textContent='🔄 Gerar novamente';
+  btn.disabled=false;
+  showToast('👑 PDI de Liderança gerado!');
+}
+
+function submitLider(){
+  const nome=document.getElementById('fLN').value,loja=document.getElementById('fLL').value,data=document.getElementById('fLD').value;
+  if(!nome||!loja||!data){showToast('⚠️ Preencha nome, loja e data');return}
+
+  const starsSnap={...S_lider.stars};
+  const commSnap={...S_lider.comm};
+  let t=0,cnt=0;const crit={};
+  Object.entries(FCAT_LIDER).forEach(([cat,items])=>{
+    crit[cat]=[];
+    items.forEach(item=>{
+      const k=cat+'|'+item;
+      const n=starsSnap[k]||0;
+      const c=commSnap[k]||'';
+      t+=n;cnt++;
+      crit[cat].push({l:item,n,c});
+    });
+  });
+
+  const m=cnt*5,pct=Math.round((t/m)*100),cl=getClf(pct);
+  const aval={
+    id:Date.now(),tipo:'lider',loja,data,nome,
+    cargo:'Vendedor(a) Líder',
+    tempo:document.getElementById('fLT').value,
+    av:document.getElementById('fLA').value,
+    periodo:document.getElementById('fLP').value,
+    score:t,max:m,pct,clf:cl.l,crit,
+    pm:{obj:document.getElementById('lPmObj').value,acao:document.getElementById('lPmAcao').value,prazo:document.getElementById('lPmPrazo').value,status:document.getElementById('lPmStatus').value},
+    pos:document.getElementById('lFFpos').value,
+    dev:document.getElementById('lFFdev').value,
+    msg:document.getElementById('lFFmsg').value,
+    sAv:sigD.sigLAv,sFn:sigD.sigLFn,
+    acordos:document.getElementById('lAcordos').value,
+    sigAcAv:sigD.sigLAcAv,sigAcFn:sigD.sigLAcFn,
+    pdi:window._pdiObjLider?JSON.parse(JSON.stringify(window._pdiObjLider)):null
+  };
+
+  S.avals.unshift(aval);
+  sv();
+  resetLider();
+  showPage('historico');
+  renderDash();renderHist();renderRank();
+  showToast('👑 Avaliação do Líder salva! '+pct+'% · '+t+'/'+m+' pts');
+}
+
+function resetLider(){
+  ['fLN','fLT','fLP','lPmObj','lPmAcao','lPmPrazo','lFFpos','lFFdev','lFFmsg','lAcordos'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
+  document.getElementById('lPmStatus').value='';
+  buildLiderCrit();
+  clearSig('sigLAv');clearSig('sigLFn');clearSig('sigLAcAv');clearSig('sigLAcFn');
+  window._pdiObjLider=null;
+  document.getElementById('liderPdiContent').innerHTML='Clique em "Gerar PDI" para criar um plano personalizado de liderança.';
+  document.getElementById('liderPdiLoadingBadge').textContent='';
+  document.getElementById('btnGerarPDILider').textContent='✨ Gerar PDI';
+  document.getElementById('btnGerarPDILider').disabled=false;
+}
+
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
 </script>
 </body>
