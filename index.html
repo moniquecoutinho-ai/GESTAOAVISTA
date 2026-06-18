@@ -193,7 +193,6 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
 .report-item{font-size:11px;padding:6px 10px;background:var(--white);border-radius:7px;border:1px solid #EDE8E0}
 .report-item.ok{border-color:rgba(90,138,106,.3)}.report-item.nok{border-color:rgba(192,57,43,.3)}
 
-/* ===== MOBILE OTIMIZADO ===== */
 @media(max-width:768px){
   nav{padding:0 8px;height:56px}
   .nav-logo{font-size:15px;letter-spacing:2px}
@@ -202,76 +201,49 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
   .nav-user{gap:4px}
   .nav-avatar{width:26px;height:26px;font-size:10px}
   .btn-logout{font-size:10px;padding:4px 7px}
-
   .page{padding:12px}
   .page-title{font-size:20px}
-
   .stats-grid{grid-template-columns:1fr 1fr;gap:8px}
   .stat-card{padding:12px}
   .stat-value{font-size:22px}
-
-  .two-col,.form-row,.checklist-grid,.photo-area,
-  .sig-container,.medals-showcase,.report-grid,.melhoria-grid{grid-template-columns:1fr}
-
+  .two-col,.form-row,.checklist-grid,.photo-area,.sig-container,.medals-showcase,.report-grid,.melhoria-grid{grid-template-columns:1fr}
   .loja-tabs{gap:5px}
   .loja-tab{padding:8px 12px;font-size:12px;border-radius:20px}
   .loja-tab.active{font-weight:700}
-
   .form-section{padding:16px}
   .form-section-title{font-size:13px}
-
-  .form-group input,.form-group select,.form-group textarea{
-    font-size:16px !important; /* evita zoom automático no iOS */
-    padding:11px 13px
-  }
-
+  .form-group input,.form-group select,.form-group textarea{font-size:16px !important;padding:11px 13px}
   .check-item{padding:10px 12px;min-height:44px}
   .check-label{font-size:12px}
   .check-box{width:22px;height:22px;font-size:12px}
-
   .atn-row{padding:10px 12px}
   .atn-label{font-size:13px}
   .atn-btn{padding:8px 13px;font-size:12px;min-height:36px}
-
   .star-btn{font-size:28px}
   .star-row{flex-direction:column;gap:8px;padding:12px 0}
   .stars-wrap{justify-content:flex-start}
-
   canvas.sig-canvas{height:120px}
-
   .btn-submit{padding:16px;font-size:13px;min-height:52px}
   .btn-sm{padding:8px 14px;font-size:12px;min-height:36px}
   .btn-export{padding:8px 13px;font-size:12px;min-height:36px}
-
   .visit-card{padding:12px 14px;gap:10px}
   .visit-store{font-size:13px}
   .visit-score-circle{width:42px;height:42px;font-size:13px}
-
   .full-rank-item{padding:11px 14px;gap:8px}
   .full-rank-score{font-size:16px}
-
   .modal{padding:18px;border-radius:14px}
-
   .form-progress{flex-wrap:wrap;gap:8px}
   .score-display{font-size:18px}
-
   .ranking-header{flex-direction:column;gap:8px}
   .month-btn{padding:9px 16px;font-size:13px;min-height:40px}
-
-  /* PDI 30/60/90 em coluna no mobile */
-  #pdiContent [style*="grid-template-columns:repeat(3"]{
-    grid-template-columns:1fr !important
-  }
+  #pdiContent [style*="grid-template-columns:repeat(3"]{grid-template-columns:1fr !important}
+  #liderPdiContent [style*="grid-template-columns:repeat(3"]{grid-template-columns:1fr !important}
 }
-
-/* ===== TABLET ===== */
 @media(max-width:1024px) and (min-width:769px){
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .medals-showcase{grid-template-columns:repeat(2,1fr)}
   .page{padding:18px}
 }
-
-/* ===== TOUCH — áreas clicáveis maiores ===== */
 @media(hover:none) and (pointer:coarse){
   .check-item{min-height:48px}
   .atn-btn{min-height:40px;padding:9px 14px}
@@ -473,7 +445,7 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
         <div class="form-section-title">📝 Contrato de Acordos</div>
         <div class="form-group">
           <label>Acordos combinados nesta avaliação</label>
-          <textarea id="fFAcordos" placeholder="Descreva os acordos estabelecidos entre avaliador(a) e funcionária, como metas, comportamentos esperados, prazos e compromissos assumidos na conversa..." style="min-height:120px"></textarea>
+          <textarea id="fFAcordos" placeholder="Descreva os acordos estabelecidos entre avaliador(a) e funcionária..." style="min-height:120px"></textarea>
         </div>
         <div style="margin-top:8px;padding:10px 14px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:9px;font-size:11px;color:var(--mid)">
           ✍️ Ao assinar abaixo, a funcionária confirma que leu, entendeu e concorda com os acordos acima.
@@ -493,7 +465,6 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
       <button class="btn-submit" onclick="submitAval()">⭐ SALVAR AVALIAÇÃO ⭐</button>
     </div>
   </div>
-
 
   <!-- AVALIAÇÃO LÍDER -->
   <div class="page" id="page-avaliacao-lider">
@@ -592,7 +563,7 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
       <div><div class="page-title">Histórico</div><div class="page-sub">Todas as visitas e avaliações</div></div>
       <div style="display:flex;gap:7px;flex-wrap:wrap">
         <select id="filterTipo" style="padding:6px 11px;border:1px solid #DDD5CA;border-radius:9px;font-size:12px;background:var(--white);color:var(--dark);cursor:pointer" onchange="renderHist()">
-          <option value="">Tudo</option><option value="visita">Visitas</option><option value="avaliacao">Avaliações</option>
+          <option value="">Tudo</option><option value="visita">Visitas</option><option value="avaliacao">Avaliações Vendedora</option><option value="lider">Avaliações Líder</option>
         </select>
         <select id="filterLoja" style="padding:6px 11px;border:1px solid #DDD5CA;border-radius:9px;font-size:12px;background:var(--white);color:var(--dark);cursor:pointer" onchange="renderHist()">
           <option value="">Todas as lojas</option>
@@ -618,34 +589,36 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
     <div class="medals-showcase" id="medalsShowcase"></div>
     <div class="ranking-tabs">
       <button class="rtab active" onclick="switchRankTab('lojas',this)">🏪 Por Loja</button>
-      <button class="rtab" onclick="switchRankTab('funcionarias',this)">👩 Funcionárias</button>
+      <button class="rtab" onclick="switchRankTab('funcionarias',this)">👩 Vendedoras</button>
+      <button class="rtab" onclick="switchRankTab('lideres',this)">👑 Líderes</button>
       <button class="rtab" onclick="switchRankTab('avaliacoes',this)">⭐ Avaliações</button>
     </div>
     <div class="full-ranking" id="fullRankingList"></div>
   </div>
 
-<div id="bottomNav" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--dark);border-top:1px solid rgba(201,168,76,.2);z-index:200;padding:6px 0 env(safe-area-inset-bottom)">
-  <div style="display:flex;justify-content:space-around;align-items:center">
-    <button onclick="showPage('dashboard')" id="bn0" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:56px">
-      <span style="font-size:20px">📊</span><span style="font-size:9px">Dashboard</span>
-    </button>
-    <button onclick="showPage('nova-visita')" id="bn1" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:56px">
-      <span style="font-size:20px">🏪</span><span style="font-size:9px">Visita</span>
-    </button>
-    <button onclick="showPage('avaliacao-func')" id="bn2" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:56px">
-      <span style="font-size:20px">👩</span><span style="font-size:9px">Vendedora</span>
-    </button>
-    <button onclick="showPage('avaliacao-lider')" id="bn5" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:56px">
-      <span style="font-size:20px">👑</span><span style="font-size:9px">Líder</span>
-    </button>
-    <button onclick="showPage('historico')" id="bn3" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:56px">
-      <span style="font-size:20px">📋</span><span style="font-size:9px">Histórico</span>
-    </button>
-    <button onclick="showPage('ranking')" id="bn4" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:56px">
-      <span style="font-size:20px">🏆</span><span style="font-size:9px">Ranking</span>
-    </button>
+  <!-- ===== BUG 5 CORRIGIDO: bottom nav com bn5 para Líder ===== -->
+  <div id="bottomNav" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--dark);border-top:1px solid rgba(201,168,76,.2);z-index:200;padding:6px 0 env(safe-area-inset-bottom)">
+    <div style="display:flex;justify-content:space-around;align-items:center">
+      <button onclick="showPage('dashboard')" id="bn0" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
+        <span style="font-size:20px">📊</span><span style="font-size:9px">Dashboard</span>
+      </button>
+      <button onclick="showPage('nova-visita')" id="bn1" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
+        <span style="font-size:20px">🏪</span><span style="font-size:9px">Visita</span>
+      </button>
+      <button onclick="showPage('avaliacao-func')" id="bn2" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
+        <span style="font-size:20px">👩</span><span style="font-size:9px">Vendedora</span>
+      </button>
+      <button onclick="showPage('avaliacao-lider')" id="bn5" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
+        <span style="font-size:20px">👑</span><span style="font-size:9px">Líder</span>
+      </button>
+      <button onclick="showPage('historico')" id="bn3" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
+        <span style="font-size:20px">📋</span><span style="font-size:9px">Histórico</span>
+      </button>
+      <button onclick="showPage('ranking')" id="bn4" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
+        <span style="font-size:20px">🏆</span><span style="font-size:9px">Ranking</span>
+      </button>
+    </div>
   </div>
-</div>
 </div>
 
 <div class="modal-overlay" id="visitModal"><div class="modal"><button class="modal-close" onclick="closeModal()">✕</button><div id="modalContent"></div></div></div>
@@ -678,45 +651,32 @@ const sv=()=>{localStorage.setItem('av_v',JSON.stringify(S.visits));localStorage
 let sigD={};
 
 function doLogin(){
-  var u = document.getElementById('loginUser').value;
-  var p = document.getElementById('loginPass').value;
-  u = u.replace(/\s/g,'').toLowerCase();
-  p = p.replace(/\s/g,'').toLowerCase();
-  if(u === 'gmanjos' && p === 'avatim2026'){
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
+  var u=document.getElementById('loginUser').value.replace(/\s/g,'').toLowerCase();
+  var p=document.getElementById('loginPass').value.replace(/\s/g,'').toLowerCase();
+  if(u==='gmanjos'&&p==='avatim2026'){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='block';
     initApp();
   } else {
-    var e = document.getElementById('loginError');
-    e.style.display = 'block';
-    e.textContent = 'Incorreto! Usuario:[' + u + '] Senha:[' + p + ']';
+    var e=document.getElementById('loginError');
+    e.style.display='block';
+    e.textContent='Usuário ou senha incorretos';
   }
 }
 document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
 function doLogout(){document.getElementById('app').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';document.getElementById('loginError').style.display='none'}
 
 function initApp(){
-  // Detectar mobile e mostrar bottom nav
-  const isMobile = window.innerWidth <= 768;
-  if(isMobile){
-    document.getElementById('bottomNav').style.display='block';
-    document.querySelector('nav .nav-tabs').style.display='none';
-    document.querySelectorAll('.page').forEach(p=>p.style.paddingBottom='80px');
-  }
-  window.addEventListener('resize',()=>{
-    const m=window.innerWidth<=768;
-    document.getElementById('bottomNav').style.display=m?'block':'none';
-    document.querySelector('nav .nav-tabs').style.display=m?'none':'flex';
-  });
-
+  const isMobile=window.innerWidth<=768;
+  if(isMobile){document.getElementById('bottomNav').style.display='block';document.querySelector('nav .nav-tabs').style.display='none';document.querySelectorAll('.page').forEach(p=>p.style.paddingBottom='80px')}
+  window.addEventListener('resize',()=>{const m=window.innerWidth<=768;document.getElementById('bottomNav').style.display=m?'block':'none';document.querySelector('nav .nav-tabs').style.display=m?'none':'flex'});
   const t=new Date();
   document.getElementById('dashDate').textContent=t.toLocaleDateString('pt-BR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const ds=t.toISOString().split('T')[0];
-  document.getElementById('fData').value=ds;document.getElementById('fFD').value=ds;
+  document.getElementById('fData').value=ds;document.getElementById('fFD').value=ds;document.getElementById('fLD').value=ds;
   document.getElementById('monthDisplay').textContent=S.rMonth.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
-  buildChk();buildAtn();buildFuncCrit();
+  buildChk();buildAtn();buildFuncCrit();buildLiderCrit();
   ['sigAv','sigVn','sigFAv','sigFFn','sigAcAv','sigAcFn','sigLAv','sigLFn','sigLAcAv','sigLAcFn'].forEach(setupCanvas);
-  buildLiderCrit();
   renderDash();renderHist();renderRank();
 }
 
@@ -777,10 +737,7 @@ function buildFuncCrit(){
       const row=document.createElement('div');row.className='star-row';
       const wrap=document.createElement('div');wrap.style.cssText='display:flex;gap:3px;align-items:center';
       const lbl=document.createElement('span');lbl.className='star-score-lbl';lbl.id='fsl'+encodeKey(k);lbl.textContent='0';
-      [1,2,3,4,5].forEach(n=>{
-        const b=document.createElement('button');b.className='star-btn';b.textContent='★';b.onclick=()=>setStar(k,n);
-        wrap.appendChild(b);
-      });
+      [1,2,3,4,5].forEach(n=>{const b=document.createElement('button');b.className='star-btn';b.textContent='★';b.onclick=()=>setStar(k,n);wrap.appendChild(b)});
       wrap.appendChild(lbl);
       const info=document.createElement('div');info.className='star-info';
       info.innerHTML=`<div class="star-label-text">${item}</div>`;
@@ -831,50 +788,13 @@ function prevPhoto(inp,pid,idx){
 function submitVisita(){
   const loja=document.getElementById('fLoja').value,data=document.getElementById('fData').value,av=document.getElementById('fAvaliador').value;
   if(!loja||!data||!av){showToast('⚠️ Preencha os dados básicos');return}
-
-  // Snapshot antes de qualquer reset
-  const chkSnap={...S.chk};
-  const atnSnap={...S.atn};
-  const photosSnap=[S.photos[0],S.photos[1]];
-
+  const chkSnap={...S.chk};const atnSnap={...S.atn};const photosSnap=[S.photos[0],S.photos[1]];
   let t=0,m=0;const chks={};
-  Object.keys(CHK).forEach(s=>{
-    chks[s]=[];
-    CHK[s].forEach((it,i)=>{
-      m+=it.p;
-      const v=chkSnap[s+'_'+i];
-      if(v===true)t+=it.p;
-      chks[s].push({l:it.l,p:it.p,v});
-    });
-  });
+  Object.keys(CHK).forEach(s=>{chks[s]=[];CHK[s].forEach((it,i)=>{m+=it.p;const v=chkSnap[s+'_'+i];if(v===true)t+=it.p;chks[s].push({l:it.l,p:it.p,v})})});
   const atns={};
-  ATN.forEach(r=>{
-    m+=r.p;
-    const v=atnSnap[r.id];
-    if(v==='SIM')t+=r.p;
-    else if(v==='PARCIAL')t+=Math.floor(r.p*.5);
-    atns[r.id]={l:r.l,p:r.p,v};
-  });
-
-  const visit={
-    id:Date.now(),tipo:'visita',loja,data,av,
-    vend:document.getElementById('fVendedora').value,
-    score:t,max:m,pct:Math.round((t/m)*100),
-    chks,atns,
-    pos:document.getElementById('fPositivo').value,
-    mel:document.getElementById('fMelhoria').value,
-    res:document.getElementById('fResumo').value,
-    sAv:sigD.sigAv,sVn:sigD.sigVn,
-    pA:photosSnap[0],pD:photosSnap[1]
-  };
-
-  // Salvar PRIMEIRO, resetar DEPOIS
-  S.visits.unshift(visit);
-  sv();
-  resetVF();
-  showPage('historico');
-  renderDash();renderHist();renderRank();
-  showToast('✨ Visita salva!');
+  ATN.forEach(r=>{m+=r.p;const v=atnSnap[r.id];if(v==='SIM')t+=r.p;else if(v==='PARCIAL')t+=Math.floor(r.p*.5);atns[r.id]={l:r.l,p:r.p,v}});
+  const visit={id:Date.now(),tipo:'visita',loja,data,av,vend:document.getElementById('fVendedora').value,score:t,max:m,pct:Math.round((t/m)*100),chks,atns,pos:document.getElementById('fPositivo').value,mel:document.getElementById('fMelhoria').value,res:document.getElementById('fResumo').value,sAv:sigD.sigAv,sVn:sigD.sigVn,pA:photosSnap[0],pD:photosSnap[1]};
+  S.visits.unshift(visit);sv();resetVF();showPage('historico');renderDash();renderHist();renderRank();showToast('✨ Visita salva!');
 }
 function resetVF(){
   document.getElementById('fVendedora').value='';
@@ -886,61 +806,20 @@ function resetVF(){
 function submitAval(){
   const nome=document.getElementById('fFN').value,loja=document.getElementById('fFL').value,data=document.getElementById('fFD').value;
   if(!nome||!loja||!data){showToast('⚠️ Preencha nome, loja e data');return}
-
-  // Capturar snapshot das notas e comentários ANTES de qualquer reset
-  const starsSnap={...S.fstars};
-  const commSnap={...S.fcomm};
-
+  const starsSnap={...S.fstars};const commSnap={...S.fcomm};
   let t=0,cnt=0;const crit={};
-  Object.entries(FCAT).forEach(([cat,items])=>{
-    crit[cat]=[];
-    items.forEach(item=>{
-      const k=cat+'|'+item;
-      // Lê do snapshot — imune a resets
-      const n=starsSnap[k]||0;
-      const c=commSnap[k]||'';
-      t+=n;cnt++;
-      crit[cat].push({l:item,n,c});
-    });
-  });
-
+  Object.entries(FCAT).forEach(([cat,items])=>{crit[cat]=[];items.forEach(item=>{const k=cat+'|'+item;const n=starsSnap[k]||0;const c=commSnap[k]||'';t+=n;cnt++;crit[cat].push({l:item,n,c})})});
   const m=cnt*5,pct=Math.round((t/m)*100),cl=getClf(pct);
-
-  // Capturar todos os campos antes do reset
-  const aval={
-    id:Date.now(),tipo:'avaliacao',loja,data,nome,
-    cargo:document.getElementById('fFC').value,
-    av:document.getElementById('fFA').value,
-    periodo:document.getElementById('fFP').value,
-    score:t,max:m,pct,clf:cl.l,crit,
-    pm:{
-      obj:document.getElementById('pmObj').value,
-      acao:document.getElementById('pmAcao').value,
-      prazo:document.getElementById('pmPrazo').value,
-      status:document.getElementById('pmStatus').value
-    },
-    pos:document.getElementById('fFFpos').value,
-    dev:document.getElementById('fFFdev').value,
-    msg:document.getElementById('fFFmsg').value,
-    sAv:sigD.sigFAv,
-    sFn:sigD.sigFFn,
-    acordos:document.getElementById('fFAcordos').value,
-    sigAcAv:sigD.sigAcAv,
-    sigAcFn:sigD.sigAcFn,
-    pdi:window._pdiObj?JSON.parse(JSON.stringify(window._pdiObj)):null
-  };
-
-  // Salvar PRIMEIRO, resetar DEPOIS
-  S.avals.unshift(aval);
-  sv();
-  resetAF();
-  showPage('historico');
-  renderDash();renderHist();renderRank();
-  showToast('⭐ Avaliação salva! ' + aval.pct + '% · ' + aval.score + '/' + aval.max + ' pts');
+  const aval={id:Date.now(),tipo:'avaliacao',loja,data,nome,cargo:document.getElementById('fFC').value,av:document.getElementById('fFA').value,periodo:document.getElementById('fFP').value,score:t,max:m,pct,clf:cl.l,crit,pm:{obj:document.getElementById('pmObj').value,acao:document.getElementById('pmAcao').value,prazo:document.getElementById('pmPrazo').value,status:document.getElementById('pmStatus').value},pos:document.getElementById('fFFpos').value,dev:document.getElementById('fFFdev').value,msg:document.getElementById('fFFmsg').value,sAv:sigD.sigFAv,sFn:sigD.sigFFn,acordos:document.getElementById('fFAcordos').value,sigAcAv:sigD.sigAcAv,sigAcFn:sigD.sigAcFn,pdi:window._pdiObj?JSON.parse(JSON.stringify(window._pdiObj)):null};
+  S.avals.unshift(aval);sv();resetAF();showPage('historico');renderDash();renderHist();renderRank();showToast('⭐ Avaliação salva! '+aval.pct+'% · '+aval.score+'/'+aval.max+' pts');
 }
 function resetAF(){
   ['fFN','fFC','fFP','pmObj','pmAcao','pmPrazo','fFFpos','fFFdev','fFFmsg','fFAcordos'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
-  document.getElementById('pmStatus').value='';buildFuncCrit();clearSig('sigFAv');clearSig('sigFFn');clearSig('sigAcAv');clearSig('sigAcFn');window._pdiGerado='';window._pdiObj=null;document.getElementById('pdiContent').innerHTML='Clique em "Gerar PDI" para criar um plano personalizado baseado nas notas desta avaliação.';document.getElementById('pdiLoadingBadge').textContent='';document.getElementById('btnGerarPDI').textContent='✨ Gerar PDI';document.getElementById('btnGerarPDI').disabled=false;
+  document.getElementById('pmStatus').value='';buildFuncCrit();clearSig('sigFAv');clearSig('sigFFn');clearSig('sigAcAv');clearSig('sigAcFn');
+  window._pdiGerado='';window._pdiObj=null;
+  document.getElementById('pdiContent').innerHTML='Clique em "Gerar PDI" para criar um plano personalizado baseado nas notas desta avaliação.';
+  document.getElementById('pdiLoadingBadge').textContent='';
+  document.getElementById('btnGerarPDI').textContent='✨ Gerar PDI';document.getElementById('btnGerarPDI').disabled=false;
 }
 
 function renderDash(){
@@ -952,7 +831,9 @@ function renderDash(){
   const ls={};mv.forEach(v=>{if(!ls[v.loja])ls[v.loja]={t:0,c:0};ls[v.loja].t+=v.pct;ls[v.loja].c++});
   const sl=Object.entries(ls).sort((a,b)=>(b[1].t/b[1].c)-(a[1].t/a[1].c));
   if(sl.length>0)document.getElementById('statMelhorLoja').textContent=sl[0][0].split(' ').slice(-1)[0];
-  const fs={};ma.forEach(a=>{if(!fs[a.nome])fs[a.nome]={t:0,c:0};fs[a.nome].t+=a.pct;fs[a.nome].c++});
+  // Dashboard usa só avaliações de vendedora para top funcionárias
+  const maVend=ma.filter(a=>a.tipo==='avaliacao');
+  const fs={};maVend.forEach(a=>{if(!fs[a.nome])fs[a.nome]={t:0,c:0};fs[a.nome].t+=a.pct;fs[a.nome].c++});
   const sf=Object.entries(fs).sort((a,b)=>(b[1].t/b[1].c)-(a[1].t/a[1].c));
   if(sf.length>0)document.getElementById('statMelhorFunc').textContent=sf[0][0].split(' ')[0];
   document.getElementById('dashTopLojas').innerHTML=sl.length===0?'<div style="color:var(--mid);font-size:12px;text-align:center;padding:14px">Nenhuma visita este mês</div>':sl.slice(0,5).map((l,i)=>{const avg=Math.round(l[1].t/l[1].c);return`<div class="rank-item"><div class="rank-num ${i<3?'rank-'+(i+1):'rank-other'}">${i+1}</div><div class="rank-info"><div class="rank-name">${l[0]}</div><div class="rank-bar"><div class="rank-fill" style="width:${avg}%"></div></div></div><div class="rank-score">${avg}%</div></div>`}).join('');
@@ -961,27 +842,29 @@ function renderDash(){
 
 function renderHist(){
   const ft=document.getElementById('filterTipo').value,fl=document.getElementById('filterLoja').value;
-  let all=[...S.visits.map(v=>({...v,_t:'visita'})),...S.avals.map(a=>({...a,_t:'avaliacao'}))].sort((a,b)=>b.id-a.id);
+  let all=[...S.visits.map(v=>({...v,_t:'visita'})),...S.avals.map(a=>({...a,_t:a.tipo}))].sort((a,b)=>b.id-a.id);
   if(ft)all=all.filter(r=>r._t===ft);
   if(fl)all=all.filter(r=>r.loja===fl);
   const list=document.getElementById('visitList'),empty=document.getElementById('emptyHist');
   if(all.length===0){list.innerHTML='';empty.style.display='block';return}
   empty.style.display='none';
   list.innerHTML=all.map(r=>{
-    const isV=r._t==='visita';const isL=r._t==='lider';const sc=r.pct>=80?'#5A8A6A':r.pct>=60?'#C9A84C':'#C0392B';
+    const isV=r._t==='visita';const isL=r._t==='lider';
+    const sc=r.pct>=80?'#5A8A6A':r.pct>=60?'#C9A84C':'#C0392B';
     const title=isV?r.loja:`${r.nome||'—'} · ${r.loja}`;
     const sub=isV?`${new Date(r.data).toLocaleDateString('pt-BR')} · ${r.av} · ${r.vend||'—'}`:`${new Date(r.data).toLocaleDateString('pt-BR')} · ${r.cargo||'—'} · ${r.periodo||'—'}`;
-    const clf=isV?'':getClf(r.pct);
+    const clf=(!isV)?getClf(r.pct):null;
+    const tipoLabel=isV?'visita':isL?'líder':'vendedora';
     return`<div class="visit-card" onclick="openMod(${r.id},'${r._t}')">
       <div class="visit-score-circle" style="background:linear-gradient(135deg,${sc},${sc}BB)">${r.pct}%</div>
       <div class="visit-info">
         <div class="visit-store">${isV?'🏪':isL?'👑':'👩'} ${title}</div>
         <div class="visit-meta">${sub}</div>
         <div class="visit-badges">
-          <span class="tag">${isV?'visita':'avaliação'}</span>
+          <span class="tag">${tipoLabel}</span>
           <span class="tag">${r.score}/${r.max}pts</span>
           ${r.pct>=80?'<span class="tag green">✅ Excelente</span>':r.pct>=60?'<span class="tag">🟡 Regular</span>':'<span class="tag red">⚠️ Atenção</span>'}
-          ${!isV?`<span class="tag blue">${clf.e} ${clf.l}</span>`:''}
+          ${clf?`<span class="tag blue">${clf.e} ${clf.l}</span>`:''}
           ${(!isV&&r.pdi&&r.pdi.prioridades&&r.pdi.prioridades.length)?'<span class="tag" style="background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.3);color:var(--gold-dark)">🚀 PDI</span>':''}
         </div>
       </div>
@@ -993,6 +876,7 @@ function renderHist(){
   }).join('');
 }
 
+// ===== BUG 1 + 2 CORRIGIDOS: openMod trata tipo 'lider' e exibe PDI =====
 function openMod(id,tipo){
   let html='';
   if(tipo==='visita'){
@@ -1014,11 +898,16 @@ function openMod(id,tipo){
     if(v.mel)html+=`<div class="report-section"><h3>⚠️ Ponto de Melhoria</h3><p style="font-size:12px;line-height:1.6;padding:9px;background:rgba(192,57,43,.08);border-radius:7px;border:1px solid rgba(192,57,43,.2)">${v.mel}</p></div>`;
     if(v.pA||v.pD){html+=`<div class="report-section"><h3>📷 Fotos</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">`;if(v.pA)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--gold);margin-bottom:3px">ANTES</div><img src="${v.pA}" style="width:100%;border-radius:7px;max-height:140px;object-fit:cover"/></div>`;if(v.pD)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--green);margin-bottom:3px">DEPOIS</div><img src="${v.pD}" style="width:100%;border-radius:7px;max-height:140px;object-fit:cover"/></div>`;html+=`</div></div>`}
     if(v.sAv||v.sVn){html+=`<div class="report-section"><h3>✍️ Assinaturas</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">`;if(v.sAv)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">AVALIADOR(A)</div><img src="${v.sAv}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;if(v.sVn)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">VENDEDORA</div><img src="${v.sVn}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;html+=`</div></div>`}
-  } else {
+
+  } else if(tipo==='avaliacao'||tipo==='lider'){
+    // BUG 1 CORRIGIDO: tanto 'avaliacao' quanto 'lider' abrem corretamente
     const a=S.avals.find(x=>x.id===id);if(!a)return;
     const cl=getClf(a.pct);
-    html=`<h2 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:4px">👩 ${a.nome}</h2><p style="color:var(--mid);font-size:11px;margin-bottom:6px">${a.loja} · ${a.cargo||'—'} · ${new Date(a.data).toLocaleDateString('pt-BR')}</p>
-    <div style="margin-bottom:16px"><span class="classif-badge ${cl.c}">${cl.e} ${cl.l}</span></div>
+    const isLider=a.tipo==='lider';
+    const tituloEmoji=isLider?'👑':'👩';
+    html=`<h2 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:4px">${tituloEmoji} ${a.nome}</h2>
+    <p style="color:var(--mid);font-size:11px;margin-bottom:6px">${a.loja} · ${a.cargo||'—'} · ${new Date(a.data).toLocaleDateString('pt-BR')}</p>
+    <div style="margin-bottom:16px"><span class="classif-badge ${cl.c}">${cl.e} ${cl.l}</span>${isLider?'&nbsp;<span style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:18px;padding:3px 10px;font-size:10px;font-weight:700;color:var(--gold-dark)">👑 Líder</span>':''}</div>
     <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap">
       <div style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:12px;padding:14px 22px;text-align:center;flex:1"><div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:var(--dark)">${a.pct}%</div><div style="color:rgba(26,20,16,.6);font-size:11px">Desempenho</div></div>
       <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:12px;padding:14px 22px;text-align:center;flex:1"><div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:var(--gold)">${a.score}</div><div style="color:var(--mid);font-size:11px">de ${a.max} pts</div></div>
@@ -1029,14 +918,18 @@ function openMod(id,tipo){
       html+=`</div></div>`;
     });
     const pm=a.pm||{};
-    if(pm.obj||pm.acao)html+=`<div class="report-section"><h3>📈 Plano de Melhoria</h3><div style="background:var(--white);border:1px solid #EDE8E0;border-radius:9px;padding:12px;font-size:12px">${pm.obj?`<div><strong>Objetivo:</strong> ${pm.obj}</div>`:''}${pm.acao?`<div style="margin-top:4px"><strong>Ação:</strong> ${pm.acao}</div>`:''}${pm.prazo||pm.status?`<div style="margin-top:6px;display:flex;gap:6px"><span class="tag">⏱️ ${pm.prazo||'—'}</span><span class="tag blue">${pm.status||'—'}</span></div>`:''}</div></div>`;
+    if(pm.obj||pm.acao)html+=`<div class="report-section"><h3>📈 ${isLider?'Plano de Desenvolvimento':'Plano de Melhoria'}</h3><div style="background:var(--white);border:1px solid #EDE8E0;border-radius:9px;padding:12px;font-size:12px">${pm.obj?`<div><strong>Objetivo:</strong> ${pm.obj}</div>`:''}${pm.acao?`<div style="margin-top:4px"><strong>Ação:</strong> ${pm.acao}</div>`:''}${pm.prazo||pm.status?`<div style="margin-top:6px;display:flex;gap:6px"><span class="tag">⏱️ ${pm.prazo||'—'}</span><span class="tag blue">${pm.status||'—'}</span></div>`:''}</div></div>`;
     if(a.pos)html+=`<div class="report-section"><h3>👍 Pontos Fortes</h3><p style="font-size:12px;line-height:1.6;padding:9px;background:rgba(90,138,106,.08);border-radius:7px;border:1px solid rgba(90,138,106,.2)">${a.pos}</p></div>`;
     if(a.dev)html+=`<div class="report-section"><h3>⚠️ Desenvolvimento</h3><p style="font-size:12px;line-height:1.6;padding:9px;background:rgba(192,57,43,.08);border-radius:7px;border:1px solid rgba(192,57,43,.2)">${a.dev}</p></div>`;
-    if(a.pdi){html+=`<div class="report-section"><h3 style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700;border-bottom:2px solid var(--gold-light);padding-bottom:6px;margin-bottom:12px">🚀 PDI — Plano de Desenvolvimento Individual</h3>`+renderPDI(a.pdi)+`</div>`;}
+    // BUG 2 CORRIGIDO: PDI renderizado para ambos (vendedora e líder)
+    if(a.pdi&&a.pdi.prioridades){
+      const pdiTitulo=isLider?'🚀 PDI — Plano de Desenvolvimento do Líder':'🚀 PDI — Plano de Desenvolvimento Individual';
+      html+=`<div class="report-section"><h3 style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700;border-bottom:2px solid var(--gold-light);padding-bottom:6px;margin-bottom:12px">${pdiTitulo}</h3>`+renderPDI(a.pdi)+`</div>`;
+    }
     if(a.msg)html+=`<div class="report-section"><h3>💌 Mensagem</h3><p style="font-size:12px;font-style:italic;line-height:1.6;padding:9px;background:rgba(201,168,76,.08);border-radius:7px;border:1px solid rgba(201,168,76,.2)">"${a.msg}"</p></div>`;
     if(a.acordos)html+=`<div class="report-section"><h3>📝 Contrato de Acordos</h3><p style="font-size:12px;line-height:1.6;padding:9px;background:rgba(201,168,76,.08);border-radius:7px;border:1px solid rgba(201,168,76,.2)">${a.acordos}</p></div>`;
-    if(a.sAv||a.sFn){html+=`<div class="report-section"><h3>✍️ Assinaturas</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">`;if(a.sAv)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">AVALIADOR(A)</div><img src="${a.sAv}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;if(a.sFn)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">FUNCIONÁRIA</div><img src="${a.sFn}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;html+=`</div></div>`;
-    if(a.sigAcAv||a.sigAcFn){html+=`<div class="report-section"><h3>✍️ Assinaturas do Contrato</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">`;if(a.sigAcAv)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">AVALIADOR(A) — TESTEMUNHA</div><img src="${a.sigAcAv}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;if(a.sigAcFn)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">FUNCIONÁRIA — CIENTE</div><img src="${a.sigAcFn}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;html+=`</div></div>`}}
+    if(a.sAv||a.sFn){html+=`<div class="report-section"><h3>✍️ Assinaturas</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">`;if(a.sAv)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">AVALIADOR(A)</div><img src="${a.sAv}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;if(a.sFn)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">${isLider?'LÍDER':'FUNCIONÁRIA'}</div><img src="${a.sFn}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;html+=`</div></div>`}
+    if(a.sigAcAv||a.sigAcFn){html+=`<div class="report-section"><h3>✍️ Assinaturas do Contrato</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">`;if(a.sigAcAv)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">AVALIADOR(A) — TESTEMUNHA</div><img src="${a.sigAcAv}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;if(a.sigAcFn)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">${isLider?'LÍDER':'FUNCIONÁRIA'} — CIENTE</div><img src="${a.sigAcFn}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;html+=`</div></div>`}
   }
   html+=`<div style="display:flex;gap:8px;margin-top:18px"><button class="btn-submit" style="padding:12px" onclick="expRec(${id},'${tipo}')">📄 Exportar</button><button class="btn-sm" style="padding:12px 14px" onclick="delRec(${id},'${tipo}')">🗑️ Excluir</button></div>`;
   document.getElementById('modalContent').innerHTML=html;document.getElementById('visitModal').classList.add('open');
@@ -1050,6 +943,7 @@ function delRec(id,tipo){
   sv();closeModal();renderHist();renderDash();renderRank();showToast('Registro excluído');
 }
 
+// ===== BUG 3 CORRIGIDO: expRec com case para 'lider' =====
 function expRec(id,tipo){
   if(tipo==='visita'){
     const v=S.visits.find(x=>x.id===id);if(!v)return;
@@ -1063,51 +957,36 @@ function expRec(id,tipo){
     h+=buildEF(v.pA,v.pD,v.sAv,v.sVn,v.av,v.vend);
     dlHTML(h,`Visita_${v.loja.replace(/ /g,'_')}_${v.data}.html`);
   } else {
+    // BUG 3 CORRIGIDO: 'avaliacao' e 'lider' usam o mesmo path de exportação
     const a=S.avals.find(x=>x.id===id);if(!a)return;
     const cl=getClf(a.pct);
-    let h=buildEH('Avaliação de Funcionária',a.loja,a.data,a.pct,a.score,a.max);
-    h+=`<p><strong>Funcionária:</strong> ${a.nome} &nbsp;|&nbsp; <strong>Cargo:</strong> ${a.cargo||'—'} &nbsp;|&nbsp; <strong>Período:</strong> ${a.periodo||'—'}</p><p style="margin-top:6px"><strong>Classificação:</strong> <span style="color:#C9A84C;font-weight:700">${cl.e} ${cl.l}</span></p><br>`;
+    const isLider=a.tipo==='lider';
+    let h=buildEH(isLider?'Avaliação de Líder':'Avaliação de Funcionária',a.loja,a.data,a.pct,a.score,a.max);
+    h+=`<p><strong>${isLider?'Líder':'Funcionária'}:</strong> ${a.nome} &nbsp;|&nbsp; <strong>Cargo:</strong> ${a.cargo||'—'} &nbsp;|&nbsp; <strong>Período:</strong> ${a.periodo||'—'}</p>`;
+    if(a.tempo)h+=`<p><strong>Tempo no cargo:</strong> ${a.tempo}</p>`;
+    h+=`<p style="margin-top:6px"><strong>Classificação:</strong> <span style="color:#C9A84C;font-weight:700">${cl.e} ${cl.l}</span></p><br>`;
     Object.entries(a.crit||{}).forEach(([cat,items])=>{h+=`<h2>${cat}</h2><div class="cg">`;items.forEach(i=>{const s='★'.repeat(i.n)+'☆'.repeat(5-i.n);h+=`<div class="cr ${i.n>=4?'ok':i.n<=2?'nok':''}"><strong>${i.l}</strong> — <span style="color:#C9A84C">${s} (${i.n}/5)</span>${i.c?`<br><small>${i.c}</small>`:''}</div>`});h+=`</div>`});
     const pm=a.pm||{};
-    if(pm.obj||pm.acao){h+=`<h2>📈 Plano de Melhoria</h2><div class="nb">`;if(pm.obj)h+=`<strong>Objetivo:</strong> ${pm.obj}<br>`;if(pm.acao)h+=`<strong>Ação:</strong> ${pm.acao}<br>`;if(pm.prazo)h+=`<strong>Prazo:</strong> ${pm.prazo} | <strong>Status:</strong> ${pm.status||'—'}`;h+=`</div>`}
+    if(pm.obj||pm.acao){h+=`<h2>📈 ${isLider?'Plano de Desenvolvimento':'Plano de Melhoria'}</h2><div class="nb">`;if(pm.obj)h+=`<strong>Objetivo:</strong> ${pm.obj}<br>`;if(pm.acao)h+=`<strong>Ação:</strong> ${pm.acao}<br>`;if(pm.prazo)h+=`<strong>Prazo:</strong> ${pm.prazo} | <strong>Status:</strong> ${pm.status||'—'}`;h+=`</div>`}
     if(a.acordos)h+=`<h2>📝 Contrato de Acordos</h2><div class="nb" style="border-left:4px solid #C9A84C">${a.acordos}</div>`;
     if(a.pos)h+=`<h2>👍 Pontos Fortes</h2><div class="nb">${a.pos}</div>`;
     if(a.dev)h+=`<h2>⚠️ Desenvolvimento</h2><div class="nb">${a.dev}</div>`;
     if(a.pdi&&a.pdi.prioridades&&a.pdi.prioridades.length){
-    h+=`<h2>🚀 PDI — Plano de Desenvolvimento Individual</h2>`;
-    h+=`<div class="nb"><strong>Classificação:</strong> ${a.pdi.classificacao} (${a.pdi.pct}%)</div>`;
-    h+=`<p style="font-size:12px;line-height:1.6;margin-bottom:10px">${a.pdi.diagnostico}</p>`;
-    if(a.pdi.fortes&&a.pdi.fortes.length){
-      h+=`<h2>💪 Forças a Potencializar</h2><div class="cg">`;
-      a.pdi.fortes.forEach(f=>{h+=`<div class="cr ok">✨ ${f}</div>`});
-      h+=`</div>`;
+      h+=`<h2>🚀 PDI — ${isLider?'Plano de Desenvolvimento do Líder':'Plano de Desenvolvimento Individual'}</h2>`;
+      h+=`<div class="nb"><strong>Classificação:</strong> ${a.pdi.classificacao} (${a.pdi.pct}%)</div>`;
+      h+=`<p style="font-size:12px;line-height:1.6;margin-bottom:10px">${a.pdi.diagnostico}</p>`;
+      if(a.pdi.fortes&&a.pdi.fortes.length){h+=`<h2>💪 Forças a Potencializar</h2><div class="cg">`;a.pdi.fortes.forEach(f=>{h+=`<div class="cr ok">✨ ${f}</div>`});h+=`</div>`}
+      h+=`<h2>🎯 Ações Prioritárias</h2>`;
+      a.pdi.prioridades.forEach((p,i)=>{h+=`<div class="nb" style="border-left:4px solid #C9A84C;margin-bottom:10px"><strong>${i+1}. ${p.item}</strong> — Nota ${p.nota}/5 · ${p.prazo}<br>📌 ${p.acao}<br>📚 ${p.recurso}<br>📈 Indicador: ${p.ind}</div>`});
+      if(a.pdi.plano){h+=`<h2>🗓️ Plano 30/60/90 dias</h2><div class="cg">`;[['d30','30 dias'],['d60','60 dias'],['d90','90 dias']].forEach(([k,label])=>{const p=a.pdi.plano[k];if(!p)return;h+=`<div class="cr"><strong>${label} · ${p.foco}</strong><br>`;p.acoes.forEach(ac=>{h+=`• ${ac}<br>`});h+=`<em>${p.entrega}</em></div>`});h+=`</div>`}
+      if(a.pdi.acordo)h+=`<div class="nb">🤝 <strong>Acordo:</strong> ${a.pdi.acordo}</div>`;
+      if(a.pdi.msg)h+=`<div class="nb" style="font-style:italic;background:#1A1410;color:#E8D5A3;border:none">"${a.pdi.msg}"</div>`;
     }
-    h+=`<h2>🎯 Ações Prioritárias</h2>`;
-    a.pdi.prioridades.forEach((p,i)=>{
-      h+=`<div class="nb" style="border-left:4px solid #C9A84C;margin-bottom:10px">`;
-      h+=`<strong>${i+1}. ${p.item}</strong> — Nota ${p.nota}/5 · ${p.prazo}<br>`;
-      h+=`📌 ${p.acao}<br>`;
-      h+=`📚 ${p.recurso}<br>`;
-      h+=`📈 Indicador: ${p.ind}`;
-      h+=`</div>`;
-    });
-    if(a.pdi.plano){
-      h+=`<h2>🗓️ Plano 30/60/90 dias</h2><div class="cg">`;
-      [['d30','30 dias'],['d60','60 dias'],['d90','90 dias']].forEach(([k,label])=>{
-        const p=a.pdi.plano[k];if(!p)return;
-        h+=`<div class="cr"><strong>${label} · ${p.foco}</strong><br>`;
-        p.acoes.forEach(ac=>{h+=`• ${ac}<br>`});
-        h+=`<em>${p.entrega}</em></div>`;
-      });
-      h+=`</div>`;
-    }
-    if(a.pdi.acordo)h+=`<div class="nb">🤝 <strong>Acordo:</strong> ${a.pdi.acordo}</div>`;
-    if(a.pdi.msg)h+=`<div class="nb" style="font-style:italic;background:#1A1410;color:#E8D5A3;border:none">"${a.pdi.msg}"</div>`;
-  }
-  if(a.msg)h+=`<h2>💌 Mensagem</h2><div class="nb" style="font-style:italic">"${a.msg}"</div>`;
-    if(a.sigAcAv||a.sigAcFn){h+=`<h2>✍️ Assinaturas do Contrato de Acordos</h2><div class="sa">`;if(a.sigAcAv)h+=`<div class="sb2"><div class="sl">Avaliador(a) — Testemunha</div><img class="sig" src="${a.sigAcAv}"/></div>`;if(a.sigAcFn)h+=`<div class="sb2"><div class="sl">Funcionária — Ciente e de acordo</div><img class="sig" src="${a.sigAcFn}"/></div>`;h+=`</div>`}
+    if(a.msg)h+=`<h2>💌 Mensagem</h2><div class="nb" style="font-style:italic">"${a.msg}"</div>`;
+    if(a.sigAcAv||a.sigAcFn){h+=`<h2>✍️ Assinaturas do Contrato de Acordos</h2><div class="sa">`;if(a.sigAcAv)h+=`<div class="sb2"><div class="sl">Avaliador(a) — Testemunha</div><img class="sig" src="${a.sigAcAv}"/></div>`;if(a.sigAcFn)h+=`<div class="sb2"><div class="sl">${isLider?'Líder':'Funcionária'} — Ciente e de acordo</div><img class="sig" src="${a.sigAcFn}"/></div>`;h+=`</div>`}
     h+=buildEF(null,null,a.sAv,a.sFn,a.av,a.nome);
-    dlHTML(h,`Avaliacao_${a.nome.replace(/ /g,'_')}_${a.data}.html`);
+    const prefixo=isLider?'Lider':'Avaliacao';
+    dlHTML(h,`${prefixo}_${a.nome.replace(/ /g,'_')}_${a.data}.html`);
   }
 }
 function buildEH(tipo,loja,data,pct,score,max){
@@ -1129,44 +1008,62 @@ let curMon=new Date();
 function changeMonth(d){curMon=new Date(curMon.getFullYear(),curMon.getMonth()+d,1);document.getElementById('monthDisplay').textContent=curMon.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());renderRank()}
 function switchRankTab(tab,el){S.rTab=tab;document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderRank()}
 
+// ===== BUG 4 CORRIGIDO: Ranking separa Vendedoras e Líderes =====
 function renderRank(){
   const mo=curMon.getMonth(),yr=curMon.getFullYear();
   const mv=S.visits.filter(v=>{const d=new Date(v.data);return d.getMonth()===mo&&d.getFullYear()===yr});
   const ma=S.avals.filter(a=>{const d=new Date(a.data);return d.getMonth()===mo&&d.getFullYear()===yr});
-  const ls=getLS(mv),fs=getFS(ma);
+  // Separar avaliações por tipo
+  const maVend=ma.filter(a=>a.tipo==='avaliacao');
+  const maLider=ma.filter(a=>a.tipo==='lider');
+  const ls=getLS(mv),fs=getFS(maVend),fsl=getFS(maLider);
   const sl=Object.entries(ls).sort((a,b)=>b[1].avg-a[1].avg);
   const sf=Object.entries(fs).sort((a,b)=>b[1].avg-a[1].avg);
+  const sfL=Object.entries(fsl).sort((a,b)=>b[1].avg-a[1].avg);
   const win={'bs':sf[0]?{n:sf[0][0],s:'Melhor atendimento'}:null,'op':sl[0]?{n:sl[0][0],s:sl[0][1].avg+'% média'}:null,'li':sl[0]?{n:sl[0][0],s:'Limpeza exemplar'}:null,'ve':sf[0]?{n:sf[0][0],s:sf[0][1].avg+'% média'}:null,'mb':sl[0]?{n:sl[0][0],s:'Metas em dia'}:null,'va':sl[0]?{n:sl[0][0],s:'Visual impecável'}:null};
   document.getElementById('medalsShowcase').innerHTML=MEDALS.map(m=>{const w=win[m.id];return`<div class="medal-card"><div class="medal-emoji">${m.e}</div><div class="medal-title">${m.t}</div><div class="medal-desc">${m.d}</div>${w?`<div class="medal-winner">${w.n}</div><div class="medal-winner-store">${w.s}</div>`:'<div class="medal-winner" style="color:var(--light)">—</div>'}</div>`}).join('');
   const rEl=document.getElementById('fullRankingList');
   const cm={};LOJAS.forEach((l,i)=>cm[l]=LCOLS[i]);
+  const cols=['#C9A84C','#D4847A','#7A9DC9','#84C9A8','#C97AC4'];
+
   if(S.rTab==='lojas'){
     if(!sl.length){rEl.innerHTML='<div style="text-align:center;padding:34px;color:var(--mid)">Nenhuma visita neste mês</div>';return}
     rEl.innerHTML=sl.map((item,i)=>{const[l,d]=item;const pc=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other';return`<div class="full-rank-item"><div class="full-rank-pos ${pc}">${i+1}</div><div class="full-rank-avatar" style="background:${cm[l]||'#C9A84C'}22;color:${cm[l]||'#C9A84C'}">${l.charAt(0)}</div><div class="full-rank-details"><div class="full-rank-name">${l}</div><div class="full-rank-sub">${d.c} visita${d.c!==1?'s':''}</div></div><div class="full-rank-right"><div class="full-rank-score">${d.avg}%</div>${i===0?'<div style="margin-top:3px"><span class="medal-badge">✨ Ouro Puro</span></div>':''}</div></div>`}).join('');
+
   } else if(S.rTab==='funcionarias'){
-    if(!sf.length){rEl.innerHTML='<div style="text-align:center;padding:34px;color:var(--mid)">Nenhuma avaliação neste mês</div>';return}
-    const cols=['#C9A84C','#D4847A','#7A9DC9','#84C9A8','#C97AC4'];
+    // BUG 4 CORRIGIDO: só vendedoras
+    if(!sf.length){rEl.innerHTML='<div style="text-align:center;padding:34px;color:var(--mid)">Nenhuma avaliação de vendedora neste mês</div>';return}
     rEl.innerHTML=sf.map((item,i)=>{const[n,d]=item;const pc=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other';const cl=getClf(d.avg);return`<div class="full-rank-item"><div class="full-rank-pos ${pc}">${i+1}</div><div class="full-rank-avatar" style="background:${cols[i%cols.length]}22;color:${cols[i%cols.length]}">${n.charAt(0).toUpperCase()}</div><div class="full-rank-details"><div class="full-rank-name">${n}</div><div class="full-rank-sub">${d.loja} · ${d.c} avaliação${d.c!==1?'ões':''}</div></div><div class="full-rank-right"><div class="full-rank-score">${d.avg}%</div><div style="margin-top:3px"><span class="classif-badge ${cl.c}" style="font-size:10px;padding:2px 7px">${cl.e} ${cl.l}</span></div>${i===0?'<div style="margin-top:3px"><span class="medal-badge">🌸 Boas Sensações</span></div>':''}</div></div>`}).join('');
+
+  } else if(S.rTab==='lideres'){
+    // BUG 4 CORRIGIDO: ranking exclusivo de líderes
+    if(!sfL.length){rEl.innerHTML='<div style="text-align:center;padding:34px;color:var(--mid)">Nenhuma avaliação de líder neste mês</div>';return}
+    rEl.innerHTML=sfL.map((item,i)=>{const[n,d]=item;const pc=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other';const cl=getClf(d.avg);return`<div class="full-rank-item"><div class="full-rank-pos ${pc}">${i+1}</div><div class="full-rank-avatar" style="background:rgba(201,168,76,.15);color:var(--gold-dark)">${n.charAt(0).toUpperCase()}</div><div class="full-rank-details"><div class="full-rank-name">${n} <span style="font-size:10px;color:var(--gold-dark)">👑</span></div><div class="full-rank-sub">${d.loja} · ${d.c} avaliação${d.c!==1?'ões':''}</div></div><div class="full-rank-right"><div class="full-rank-score">${d.avg}%</div><div style="margin-top:3px"><span class="classif-badge ${cl.c}" style="font-size:10px;padding:2px 7px">${cl.e} ${cl.l}</span></div></div></div>`}).join('');
+
   } else {
+    // aba 'avaliacoes' — mostra todas ordenadas por %
     if(!ma.length){rEl.innerHTML='<div style="text-align:center;padding:34px;color:var(--mid)">Nenhuma avaliação neste mês</div>';return}
     const sorted=[...ma].sort((a,b)=>b.pct-a.pct);
-    rEl.innerHTML=sorted.map((a,i)=>{const pc=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other';const cl=getClf(a.pct);return`<div class="full-rank-item" onclick="openMod(${a.id},'avaliacao')" style="cursor:pointer"><div class="full-rank-pos ${pc}">${i+1}</div><div class="full-rank-avatar" style="background:var(--rose-light);color:var(--rose)">${a.nome.charAt(0).toUpperCase()}</div><div class="full-rank-details"><div class="full-rank-name">${a.nome}</div><div class="full-rank-sub">${a.loja} · ${a.cargo||'—'}</div></div><div class="full-rank-right"><div class="full-rank-score">${a.pct}%</div><span class="classif-badge ${cl.c}" style="font-size:10px;padding:2px 7px">${cl.e} ${cl.l}</span></div></div>`}).join('');
+    rEl.innerHTML=sorted.map((a,i)=>{const pc=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other';const cl=getClf(a.pct);const isL=a.tipo==='lider';return`<div class="full-rank-item" onclick="openMod(${a.id},'${a.tipo}')" style="cursor:pointer"><div class="full-rank-pos ${pc}">${i+1}</div><div class="full-rank-avatar" style="background:${isL?'rgba(201,168,76,.15)':'var(--rose-light)'};color:${isL?'var(--gold-dark)':'var(--rose)'}">${a.nome.charAt(0).toUpperCase()}</div><div class="full-rank-details"><div class="full-rank-name">${a.nome} ${isL?'<span style="font-size:10px;color:var(--gold-dark)">👑</span>':''}</div><div class="full-rank-sub">${a.loja} · ${a.cargo||'—'}</div></div><div class="full-rank-right"><div class="full-rank-score">${a.pct}%</div><span class="classif-badge ${cl.c}" style="font-size:10px;padding:2px 7px">${cl.e} ${cl.l}</span></div></div>`}).join('');
   }
 }
 function getLS(v){const s={};v.forEach(x=>{if(!x.loja)return;if(!s[x.loja])s[x.loja]={t:0,ts:0,c:0};s[x.loja].t+=x.pct;s[x.loja].ts+=x.score;s[x.loja].c++});Object.keys(s).forEach(k=>s[k].avg=Math.round(s[k].t/s[k].c));return s}
 function getFS(a){const s={};a.forEach(x=>{if(!x.nome)return;if(!s[x.nome])s[x.nome]={t:0,c:0,loja:x.loja};s[x.nome].t+=x.pct;s[x.nome].c++});Object.keys(s).forEach(k=>s[k].avg=Math.round(s[k].t/s[k].c));return s}
 
+// ===== BUG 5 CORRIGIDO: showPage com mapa correto para 'avaliacao-lider' e bn5 =====
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  const m={dashboard:0,'nova-visita':1,'avaliacao-func':2,'avaliacao-lider':2,historico:3,ranking:4};
+  // Mapa página → índice da nav-tab desktop (agora tem 6 tabs)
+  const m={dashboard:0,'nova-visita':1,'avaliacao-func':2,'avaliacao-lider':3,historico:4,ranking:5};
   const tabs=document.querySelectorAll('.nav-tab');
-  if(m[id]!==undefined)tabs[m[id]].classList.add('active');
-  // Bottom nav ativo
-  [0,1,2,3,4].forEach(i=>{
-    const b=document.getElementById('bn'+i);
-    if(b)b.style.color=i===m[id]?'var(--gold)':'var(--light)';
+  if(m[id]!==undefined&&tabs[m[id]])tabs[m[id]].classList.add('active');
+  // Mapa página → id do botão no bottom nav mobile
+  const bnMap={dashboard:'bn0','nova-visita':'bn1','avaliacao-func':'bn2','avaliacao-lider':'bn5',historico:'bn3',ranking:'bn4'};
+  ['bn0','bn1','bn2','bn3','bn4','bn5'].forEach(bid=>{
+    const b=document.getElementById(bid);
+    if(b)b.style.color=bid===bnMap[id]?'var(--gold)':'var(--light)';
   });
   if(id==='historico')renderHist();
   if(id==='ranking')renderRank();
@@ -1174,397 +1071,76 @@ function showPage(id){
   window.scrollTo(0,0);
 }
 
-
 function backupData(){
   const data={visits:S.visits,avals:S.avals,exportedAt:new Date().toISOString(),version:'1.0'};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   const date=new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
-  a.href=URL.createObjectURL(blob);
-  a.download='avatim_backup_'+date+'.json';
-  a.click();
-  showToast('💾 Backup salvo com sucesso!');
+  a.href=URL.createObjectURL(blob);a.download='avatim_backup_'+date+'.json';a.click();showToast('💾 Backup salvo com sucesso!');
 }
-
 function restoreData(input){
   const file=input.files[0];if(!file)return;
   if(!confirm('Restaurar backup? Os dados atuais serão substituídos.')){input.value='';return}
   const reader=new FileReader();
   reader.onload=e=>{
-    try{
-      const data=JSON.parse(e.target.result);
-      if(!data.visits&&!data.avals){showToast('❌ Arquivo inválido');return}
-      S.visits=data.visits||[];
-      S.avals=data.avals||[];
-      sv();
-      renderDash();renderHist();renderRank();
-      showToast('✅ Backup restaurado! '+S.visits.length+' visitas e '+S.avals.length+' avaliações.');
-    }catch(err){showToast('❌ Erro ao ler o arquivo')}
+    try{const data=JSON.parse(e.target.result);if(!data.visits&&!data.avals){showToast('❌ Arquivo inválido');return}S.visits=data.visits||[];S.avals=data.avals||[];sv();renderDash();renderHist();renderRank();showToast('✅ Backup restaurado! '+S.visits.length+' visitas e '+S.avals.length+' avaliações.')}catch(err){showToast('❌ Erro ao ler o arquivo')}
     input.value='';
-  };
-  reader.readAsText(file);
-}
-
-
-function mostrarPDI(){
-  document.getElementById('pdiSection').style.display='block';
-  document.getElementById('pdiSection').scrollIntoView({behavior:'smooth'});
+  };reader.readAsText(file);
 }
 
 function gerarPDI(){
   const nome=document.getElementById('fFN').value||'a funcionária';
-  const cargo=document.getElementById('fFC').value||'Vendedora';
-  const loja=document.getElementById('fFL').value;
-  const periodo=document.getElementById('fFP').value||'este período';
-  const feedbackPos=document.getElementById('fFFpos').value||'';
-  const feedbackDev=document.getElementById('fFFdev').value||'';
-
   const btn=document.getElementById('btnGerarPDI');
   btn.disabled=true;btn.textContent='⏳ Gerando...';
   document.getElementById('pdiLoadingBadge').textContent='analisando...';
   document.getElementById('pdiContent').innerHTML='<div style="text-align:center;padding:36px;color:var(--mid)"><div style="font-size:32px;margin-bottom:12px">✨</div><div style="font-size:13px">Criando PDI para '+nome+'...</div></div>';
-
-  // Coletar notas
-  const notasPorCat={};
-  let totalPontos=0,totalCrit=0;
-  Object.entries(FCAT).forEach(([cat,items])=>{
-    const notas=items.map(item=>S.fstars[cat+'|'+item]||0);
-    const soma=notas.reduce((a,b)=>a+b,0);
-    const media=parseFloat((soma/notas.length).toFixed(1));
-    notasPorCat[cat]={media,soma,itens:items.map((item,i)=>({item,nota:notas[i]}))};
-    totalPontos+=soma;totalCrit+=notas.length;
-  });
-
-  const pct=Math.round((totalPontos/(totalCrit*5))*100);
-  const clf=getClf(pct);
-
-  // Separar fortes, médios e críticos
-  const fortes=[],criticos=[],medios=[];
-  Object.entries(notasPorCat).forEach(([cat,d])=>{
-    d.itens.forEach(x=>{
-      if(x.nota>=4)fortes.push({cat,item:x.item,nota:x.nota});
-      else if(x.nota>0&&x.nota<=2)criticos.push({cat,item:x.item,nota:x.nota});
-      else if(x.nota===3)medios.push({cat,item:x.item,nota:x.nota});
-    });
-  });
-
-  // Banco de ações por critério (baseado em Gallup, Lencioni, Pink, Dweck, Blanchard, Goldsmith)
-  const BANCO_ACOES={
-    'Atingimento de metas':          {acao:'Definir micro-metas diárias visíveis (post-it no balcão) e revisar resultado ao fim de cada turno. Celebre cada conquista, por menor que seja.',recurso:'Livro: O Gerente Minuto — Ken Blanchard',ind:'Meta diária atingida em ≥ 4 dias/semana'},
-    'Ticket médio e itens por venda':{acao:'Treinar 2 sugestões de produto adicional por atendimento. Criar script pessoal de "complemento natural" para os 5 produtos mais vendidos.',recurso:'Técnica: SPIN Selling — Neil Rackham',ind:'Ticket médio crescendo ≥ 10% em 30 dias'},
-    'Taxa de conversão':             {acao:'Mapear os 3 principais motivos de saída sem compra e criar resposta para cada um. Praticar role play semanal com colega.',recurso:'Livro: Objeções — Jeb Blount',ind:'Taxa de conversão aumentando semana a semana'},
-    'Venda adicional (cross sell)':  {acao:'Montar "combinações campeãs" com os produtos da loja e apresentar como sugestão natural, não como empurra-venda.',recurso:'Prática: Kit sugestão do mês exposto no balcão',ind:'% de vendas com item adicional'},
-    'Consistência de resultados':    {acao:'Criar ritual de abertura: checar meta do dia, revisar resultado do dia anterior e definir 1 foco de melhoria para o turno.',recurso:'Livro: O Poder do Hábito — Charles Duhigg',ind:'Resultado dentro da meta em ≥ 80% dos dias'},
-    'Abordagem e receptividade':     {acao:'Praticar abordagem com sorriso, nome do cliente e pergunta aberta nos primeiros 30 segundos. Criar 3 versões de frase de abertura e testar.',recurso:'Livro: Como Fazer Amigos — Dale Carnegie',ind:'Feedback positivo de clientes e observação da gestora'},
-    'Escuta ativa e empatia':        {acao:'Antes de apresentar produto, fazer ao menos 2 perguntas sobre a necessidade do cliente. Anotar o que o cliente disse e repetir em palavras próprias.',recurso:'Livro: Comunicação Não-Violenta — Marshall Rosenberg',ind:'Redução de reclamações, aumento de retorno de clientes'},
-    'Conhecimento técnico dos produtos':{acao:'Estudar 2 produtos por semana (notas olfativas, benefícios, público-alvo). Criar "ficha técnica pessoal" com linguagem própria.',recurso:'Catálogo Avatim + Perfumería Española (YouTube)',ind:'Conseguir explicar qualquer produto sem consultar material'},
-    'Experiência e encantamento do cliente':{acao:'Criar um momento especial em cada atendimento: deixar cliente testar fragrância no pulso, oferecer água, personalizar embrulho.',recurso:'Livro: Satisfação Garantida — Tony Hsieh',ind:'Aumento no NPS/retorno de clientes fiéis'},
-    'Resolução de objeções':         {acao:'Mapear as 5 objeções mais comuns e criar respostas empáticas para cada. Praticar com colega semanalmente.',recurso:'Livro: Nunca Divida a Diferença — Chris Voss',ind:'Conversão após objeção ≥ 40%'},
-    'Fidelização e pós-venda':       {acao:'Enviar mensagem de acompanhamento no WhatsApp 7 dias após a compra. Criar lista de clientes VIP para contato mensal.',recurso:'Ferramenta: WhatsApp Business com etiquetas',ind:'% de clientes que retornam em 60 dias'},
-    'Responsabilidade e autonomia':  {acao:'Para cada problema, chegar com pelo menos 1 solução proposta antes de escalar. Cultivar o hábito "eu resolvo, depois comunico".',recurso:'Livro: Extrema Responsabilidade — Jocko Willink',ind:'Redução de problemas escalados sem tentativa de solução'},
-    'Proatividade e iniciativa':     {acao:'Identificar 1 melhoria pequena por semana na loja ou no processo e implementar sem precisar ser pedido.',recurso:'Livro: Faça Acontecer — Sheryl Sandberg',ind:'1 ação proativa documentada por semana'},
-    'Colaboração e trabalho em equipe':{acao:'Oferecer ajuda ativa ao colega em momentos de pico. Compartilhar 1 aprendizado por semana no grupo da equipe.',recurso:'Livro: As 5 Disfunções de uma Equipe — Patrick Lencioni',ind:'Percepção positiva da equipe e da gestora'},
-    'Resiliência sob pressão':       {acao:'Criar ritual de "reset" entre atendimentos difíceis (respiração, agua, 1 minuto). Praticar autocontrole emocional consciente.',recurso:'Livro: Inteligência Emocional — Daniel Goleman',ind:'Manutenção da qualidade do atendimento mesmo em dias difíceis'},
-    'Postura e presença profissional':{acao:'Revisar uniformização e postura física diariamente antes de abrir a loja. Cuidar da linguagem corporal e tom de voz em cada atendimento.',recurso:'Livro: O Corpo Fala — Pierre Weil',ind:'Feedback da gestora e clientes sobre apresentação'},
-    'Abertura a feedbacks':          {acao:'Solicitar feedback da gestora ao menos 1x por semana. Anotar e implementar 1 sugestão por semana, sem justificativas.',recurso:'Livro: Obrigado pelo Feedback — Douglas Stone',ind:'Aplicação visível de feedbacks recebidos'},
-    'Pontualidade':                  {acao:'Estabelecer alarme com 30 min de antecedência. Comunicar via WhatsApp qualquer imprevisto antes do horário de entrada.',recurso:'Hábito: Regra dos 2 minutos — David Allen (GTD)',ind:'Zero atrasos sem comunicação prévia'},
-    'Frequência e presença':         {acao:'Manter calendário pessoal de compromissos e planejar cuidados de saúde preventivos para evitar faltas inesperadas.',recurso:'Hábito: Check-in semanal de agenda e saúde',ind:'Frequência ≥ 95% no período'},
-    'Aviso antecipado de ausência':  {acao:'Comunicar qualquer ausência com no mínimo 24h de antecedência. Criar contato direto com a gestora para situações emergenciais.',recurso:'Acordo: Canal direto estabelecido com a gestora',ind:'100% das ausências comunicadas com antecedência'},
-    'Organização e visual da loja':  {acao:'Seguir checklist de abertura e fechamento diariamente. Adotar postura de "dono da loja": qualquer desorganização é responsabilidade de todos.',recurso:'Metodologia: 5S adaptado ao varejo',ind:'Checklist de loja 100% concluído diariamente'},
-    'Reposição e gestão de produtos':{acao:'Verificar estoque crítico toda manhã e acionar reposição antes de zerar. Nunca deixar prateleira vazia sem sinalização.',recurso:'Prática: Kanban visual de estoque mínimo',ind:'Zero rupturas de produtos sem sinalização'},
-    'Execução de campanhas e ações': {acao:'Ler briefing de campanha no início da semana e treinar apresentação do produto foco. Expor material de campanha conforme padrão visual.',recurso:'Guia: Manual de campanhas Avatim',ind:'Campanha do mês executada dentro do prazo e padrão'},
-    'Cumprimento de processos e rotinas':{acao:'Criar checklist pessoal das rotinas obrigatórias do turno e revisar ao final. Tratar processos como não-negociáveis.',recurso:'Livro: A Arte da Execução — Larry Bossidy',ind:'Processos cumpridos em 100% dos turnos'},
-    'Atenção aos indicadores da loja':{acao:'Consultar painel de indicadores no início de cada turno. Saber de cor: meta do dia, % atingido e o que falta para bater.',recurso:'Hábito: 5 minutos de "briefing de números" na abertura',ind:'Consegue citar os indicadores da loja sem consultar'},
-  };
-
-  // Montar prioridades (máx 4, priorizar críticos e médios)
+  const BANCO_ACOES={'Atingimento de metas':{acao:'Definir micro-metas diárias visíveis (post-it no balcão) e revisar resultado ao fim de cada turno. Celebre cada conquista, por menor que seja.',recurso:'Livro: O Gerente Minuto — Ken Blanchard',ind:'Meta diária atingida em ≥ 4 dias/semana'},'Ticket médio e itens por venda':{acao:'Treinar 2 sugestões de produto adicional por atendimento. Criar script pessoal de "complemento natural" para os 5 produtos mais vendidos.',recurso:'Técnica: SPIN Selling — Neil Rackham',ind:'Ticket médio crescendo ≥ 10% em 30 dias'},'Taxa de conversão':{acao:'Mapear os 3 principais motivos de saída sem compra e criar resposta para cada um. Praticar role play semanal com colega.',recurso:'Livro: Objeções — Jeb Blount',ind:'Taxa de conversão aumentando semana a semana'},'Venda adicional (cross sell)':{acao:'Montar "combinações campeãs" com os produtos da loja e apresentar como sugestão natural.',recurso:'Prática: Kit sugestão do mês exposto no balcão',ind:'% de vendas com item adicional'},'Consistência de resultados':{acao:'Criar ritual de abertura: checar meta do dia, revisar resultado do dia anterior e definir 1 foco de melhoria.',recurso:'Livro: O Poder do Hábito — Charles Duhigg',ind:'Resultado dentro da meta em ≥ 80% dos dias'},'Abordagem e receptividade':{acao:'Praticar abordagem com sorriso, nome do cliente e pergunta aberta nos primeiros 30 segundos.',recurso:'Livro: Como Fazer Amigos — Dale Carnegie',ind:'Feedback positivo de clientes e observação da gestora'},'Escuta ativa e empatia':{acao:'Antes de apresentar produto, fazer ao menos 2 perguntas sobre a necessidade do cliente.',recurso:'Livro: Comunicação Não-Violenta — Marshall Rosenberg',ind:'Redução de reclamações, aumento de retorno de clientes'},'Conhecimento técnico dos produtos':{acao:'Estudar 2 produtos por semana (notas olfativas, benefícios, público-alvo). Criar "ficha técnica pessoal".',recurso:'Catálogo Avatim + Perfumería Española (YouTube)',ind:'Conseguir explicar qualquer produto sem consultar material'},'Experiência e encantamento do cliente':{acao:'Criar um momento especial em cada atendimento: deixar cliente testar fragrância no pulso, oferecer água.',recurso:'Livro: Satisfação Garantida — Tony Hsieh',ind:'Aumento no NPS/retorno de clientes fiéis'},'Resolução de objeções':{acao:'Mapear as 5 objeções mais comuns e criar respostas empáticas para cada.',recurso:'Livro: Nunca Divida a Diferença — Chris Voss',ind:'Conversão após objeção ≥ 40%'},'Fidelização e pós-venda':{acao:'Enviar mensagem de acompanhamento no WhatsApp 7 dias após a compra.',recurso:'Ferramenta: WhatsApp Business com etiquetas',ind:'% de clientes que retornam em 60 dias'},'Responsabilidade e autonomia':{acao:'Para cada problema, chegar com pelo menos 1 solução proposta antes de escalar.',recurso:'Livro: Extrema Responsabilidade — Jocko Willink',ind:'Redução de problemas escalados sem tentativa de solução'},'Proatividade e iniciativa':{acao:'Identificar 1 melhoria pequena por semana na loja ou no processo e implementar sem precisar ser pedido.',recurso:'Livro: Faça Acontecer — Sheryl Sandberg',ind:'1 ação proativa documentada por semana'},'Colaboração e trabalho em equipe':{acao:'Oferecer ajuda ativa ao colega em momentos de pico. Compartilhar 1 aprendizado por semana no grupo.',recurso:'Livro: As 5 Disfunções de uma Equipe — Patrick Lencioni',ind:'Percepção positiva da equipe e da gestora'},'Resiliência sob pressão':{acao:'Criar ritual de "reset" entre atendimentos difíceis (respiração, água, 1 minuto).',recurso:'Livro: Inteligência Emocional — Daniel Goleman',ind:'Manutenção da qualidade do atendimento mesmo em dias difíceis'},'Postura e presença profissional':{acao:'Revisar uniformização e postura física diariamente antes de abrir a loja.',recurso:'Livro: O Corpo Fala — Pierre Weil',ind:'Feedback da gestora e clientes sobre apresentação'},'Abertura a feedbacks':{acao:'Solicitar feedback da gestora ao menos 1x por semana. Anotar e implementar 1 sugestão por semana.',recurso:'Livro: Obrigado pelo Feedback — Douglas Stone',ind:'Aplicação visível de feedbacks recebidos'},'Pontualidade':{acao:'Estabelecer alarme com 30 min de antecedência. Comunicar via WhatsApp qualquer imprevisto.',recurso:'Hábito: Regra dos 2 minutos — David Allen (GTD)',ind:'Zero atrasos sem comunicação prévia'},'Frequência e presença':{acao:'Manter calendário pessoal de compromissos e planejar cuidados de saúde preventivos.',recurso:'Hábito: Check-in semanal de agenda e saúde',ind:'Frequência ≥ 95% no período'},'Aviso antecipado de ausência':{acao:'Comunicar qualquer ausência com no mínimo 24h de antecedência.',recurso:'Acordo: Canal direto estabelecido com a gestora',ind:'100% das ausências comunicadas com antecedência'},'Organização e visual da loja':{acao:'Seguir checklist de abertura e fechamento diariamente.',recurso:'Metodologia: 5S adaptado ao varejo',ind:'Checklist de loja 100% concluído diariamente'},'Reposição e gestão de produtos':{acao:'Verificar estoque crítico toda manhã e acionar reposição antes de zerar.',recurso:'Prática: Kanban visual de estoque mínimo',ind:'Zero rupturas de produtos sem sinalização'},'Execução de campanhas e ações':{acao:'Ler briefing de campanha no início da semana e treinar apresentação do produto foco.',recurso:'Guia: Manual de campanhas Avatim',ind:'Campanha do mês executada dentro do prazo e padrão'},'Cumprimento de processos e rotinas':{acao:'Criar checklist pessoal das rotinas obrigatórias do turno e revisar ao final.',recurso:'Livro: A Arte da Execução — Larry Bossidy',ind:'Processos cumpridos em 100% dos turnos'},'Atenção aos indicadores da loja':{acao:'Consultar painel de indicadores no início de cada turno.',recurso:'Hábito: 5 minutos de "briefing de números" na abertura',ind:'Consegue citar os indicadores da loja sem consultar'}};
+  let totalPontos=0,totalCrit=0;const notasPorCat={};const fortes=[],criticos=[],medios=[];
+  Object.entries(FCAT).forEach(([cat,items])=>{const notas=items.map(item=>S.fstars[cat+'|'+item]||0);const soma=notas.reduce((a,b)=>a+b,0);notasPorCat[cat]={media:parseFloat((soma/notas.length).toFixed(1)),itens:items.map((item,i)=>({item,nota:notas[i]}))};totalPontos+=soma;totalCrit+=notas.length;notas.forEach((n,i)=>{if(n>=4)fortes.push({cat,item:items[i],nota:n});else if(n>0&&n<=2)criticos.push({cat,item:items[i],nota:n});else if(n===3)medios.push({cat,item:items[i],nota:n})})});
+  const pct=Math.round((totalPontos/(totalCrit*5))*100);const clf=getClf(pct);
   const candidatos=[...criticos,...medios,...fortes.filter(f=>f.nota<5)].slice(0,4);
-  const prioridades=candidatos.map(c=>{
-    const b=BANCO_ACOES[c.item]||{
-      acao:`Desenvolver ativamente ${c.item.toLowerCase()} através de prática diária e busca de feedback constante.`,
-      recurso:'Reflexão semanal com a gestora',
-      ind:'Melhora perceptível nas próximas avaliações'
-    };
-    const prazo=c.nota<=1?'30 dias':c.nota<=2?'30 dias':c.nota===3?'60 dias':'90 dias';
-    return{item:c.item,cat:c.cat,nota:c.nota,acao:b.acao,recurso:b.recurso,ind:b.ind,prazo};
-  });
-
-  // Diagnóstico baseado no perfil
+  const prioridades=candidatos.map(c=>{const b=BANCO_ACOES[c.item]||{acao:`Desenvolver ativamente ${c.item.toLowerCase()} através de prática diária.`,recurso:'Reflexão semanal com a gestora',ind:'Melhora perceptível nas próximas avaliações'};const prazo=c.nota<=2?'30 dias':c.nota===3?'60 dias':'90 dias';return{item:c.item,cat:c.cat,nota:c.nota,acao:b.acao,recurso:b.recurso,ind:b.ind,prazo}});
   const catMedias=Object.entries(notasPorCat).map(([cat,d])=>({cat,media:d.media})).sort((a,b)=>b.media-a.media);
-  const melhorCat=catMedias[0];
   const piorCat=catMedias[catMedias.length-1];
-
-  const diagnosticos={
-    'Excelente':`${nome} demonstra alto nível de maturidade profissional e consistência nos resultados. Suas competências estão bem desenvolvidas e ela representa um exemplo positivo para a equipe. O foco agora é consolidar a excelência e expandir sua influência. Com base na metodologia Gallup, o caminho é potencializar ainda mais o que já é forte para alcançar performance extraordinária.`,
-    'Muito Bom':`${nome} apresenta performance acima da média com pontos de destaque claros. Já demonstra comprometimento e capacidade de entrega consistente. Segundo Ken Blanchard, ela está no nível de "competente comprometida" — o momento ideal para dar mais autonomia e desafios maiores. Com pequenos ajustes em áreas específicas, pode alcançar excelência.`,
-    'Bom':`${nome} tem uma base sólida e mostra disposição para crescer. Apresenta boas competências em ${melhorCat.cat.replace(/[^\w\s]/g,'')} e oportunidades claras de desenvolvimento em ${piorCat.cat.replace(/[^\w\s]/g,'')}. Pelo conceito de Growth Mindset de Carol Dweck, ela tem tudo para evoluir — a chave está em encarar os desafios como oportunidades de aprendizado e não como ameaças.`,
-    'Precisa Melhorar':`${nome} está em um momento de transição importante. Algumas competências fundamentais precisam de atenção e desenvolvimento estruturado. Daniel Pink nos lembra que o engajamento vem quando há clareza de propósito — é essencial alinhar com ela o "porquê" do seu crescimento e criar pequenas vitórias iniciais para construir confiança. O potencial existe, falta estrutura.`,
-    'Crítico':`${nome} enfrenta desafios significativos que precisam de atenção imediata e suporte estruturado. Marshall Goldsmith aponta que comportamentos que nos travaram no passado raramente se corrigem sozinhos — é preciso intervenção consciente, feedback direto e comprometimento mútuo. Este PDI é um ponto de virada: com o suporte certo, a evolução pode ser surpreendente.`
-  };
-
-  const diagnostico=diagnosticos[clf.l]||diagnosticos['Bom'];
-
-  // Perfil comportamental
-  const perfis={
-    'Excelente':'Profissional de alta performance com competências consolidadas e forte influência positiva na equipe',
-    'Muito Bom':'Executora comprometida com resultados consistentes, pronta para assumir maiores responsabilidades',
-    'Bom':'Colaboradora dedicada com boa base técnica e espaço claro para crescimento estruturado',
-    'Precisa Melhorar':'Profissional em desenvolvimento que precisa de suporte próximo e metas muito claras para avançar',
-    'Crítico':'Colaboradora em fase crítica que requer acompanhamento intensivo e plano de ação imediato'
-  };
-
-  // Pontos fortes
-  const topFortes=fortes.sort((a,b)=>b.nota-a.nota).slice(0,3).map(f=>{
-    const textos={
-      'Atingimento de metas':'Forte orientação a resultado — sabe o que precisa entregar e se mobiliza para isso',
-      'Abordagem e receptividade':'Excelente primeiro contato com o cliente — cria conexão natural e acolhedora',
-      'Escuta ativa e empatia':'Capacidade rara de ouvir de verdade — o cliente se sente compreendido e valorizado',
-      'Colaboração e trabalho em equipe':'Presença positiva na equipe — fortalece o coletivo e cria ambiente de confiança',
-      'Postura e presença profissional':'Representação impecável da marca — transmite credibilidade e sofisticação',
-      'Responsabilidade e autonomia':'Alta confiabilidade — entrega o que promete e resolve sem precisar ser cobrada',
-      'Organização e visual da loja':'Olhar apurado para o ambiente — mantém a loja atraente e funcional',
-      'Conhecimento técnico dos produtos':'Domínio técnico que inspira confiança no cliente e facilita a venda consultiva',
-    };
-    return textos[f.item]||`Destaque em ${f.item} — competência que agrega valor direto à loja e ao cliente`;
-  });
+  const diagnosticos={'Excelente':`${nome} demonstra alto nível de maturidade profissional e consistência nos resultados. Com base na metodologia Gallup, o caminho é potencializar ainda mais o que já é forte para alcançar performance extraordinária.`,'Muito Bom':`${nome} apresenta performance acima da média. Segundo Ken Blanchard, está no nível de "competente comprometida" — o momento ideal para dar mais autonomia e desafios maiores.`,'Bom':`${nome} tem uma base sólida. Pelo conceito de Growth Mindset de Carol Dweck, ela tem tudo para evoluir — a chave está em encarar os desafios como oportunidades de aprendizado.`,'Precisa Melhorar':`${nome} está em um momento de transição. Daniel Pink nos lembra que o engajamento vem quando há clareza de propósito — é essencial alinhar o "porquê" do crescimento e criar pequenas vitórias iniciais.`,'Crítico':`${nome} enfrenta desafios significativos. Marshall Goldsmith aponta que comportamentos limitantes raramente se corrigem sozinhos — é preciso intervenção consciente e comprometimento mútuo.`};
+  const perfis={'Excelente':'Profissional de alta performance com competências consolidadas','Muito Bom':'Executora comprometida com resultados consistentes','Bom':'Colaboradora dedicada com boa base técnica e espaço claro para crescimento','Precisa Melhorar':'Profissional em desenvolvimento que precisa de suporte próximo','Crítico':'Colaboradora em fase crítica que requer acompanhamento intensivo'};
+  const topFortes=fortes.sort((a,b)=>b.nota-a.nota).slice(0,3).map(f=>`Destaque em ${f.item} — competência que agrega valor direto à loja e ao cliente`);
   if(topFortes.length===0)topFortes.push('Disponibilidade para receber feedback e crescer','Comprometimento com a equipe e a loja','Potencial identificado pelo avaliador');
-
-  // Plano 30/60/90
-  const plano={
-    d30:{foco:'Consciência e primeiros hábitos',acoes:['Alinhar expectativas claras com a gestora e revisar este PDI juntas','Iniciar 1 ação prática por prioridade identificada','Criar rituais de início e fim de turno (checklist pessoal)'],entrega:'Comprometimento visível com o plano e primeiros resultados nos indicadores'},
-    d60:{foco:'Prática e construção de competências',acoes:['Executar as ações de desenvolvimento com consistência diária','Solicitar feedback estruturado da gestora quinzenalmente','Documentar aprendizados e dificuldades encontradas'],entrega:'Melhora perceptível nos critérios críticos e aplicação das ações no dia a dia'},
-    d90:{foco:'Consolidação e nova avaliação',acoes:['Revisar PDI com a gestora: o que evoluiu, o que ainda precisa de atenção','Celebrar conquistas — reconhecer o crescimento é parte do processo','Definir novos desafios para o próximo ciclo'],entrega:'Evolução mensurável nos indicadores e nova classificação na próxima avaliação'}
-  };
-
-  // Acordo de crescimento
-  const acordos={
-    'Excelente':`A empresa reconhece o nível de excelência de ${nome} e se compromete a oferecer novos desafios e oportunidades de liderança. Em troca, espera-se que ela continue sendo referência positiva e compartilhe seu conhecimento com a equipe.`,
-    'Muito Bom':`A gestora se compromete a dar feedbacks estruturados quinzenalmente e abrir espaço para mais autonomia. ${nome} se compromete a buscar evolução contínua e comunicar proativamente suas dificuldades.`,
-    'Bom':`A empresa se compromete a oferecer suporte, treinamentos e acompanhamento próximo. ${nome} se compromete a executar as ações deste PDI com consistência e abertura para aprender.`,
-    'Precisa Melhorar':`A gestora se compromete a reuniões semanais de acompanhamento e suporte próximo. ${nome} se compromete a encarar este momento como oportunidade real de virada e a se esforçar ativamente para evoluir.`,
-    'Crítico':`A empresa oferece suporte total para a recuperação de performance. ${nome} se compromete a priorizar as ações críticas deste PDI e a comunicar dificuldades imediatamente, sem esperar acumular.`
-  };
-
-  // Mensagens motivacionais
-  const msgs={
-    'Excelente':`${nome}, você já chegou a um nível que poucos alcançam. Na Avatim, cada frasco carrega uma experiência sensorial única — e você tem o dom de transmitir isso a cada cliente que entra na loja. Continue sendo essa profissional extraordinária e inspirando todos ao seu redor. 🌸`,
-    'Muito Bom':`${nome}, você está construindo algo sólido e bonito. Cada evolução sua é percebida e valorizada. Na Avatim, acreditamos que assim como os melhores aromas se revelam com o tempo, o melhor de você ainda está por vir. Continue! ✨`,
-    'Bom':`${nome}, você tem uma base verdadeira para crescer. Este PDI não é uma lista de erros — é um mapa do seu potencial. A Avatim acredita em você e está ao seu lado nessa jornada. Um passo de cada vez, com consistência, e os resultados virão. 💛`,
-    'Precisa Melhorar':`${nome}, toda grande profissional passou por um momento de reconstrução. O que define quem você será é a escolha que faz agora. A Avatim acredita no seu potencial e este PDI é uma prova disso. Você tem apoio — use-o. 🤝`,
-    'Crítico':`${nome}, este é um momento difícil, mas também de grande oportunidade. Cada pequena melhoria conta. A Avatim não desistiu de você — e esperamos que você não desista de si mesma. Uma ação por dia é suficiente para começar a virada. 💪`
-  };
-
-  window._pdiObj={
-    classificacao:clf.l,
-    pct,
-    diagnostico,
-    perfil:perfis[clf.l],
-    fortes:topFortes,
-    prioridades,
-    plano,
-    acordo:acordos[clf.l],
-    msg:msgs[clf.l]
-  };
-  window._pdiGerado=JSON.stringify(window._pdiObj);
-
-  // Renderizar
+  const plano={d30:{foco:'Consciência e primeiros hábitos',acoes:['Alinhar expectativas claras com a gestora e revisar este PDI juntas','Iniciar 1 ação prática por prioridade identificada','Criar rituais de início e fim de turno (checklist pessoal)'],entrega:'Comprometimento visível com o plano e primeiros resultados'},d60:{foco:'Prática e construção de competências',acoes:['Executar as ações de desenvolvimento com consistência diária','Solicitar feedback estruturado da gestora quinzenalmente','Documentar aprendizados e dificuldades encontradas'],entrega:'Melhora perceptível nos critérios críticos'},d90:{foco:'Consolidação e nova avaliação',acoes:['Revisar PDI com a gestora: o que evoluiu, o que ainda precisa de atenção','Celebrar conquistas — reconhecer o crescimento é parte do processo','Definir novos desafios para o próximo ciclo'],entrega:'Evolução mensurável nos indicadores e nova classificação'}};
+  const acordos={'Excelente':`A empresa reconhece o nível de excelência de ${nome} e se compromete a oferecer novos desafios e oportunidades.`,'Muito Bom':`A gestora se compromete a dar feedbacks estruturados quinzenalmente. ${nome} se compromete a buscar evolução contínua.`,'Bom':`A empresa se compromete a oferecer suporte e treinamentos. ${nome} se compromete a executar as ações deste PDI com consistência.`,'Precisa Melhorar':`A gestora se compromete a reuniões semanais de acompanhamento. ${nome} se compromete a encarar este momento como oportunidade real de virada.`,'Crítico':`A empresa oferece suporte total para a recuperação de performance. ${nome} se compromete a priorizar as ações críticas deste PDI.`};
+  const msgs={'Excelente':`${nome}, você já chegou a um nível que poucos alcançam. Continue sendo essa profissional extraordinária e inspirando todos ao seu redor. 🌸`,'Muito Bom':`${nome}, você está construindo algo sólido e bonito. Na Avatim, acreditamos que o melhor de você ainda está por vir. ✨`,'Bom':`${nome}, você tem uma base verdadeira para crescer. A Avatim acredita em você e está ao seu lado nessa jornada. 💛`,'Precisa Melhorar':`${nome}, toda grande profissional passou por um momento de reconstrução. A Avatim acredita no seu potencial. 🤝`,'Crítico':`${nome}, este é um momento difícil, mas também de grande oportunidade. A Avatim não desistiu de você. 💪`};
+  window._pdiObj={classificacao:clf.l,pct,diagnostico:diagnosticos[clf.l]||diagnosticos['Bom'],perfil:perfis[clf.l],fortes:topFortes,prioridades,plano,acordo:acordos[clf.l],msg:msgs[clf.l]};
   const pctColor=pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
-  let html=`
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:12px">
-    <div style="font-size:38px">${clf.e}</div>
-    <div><div style="font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${clf.l} · ${pct}%</div>
-    <div style="font-size:12px;font-style:italic;color:var(--dark);margin-top:3px">${perfis[clf.l]}</div></div>
-  </div>
-
-  <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:11px;padding:16px;margin-bottom:14px">
-    <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📊 Diagnóstico</div>
-    <div style="font-size:13px;line-height:1.7;color:var(--dark)">${diagnostico}</div>
-  </div>
-
-  ${topFortes.length?`<div style="margin-bottom:16px">
-    <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">💪 Forças a Potencializar</div>
-    ${topFortes.map(p=>`<div style="background:rgba(90,138,106,.08);border:1px solid rgba(90,138,106,.25);border-radius:9px;padding:9px 13px;font-size:12px;color:var(--dark);line-height:1.5;margin-bottom:6px">✨ ${p}</div>`).join('')}
-  </div>`:''}
-
-  ${prioridades.length?`<div style="margin-bottom:16px">
-    <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🎯 Prioridades de Desenvolvimento</div>
-    ${prioridades.map(p=>`
-      <div style="background:var(--white);border:1px solid #EDE8E0;border-left:3px solid ${p.nota<=2?'var(--red)':p.nota===3?'var(--gold)':'var(--green)'};border-radius:9px;padding:14px;margin-bottom:10px">
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap">
-          <span style="font-size:12px;font-weight:700;color:var(--dark)">${p.item}</span>
-          <span style="background:${p.nota<=2?'rgba(192,57,43,.1)':p.nota===3?'rgba(201,168,76,.1)':'rgba(90,138,106,.1)'};color:${p.nota<=2?'var(--red)':p.nota===3?'var(--gold-dark)':'var(--green)'};border-radius:18px;padding:2px 9px;font-size:10px;font-weight:700">${p.nota}/5</span>
-          <span style="background:rgba(90,122,154,.1);color:var(--blue);border-radius:18px;padding:2px 9px;font-size:10px">${p.prazo}</span>
-        </div>
-        <div style="font-size:12px;color:var(--dark);margin-bottom:6px">📌 ${p.acao}</div>
-        <div style="font-size:11px;color:var(--blue);margin-bottom:5px">📚 ${p.recurso}</div>
-        <div style="font-size:11px;color:var(--mid);padding-top:6px;border-top:1px solid #F0EBE3">📈 Indicador: ${p.ind}</div>
-      </div>`).join('')}
-  </div>`:'<div style="padding:14px;text-align:center;color:var(--mid);font-size:12px">Preencha as notas dos critérios para gerar prioridades personalizadas.</div>'}
-
-  <div style="margin-bottom:16px">
-    <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🗓️ Plano 30 · 60 · 90 dias</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-      ${[
-        {d:'30 dias',k:'d30',c:'var(--green)',bg:'rgba(90,138,106,.08)',bc:'rgba(90,138,106,.2)'},
-        {d:'60 dias',k:'d60',c:'var(--gold-dark)',bg:'rgba(201,168,76,.08)',bc:'rgba(201,168,76,.2)'},
-        {d:'90 dias',k:'d90',c:'var(--blue)',bg:'rgba(90,122,154,.08)',bc:'rgba(90,122,154,.2)'}
-      ].map(m=>{const p=plano[m.k];return`<div style="background:${m.bg};border:1px solid ${m.bc};border-radius:9px;padding:12px">
-        <div style="font-size:10px;font-weight:700;color:${m.c};margin-bottom:6px;text-transform:uppercase">${m.d} · ${p.foco}</div>
-        ${p.acoes.map(a=>`<div style="font-size:11px;color:var(--dark);margin-bottom:4px;line-height:1.4">• ${a}</div>`).join('')}
-        <div style="font-size:10px;color:var(--mid);margin-top:7px;padding-top:6px;border-top:1px solid ${m.bc};font-style:italic">${p.entrega}</div>
-      </div>`;}).join('')}
-    </div>
-  </div>
-
-  <div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:11px;padding:14px;margin-bottom:14px">
-    <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🤝 Acordo de Crescimento</div>
-    <div style="font-size:12px;color:var(--dark);line-height:1.6">${acordos[clf.l]}</div>
-  </div>
-
-  <div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:11px;padding:18px;text-align:center">
-    <div style="font-size:22px;margin-bottom:8px">🌸</div>
-    <div style="font-size:13px;font-style:italic;color:var(--gold-light);line-height:1.7">"${msgs[clf.l]}"</div>
-  </div>`;
-
+  let html=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:12px"><div style="font-size:38px">${clf.e}</div><div><div style="font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${clf.l} · ${pct}%</div><div style="font-size:12px;font-style:italic;color:var(--dark);margin-top:3px">${perfis[clf.l]}</div></div></div>
+  <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:11px;padding:16px;margin-bottom:14px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📊 Diagnóstico</div><div style="font-size:13px;line-height:1.7;color:var(--dark)">${diagnosticos[clf.l]||diagnosticos['Bom']}</div></div>
+  ${topFortes.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">💪 Forças a Potencializar</div>${topFortes.map(p=>`<div style="background:rgba(90,138,106,.08);border:1px solid rgba(90,138,106,.25);border-radius:9px;padding:9px 13px;font-size:12px;color:var(--dark);line-height:1.5;margin-bottom:6px">✨ ${p}</div>`).join('')}</div>`:''}
+  ${prioridades.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🎯 Prioridades de Desenvolvimento</div>${prioridades.map(p=>`<div style="background:var(--white);border:1px solid #EDE8E0;border-left:3px solid ${p.nota<=2?'var(--red)':p.nota===3?'var(--gold)':'var(--green)'};border-radius:9px;padding:14px;margin-bottom:10px"><div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap"><span style="font-size:12px;font-weight:700;color:var(--dark)">${p.item}</span><span style="background:${p.nota<=2?'rgba(192,57,43,.1)':p.nota===3?'rgba(201,168,76,.1)':'rgba(90,138,106,.1)'};color:${p.nota<=2?'var(--red)':p.nota===3?'var(--gold-dark)':'var(--green)'};border-radius:18px;padding:2px 9px;font-size:10px;font-weight:700">${p.nota}/5</span><span style="background:rgba(90,122,154,.1);color:var(--blue);border-radius:18px;padding:2px 9px;font-size:10px">${p.prazo}</span></div><div style="font-size:12px;color:var(--dark);margin-bottom:6px">📌 ${p.acao}</div><div style="font-size:11px;color:var(--blue);margin-bottom:5px">📚 ${p.recurso}</div><div style="font-size:11px;color:var(--mid);padding-top:6px;border-top:1px solid #F0EBE3">📈 Indicador: ${p.ind}</div></div>`).join('')}</div>`:''}
+  <div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🗓️ Plano 30 · 60 · 90 dias</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${[{d:'30 dias',k:'d30',c:'var(--green)',bg:'rgba(90,138,106,.08)',bc:'rgba(90,138,106,.2)'},{d:'60 dias',k:'d60',c:'var(--gold-dark)',bg:'rgba(201,168,76,.08)',bc:'rgba(201,168,76,.2)'},{d:'90 dias',k:'d90',c:'var(--blue)',bg:'rgba(90,122,154,.08)',bc:'rgba(90,122,154,.2)'}].map(m=>{const p=plano[m.k];return`<div style="background:${m.bg};border:1px solid ${m.bc};border-radius:9px;padding:12px"><div style="font-size:10px;font-weight:700;color:${m.c};margin-bottom:6px;text-transform:uppercase">${m.d} · ${p.foco}</div>${p.acoes.map(a=>`<div style="font-size:11px;color:var(--dark);margin-bottom:4px;line-height:1.4">• ${a}</div>`).join('')}<div style="font-size:10px;color:var(--mid);margin-top:7px;padding-top:6px;border-top:1px solid ${m.bc};font-style:italic">${p.entrega}</div></div>`;}).join('')}</div></div>
+  <div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:11px;padding:14px;margin-bottom:14px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🤝 Acordo de Crescimento</div><div style="font-size:12px;color:var(--dark);line-height:1.6">${acordos[clf.l]}</div></div>
+  <div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:11px;padding:18px;text-align:center"><div style="font-size:22px;margin-bottom:8px">🌸</div><div style="font-size:13px;font-style:italic;color:var(--gold-light);line-height:1.7">"${msgs[clf.l]}"</div></div>`;
   document.getElementById('pdiContent').innerHTML=html;
   document.getElementById('pdiLoadingBadge').textContent='✅ pronto!';
-  btn.textContent='🔄 Gerar novamente';
-  btn.disabled=false;
-  showToast('🚀 PDI gerado!');
+  btn.textContent='🔄 Gerar novamente';btn.disabled=false;showToast('🚀 PDI gerado!');
 }
-
-
-
-
-
-
-
-
 
 function renderPDI(pdi){
   if(!pdi)return'';
   const pctColor=pdi.pct>=80?'var(--green)':pdi.pct>=60?'var(--gold)':'var(--red)';
   const clf=getClf(pdi.pct);
-  let h=`
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:13px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:11px">
-    <div style="font-size:34px">${clf.e}</div>
-    <div><div style="font-size:10px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${pdi.classificacao} · ${pdi.pct}%</div>
-    <div style="font-size:12px;font-style:italic;color:var(--dark);margin-top:2px">${pdi.perfil}</div></div>
-  </div>
-  <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:10px;padding:14px;margin-bottom:12px">
-    <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">📊 Diagnóstico</div>
-    <div style="font-size:12px;line-height:1.7;color:var(--dark)">${pdi.diagnostico}</div>
-  </div>`;
-
-  if(pdi.fortes&&pdi.fortes.length){
-    h+=`<div style="margin-bottom:12px">
-    <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">💪 Forças a Potencializar</div>
-    ${pdi.fortes.map(p=>`<div style="background:rgba(90,138,106,.08);border:1px solid rgba(90,138,106,.25);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--dark);line-height:1.5;margin-bottom:5px">✨ ${p}</div>`).join('')}
-    </div>`;
-  }
-
-  if(pdi.prioridades&&pdi.prioridades.length){
-    h+=`<div style="margin-bottom:12px">
-    <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🎯 Ações Prioritárias</div>`;
-    pdi.prioridades.forEach((p,i)=>{
-      const cor=p.nota<=2?'var(--red)':p.nota===3?'var(--gold)':'var(--green)';
-      const bgcor=p.nota<=2?'rgba(192,57,43,.08)':p.nota===3?'rgba(201,168,76,.08)':'rgba(90,138,106,.08)';
-      h+=`<div style="background:${bgcor};border:1px solid ${p.nota<=2?'rgba(192,57,43,.2)':p.nota===3?'rgba(201,168,76,.2)':'rgba(90,138,106,.2)'};border-left:3px solid ${cor};border-radius:9px;padding:12px;margin-bottom:9px">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap">
-          <span style="font-size:11px;font-weight:700;color:var(--dark)">${i+1}. ${p.item}</span>
-          <span style="background:${p.nota<=2?'rgba(192,57,43,.12)':p.nota===3?'rgba(201,168,76,.12)':'rgba(90,138,106,.12)'};color:${cor};border-radius:18px;padding:2px 8px;font-size:10px;font-weight:700">${p.nota}/5 · ${p.prazo}</span>
-        </div>
-        <div style="font-size:12px;color:var(--dark);margin-bottom:5px;line-height:1.5">📌 ${p.acao}</div>
-        <div style="font-size:11px;color:var(--blue);margin-bottom:4px">📚 ${p.recurso}</div>
-        <div style="font-size:11px;color:var(--mid);padding-top:5px;border-top:1px solid rgba(0,0,0,.06)">📈 ${p.ind}</div>
-      </div>`;
-    });
-    h+=`</div>`;
-  }
-
-  if(pdi.plano){
-    h+=`<div style="margin-bottom:12px">
-    <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🗓️ Plano 30 · 60 · 90 dias</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-    ${[
-      {d:'30 dias',k:'d30',c:'var(--green)',bg:'rgba(90,138,106,.08)',bc:'rgba(90,138,106,.2)'},
-      {d:'60 dias',k:'d60',c:'var(--gold-dark)',bg:'rgba(201,168,76,.08)',bc:'rgba(201,168,76,.2)'},
-      {d:'90 dias',k:'d90',c:'var(--blue)',bg:'rgba(90,122,154,.08)',bc:'rgba(90,122,154,.2)'}
-    ].map(m=>{
-      const p=pdi.plano[m.k];if(!p)return'';
-      return`<div style="background:${m.bg};border:1px solid ${m.bc};border-radius:8px;padding:10px">
-        <div style="font-size:9px;font-weight:700;color:${m.c};margin-bottom:5px;text-transform:uppercase">${m.d} · ${p.foco}</div>
-        ${p.acoes.map(a=>`<div style="font-size:10px;color:var(--dark);margin-bottom:3px;line-height:1.4">• ${a}</div>`).join('')}
-        <div style="font-size:10px;color:var(--mid);margin-top:5px;padding-top:5px;border-top:1px solid ${m.bc};font-style:italic">${p.entrega}</div>
-      </div>`;
-    }).join('')}
-    </div></div>`;
-  }
-
-  if(pdi.acordo){
-    h+=`<div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:12px;margin-bottom:12px">
-    <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">🤝 Acordo de Crescimento</div>
-    <div style="font-size:12px;color:var(--dark);line-height:1.6">${pdi.acordo}</div>
-    </div>`;
-  }
-
-  if(pdi.msg){
-    h+=`<div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:10px;padding:16px;text-align:center">
-    <div style="font-size:20px;margin-bottom:7px">🌸</div>
-    <div style="font-size:12px;font-style:italic;color:var(--gold-light);line-height:1.7">"${pdi.msg}"</div>
-    </div>`;
-  }
-
+  let h=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:13px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:11px"><div style="font-size:34px">${clf.e}</div><div><div style="font-size:10px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${pdi.classificacao} · ${pdi.pct}%</div><div style="font-size:12px;font-style:italic;color:var(--dark);margin-top:2px">${pdi.perfil||''}</div></div></div>
+  <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:10px;padding:14px;margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">📊 Diagnóstico</div><div style="font-size:12px;line-height:1.7;color:var(--dark)">${pdi.diagnostico}</div></div>`;
+  if(pdi.fortes&&pdi.fortes.length){h+=`<div style="margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">💪 Forças a Potencializar</div>${pdi.fortes.map(p=>`<div style="background:rgba(90,138,106,.08);border:1px solid rgba(90,138,106,.25);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--dark);line-height:1.5;margin-bottom:5px">✨ ${p}</div>`).join('')}</div>`}
+  if(pdi.prioridades&&pdi.prioridades.length){h+=`<div style="margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🎯 Ações Prioritárias</div>`;pdi.prioridades.forEach((p,i)=>{const cor=p.nota<=2?'var(--red)':p.nota===3?'var(--gold)':'var(--green)';h+=`<div style="background:${p.nota<=2?'rgba(192,57,43,.06)':p.nota===3?'rgba(201,168,76,.06)':'rgba(90,138,106,.06)'};border:1px solid ${p.nota<=2?'rgba(192,57,43,.2)':p.nota===3?'rgba(201,168,76,.2)':'rgba(90,138,106,.2)'};border-left:3px solid ${cor};border-radius:9px;padding:12px;margin-bottom:9px"><div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--dark)">${i+1}. ${p.item}</span><span style="background:${p.nota<=2?'rgba(192,57,43,.12)':p.nota===3?'rgba(201,168,76,.12)':'rgba(90,138,106,.12)'};color:${cor};border-radius:18px;padding:2px 8px;font-size:10px;font-weight:700">${p.nota}/5 · ${p.prazo}</span></div><div style="font-size:12px;color:var(--dark);margin-bottom:5px;line-height:1.5">📌 ${p.acao}</div><div style="font-size:11px;color:var(--blue);margin-bottom:4px">📚 ${p.recurso}</div><div style="font-size:11px;color:var(--mid);padding-top:5px;border-top:1px solid rgba(0,0,0,.06)">📈 ${p.ind}</div></div>`});h+=`</div>`}
+  if(pdi.plano){h+=`<div style="margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🗓️ Plano 30 · 60 · 90 dias</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">${[{d:'30 dias',k:'d30',c:'var(--green)',bg:'rgba(90,138,106,.08)',bc:'rgba(90,138,106,.2)'},{d:'60 dias',k:'d60',c:'var(--gold-dark)',bg:'rgba(201,168,76,.08)',bc:'rgba(201,168,76,.2)'},{d:'90 dias',k:'d90',c:'var(--blue)',bg:'rgba(90,122,154,.08)',bc:'rgba(90,122,154,.2)'}].map(m=>{const p=pdi.plano[m.k];if(!p)return'';return`<div style="background:${m.bg};border:1px solid ${m.bc};border-radius:8px;padding:10px"><div style="font-size:9px;font-weight:700;color:${m.c};margin-bottom:5px;text-transform:uppercase">${m.d} · ${p.foco}</div>${p.acoes.map(a=>`<div style="font-size:10px;color:var(--dark);margin-bottom:3px;line-height:1.4">• ${a}</div>`).join('')}<div style="font-size:10px;color:var(--mid);margin-top:5px;padding-top:5px;border-top:1px solid ${m.bc};font-style:italic">${p.entrega}</div></div>`;}).join('')}</div></div>`}
+  if(pdi.acordo){h+=`<div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:12px;margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">🤝 Acordo de Crescimento</div><div style="font-size:12px;color:var(--dark);line-height:1.6">${pdi.acordo}</div></div>`}
+  if(pdi.msg){h+=`<div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:10px;padding:16px;text-align:center"><div style="font-size:20px;margin-bottom:7px">🌸</div><div style="font-size:12px;font-style:italic;color:var(--gold-light);line-height:1.7">"${pdi.msg}"</div></div>`}
   return h;
 }
 
 // ===== AVALIAÇÃO LÍDER =====
-const FCAT_LIDER={
-  '🎯 RESULTADOS E METAS':['Atingimento da meta da loja','Gestão do ticket médio da equipe','Acompanhamento de indicadores diários','Planejamento de ações para bater meta','Consistência e previsibilidade de resultados'],
-  '👥 LIDERANÇA DE EQUIPE':['Engajamento e motivação da equipe','Gestão de conflitos e clima da loja','Desenvolvimento das vendedoras','Delegação e distribuição de tarefas','Feedback contínuo e construtivo','Exemplo e postura de liderança'],
-  '🏪 GESTÃO DA LOJA':['Abertura e fechamento de acordo com processos','Organização, limpeza e visual da loja','Controle de estoque e reposição','Execução de campanhas e ações da marca','Cumprimento de normas e procedimentos'],
-  '💬 COMUNICAÇÃO E RELACIONAMENTO':['Comunicação clara com a equipe','Alinhamento com a gestora regional','Atendimento a clientes estratégicos','Resolução de problemas e reclamações','Transparência e honestidade'],
-  '🌱 DESENVOLVIMENTO PESSOAL':['Autoconhecimento e autocrítica','Abertura a feedbacks da liderança','Gestão emocional e resiliência','Visão de negócio e dono da loja','Proatividade e iniciativa estratégica']
-};
-
-const BANCO_ACOES_LIDER={
-  'Atingimento da meta da loja':{acao:'Criar painel visual de acompanhamento diário da meta. Reunião de 10 min com a equipe ao abrir a loja: meta do dia, resultado ontem, foco do turno.',recurso:'Livro: Execução — Larry Bossidy & Ram Charan',ind:'Meta da loja atingida em ≥ 80% dos dias do mês'},
-  'Gestão do ticket médio da equipe':{acao:'Treinar a equipe semanalmente em técnicas de venda adicional. Criar ranking interno de ticket médio para estimular competição saudável.',recurso:'Técnica: SPIN Selling + Kit sugestão do mês',ind:'Ticket médio da loja crescendo ≥ 10% ao mês'},
-  'Acompanhamento de indicadores diários':{acao:'Consultar painel de indicadores 3x ao dia (abertura, meio e fechamento). Comunicar à equipe os números em tempo real.',recurso:'Hábito: Dashboard Avatim atualizado diariamente',ind:'Conhece e comunica todos os indicadores sem consultar'},
-  'Planejamento de ações para bater meta':{acao:'No início de cada semana, montar 1 plano de ação específico com táticas para a semana. Revisar na sexta o que funcionou.',recurso:'Ferramenta: Método PDCA aplicado ao varejo',ind:'Plano semanal documentado e executado'},
-  'Consistência e previsibilidade de resultados':{acao:'Analisar os dias/turnos de pior performance e criar estratégia específica para esses momentos.',recurso:'Livro: As Leis do Líder — John Maxwell',ind:'Variação de resultado entre dias reduzindo mês a mês'},
-  'Engajamento e motivação da equipe':{acao:'Reconhecer publicamente 1 conquista de cada vendedora por semana. Criar ritual de celebração de metas atingidas.',recurso:'Livro: O Gerente Minuto — Ken Blanchard',ind:'Percepção positiva da equipe em pesquisa de clima'},
-  'Gestão de conflitos e clima da loja':{acao:'Abordar conflitos em até 24h, de forma privada e empática. Criar acordo de convivência com a equipe.',recurso:'Livro: Comunicação Não-Violenta — Marshall Rosenberg',ind:'Zero conflitos não resolvidos ou escalados desnecessariamente'},
-  'Desenvolvimento das vendedoras':{acao:'Fazer 1 observação de atendimento por semana com cada vendedora e dar feedback estruturado na hora.',recurso:'Metodologia: Feedforward — Marshall Goldsmith',ind:'Melhora mensurável nas avaliações das vendedoras'},
-  'Delegação e distribuição de tarefas':{acao:'Mapear as forças de cada vendedora e delegar tarefas alinhadas ao perfil de cada uma. Evitar centralizar tudo.',recurso:'Livro: As 5 Disfunções de uma Equipe — Patrick Lencioni',ind:'Equipe executa rotinas sem precisar ser solicitada'},
-  'Feedback contínuo e construtivo':{acao:'Praticar o modelo SBI (Situação-Comportamento-Impacto) em todos os feedbacks. Dar pelo menos 1 feedback positivo e 1 de desenvolvimento por semana.',recurso:'Modelo: SBI Feedback — Center for Creative Leadership',ind:'Feedbacks dados e registrados semanalmente'},
-  'Exemplo e postura de liderança':{acao:'Revisitar diariamente: estou sendo o exemplo que quero ver na minha equipe? Postura, atendimento, pontualidade e energia.',recurso:'Livro: As 21 Irrefutáveis Leis da Liderança — John Maxwell',ind:'Equipe espelha comportamentos positivos da líder'},
-  'Abertura e fechamento de acordo com processos':{acao:'Criar checklist de abertura e fechamento e validar diariamente. Treinar a substituta para executar na ausência.',recurso:'Metodologia: 5S + Checklist operacional Avatim',ind:'100% dos checklists concluídos sem pendências'},
-  'Organização, limpeza e visual da loja':{acao:'Inspeção visual da loja a cada 2 horas durante o turno. Corrigir imediatamente qualquer desvio do padrão visual.',recurso:'Padrão: Manual de Visual Merchandising Avatim',ind:'Loja em conformidade com o padrão visual em 100% das inspeções'},
-  'Controle de estoque e reposição':{acao:'Verificar estoque crítico toda manhã. Acionar pedido de reposição antes de zerar. Manter lista de produtos de alto giro.',recurso:'Prática: Kanban visual + planilha de mínimos de estoque',ind:'Zero rupturas de produtos estratégicos'},
-  'Execução de campanhas e ações da marca':{acao:'Ler o briefing de campanha com antecedência, briefar a equipe e garantir execução no prazo e padrão.',recurso:'Guia: Manual de campanhas Avatim',ind:'100% das campanhas executadas no prazo e padrão'},
-  'Cumprimento de normas e procedimentos':{acao:'Revisar mensalmente o manual de normas com a equipe. Tratar desvios como oportunidade de alinhamento, não punição.',recurso:'Normas operacionais Avatim + reunião mensal de alinhamento',ind:'Zero desvios críticos de procedimentos no mês'},
-  'Comunicação clara com a equipe':{acao:'Fazer briefing de equipe diário (5-10 min). Usar WhatsApp do grupo apenas para informações relevantes.',recurso:'Livro: Comunicação — Brian Tracy',ind:'Equipe tem clareza sobre metas, prioridades e informações do dia'},
-  'Alinhamento com a gestora regional':{acao:'Enviar relatório semanal resumido à gestora regional: resultado, destaque positivo e 1 ponto de atenção.',recurso:'Hábito: Check-in semanal estruturado',ind:'Gestora regional informada e alinhada sem precisar cobrar'},
-  'Atendimento a clientes estratégicos':{acao:'Identificar os top 20 clientes da loja e criar estratégia de relacionamento personalizado para cada.',recurso:'Ferramenta: CRM no WhatsApp Business com etiquetas VIP',ind:'Aumento no retorno e ticket dos clientes estratégicos'},
-  'Resolução de problemas e reclamações':{acao:'Protocolo de 3 passos para reclamações: ouvir sem interromper, pedir desculpas genuínas, oferecer solução imediata.',recurso:'Livro: Satisfação Garantida — Tony Hsieh',ind:'100% das reclamações resolvidas no mesmo dia'},
-  'Transparência e honestidade':{acao:'Compartilhar resultados reais com a equipe, inclusive em dias difíceis. Construir cultura de verdade e confiança.',recurso:'Livro: Extrema Honestidade — Kim Scott (Radical Candor)',ind:'Equipe sente segurança para trazer problemas à líder'},
-  'Autoconhecimento e autocrítica':{acao:'Fazer autoavaliação semanal: o que fiz bem, o que faria diferente, o que aprendi. Anotar em diário de liderança.',recurso:'Livro: O Líder Que Não Tinha Título — Robin Sharma',ind:'Diário de liderança preenchido semanalmente'},
-  'Abertura a feedbacks da liderança':{acao:'Ao receber feedback, praticar escuta ativa sem defender. Agradecer, anotar e implementar em até 7 dias.',recurso:'Livro: Obrigado pelo Feedback — Douglas Stone & Sheila Heen',ind:'Aplicação visível de feedbacks recebidos da gestora'},
-  'Gestão emocional e resiliência':{acao:'Criar ritual de "reset" em dias difíceis. Desenvolver vocabulário emocional: nomear o que sente antes de reagir.',recurso:'Livro: Inteligência Emocional — Daniel Goleman',ind:'Manutenção de liderança equilibrada mesmo sob pressão'},
-  'Visão de negócio e dono da loja':{acao:'Analisar mensalmente os resultados da loja com olhar de dono: o que aumentaria a receita, reduziria custos ou melhoraria a experiência.',recurso:'Livro: A Mentalidade de Dono — Ram Charan',ind:'Propõe pelo menos 1 melhoria estratégica por mês à gestora'},
-  'Proatividade e iniciativa estratégica':{acao:'Não esperar problemas virem — antecipar. Semanalmente: identificar 1 risco ou oportunidade e agir antes.',recurso:'Livro: Faça Acontecer — Sheryl Sandberg',ind:'Ações proativas registradas e implementadas mensalmente'}
-};
-
+const FCAT_LIDER={'🎯 RESULTADOS E METAS':['Atingimento da meta da loja','Gestão do ticket médio da equipe','Acompanhamento de indicadores diários','Planejamento de ações para bater meta','Consistência e previsibilidade de resultados'],'👥 LIDERANÇA DE EQUIPE':['Engajamento e motivação da equipe','Gestão de conflitos e clima da loja','Desenvolvimento das vendedoras','Delegação e distribuição de tarefas','Feedback contínuo e construtivo','Exemplo e postura de liderança'],'🏪 GESTÃO DA LOJA':['Abertura e fechamento de acordo com processos','Organização, limpeza e visual da loja','Controle de estoque e reposição','Execução de campanhas e ações da marca','Cumprimento de normas e procedimentos'],'💬 COMUNICAÇÃO E RELACIONAMENTO':['Comunicação clara com a equipe','Alinhamento com a gestora regional','Atendimento a clientes estratégicos','Resolução de problemas e reclamações','Transparência e honestidade'],'🌱 DESENVOLVIMENTO PESSOAL':['Autoconhecimento e autocrítica','Abertura a feedbacks da liderança','Gestão emocional e resiliência','Visão de negócio e dono da loja','Proatividade e iniciativa estratégica']};
 let S_lider={loja:'Shopping Mooca',stars:{},comm:{}};
-
-function selLiderLoja(el,l){
-  document.querySelectorAll('#liderLojaTabs .loja-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  S_lider.loja=l;
-  document.getElementById('fLL').value=l;
-}
-
+function selLiderLoja(el,l){document.querySelectorAll('#liderLojaTabs .loja-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');S_lider.loja=l;document.getElementById('fLL').value=l}
 function buildLiderCrit(){
   S_lider.stars={};S_lider.comm={};
   const c=document.getElementById('liderCriterios');c.innerHTML='';
@@ -1575,219 +1151,71 @@ function buildLiderCrit(){
       const row=document.createElement('div');row.className='star-row';
       const wrap=document.createElement('div');wrap.style.cssText='display:flex;gap:3px;align-items:center';
       const lbl=document.createElement('span');lbl.className='star-score-lbl';lbl.id='lsl'+encodeKey(k);lbl.textContent='0';
-      [1,2,3,4,5].forEach(n=>{
-        const b=document.createElement('button');b.className='star-btn';b.textContent='★';
-        b.onclick=()=>setStarLider(k,n);
-        wrap.appendChild(b);
-      });
+      [1,2,3,4,5].forEach(n=>{const b=document.createElement('button');b.className='star-btn';b.textContent='★';b.onclick=()=>setStarLider(k,n);wrap.appendChild(b)});
       wrap.appendChild(lbl);
       const info=document.createElement('div');info.className='star-info';
       info.innerHTML=`<div class="star-label-text">${item}</div>`;
-      const ta=document.createElement('textarea');ta.className='star-comment-input';ta.placeholder='Comentário opcional...';
-      ta.oninput=()=>{S_lider.comm[k]=ta.value};
+      const ta=document.createElement('textarea');ta.className='star-comment-input';ta.placeholder='Comentário opcional...';ta.oninput=()=>{S_lider.comm[k]=ta.value};
       info.appendChild(ta);
       row.appendChild(info);row.appendChild(wrap);c.appendChild(row);
     });
-  });
-  updLiderScore();
+  });updLiderScore();
 }
-
 function setStarLider(k,n){
-  S_lider.stars[k]=n;
-  const ek=encodeKey(k);
-  const lbl=document.getElementById('lsl'+ek);if(lbl)lbl.textContent=n;
-  const row=lbl&&lbl.closest('.star-row');
-  if(row){row.querySelectorAll('.star-btn').forEach((b,i)=>{b.style.color=i<n?'var(--gold)':'#DDD5CA'})}
+  S_lider.stars[k]=n;const ek=encodeKey(k);const lbl=document.getElementById('lsl'+ek);if(lbl)lbl.textContent=n;
+  const row=lbl&&lbl.closest('.star-row');if(row){row.querySelectorAll('.star-btn').forEach((b,i)=>{b.style.color=i<n?'var(--gold)':'#DDD5CA'})}
   updLiderScore();
 }
-
 function updLiderScore(){
-  const vals=Object.values(S_lider.stars);
-  const t=vals.reduce((a,b)=>a+b,0);
-  const m=vals.length*5;
-  const pct=m>0?Math.round((t/m)*100):0;
-  document.getElementById('liderBar').style.width=pct+'%';
-  document.getElementById('liderScore').textContent=t;
-  const cl=getClf(pct);
-  document.getElementById('liderClassifEl').innerHTML=`<span class="classif-badge ${cl.c}">${cl.e} ${cl.l}</span>`;
+  const vals=Object.values(S_lider.stars);const t=vals.reduce((a,b)=>a+b,0);const m=vals.length*5;const pct=m>0?Math.round((t/m)*100):0;
+  document.getElementById('liderBar').style.width=pct+'%';document.getElementById('liderScore').textContent=t;
+  const cl=getClf(pct);document.getElementById('liderClassifEl').innerHTML=`<span class="classif-badge ${cl.c}">${cl.e} ${cl.l}</span>`;
 }
-
 function gerarPDILider(){
   const nome=document.getElementById('fLN').value||'o(a) líder';
-  const loja=document.getElementById('fLL').value;
   const btn=document.getElementById('btnGerarPDILider');
   btn.disabled=true;btn.textContent='⏳ Gerando...';
   document.getElementById('liderPdiLoadingBadge').textContent='analisando...';
   document.getElementById('liderPdiContent').innerHTML='<div style="text-align:center;padding:36px;color:var(--mid)"><div style="font-size:32px;margin-bottom:12px">👑</div><div style="font-size:13px">Criando PDI de liderança para '+nome+'...</div></div>';
-
-  const starsSnap={...S_lider.stars};
-  let totalPontos=0,totalCrit=0;
-  const notasPorCat={};
-  const fortes=[],criticos=[],medios=[];
-
-  Object.entries(FCAT_LIDER).forEach(([cat,items])=>{
-    const notas=items.map(item=>starsSnap[cat+'|'+item]||0);
-    const soma=notas.reduce((a,b)=>a+b,0);
-    notasPorCat[cat]={media:parseFloat((soma/notas.length).toFixed(1)),itens:items.map((item,i)=>({item,nota:notas[i]}))};
-    totalPontos+=soma;totalCrit+=notas.length;
-    notas.forEach((n,i)=>{
-      if(n>=4)fortes.push({cat,item:items[i],nota:n});
-      else if(n>0&&n<=2)criticos.push({cat,item:items[i],nota:n});
-      else if(n===3)medios.push({cat,item:items[i],nota:n});
-    });
-  });
-
-  const pct=Math.round((totalPontos/(totalCrit*5))*100);
-  const clf=getClf(pct);
-
+  const BANCO_LIDER={'Atingimento da meta da loja':{acao:'Criar painel visual de acompanhamento diário da meta. Reunião de 10 min com a equipe ao abrir a loja.',recurso:'Livro: Execução — Larry Bossidy',ind:'Meta da loja atingida em ≥ 80% dos dias'},'Gestão do ticket médio da equipe':{acao:'Treinar a equipe semanalmente em técnicas de venda adicional.',recurso:'Técnica: SPIN Selling + Kit sugestão do mês',ind:'Ticket médio crescendo ≥ 10% ao mês'},'Acompanhamento de indicadores diários':{acao:'Consultar painel de indicadores 3x ao dia.',recurso:'Hábito: Dashboard Avatim atualizado diariamente',ind:'Conhece e comunica todos os indicadores sem consultar'},'Planejamento de ações para bater meta':{acao:'No início de cada semana, montar 1 plano de ação com táticas para a semana.',recurso:'Ferramenta: Método PDCA aplicado ao varejo',ind:'Plano semanal documentado e executado'},'Consistência e previsibilidade de resultados':{acao:'Analisar os dias/turnos de pior performance e criar estratégia específica.',recurso:'Livro: As Leis do Líder — John Maxwell',ind:'Variação de resultado entre dias reduzindo mês a mês'},'Engajamento e motivação da equipe':{acao:'Reconhecer publicamente 1 conquista de cada vendedora por semana.',recurso:'Livro: O Gerente Minuto — Ken Blanchard',ind:'Percepção positiva da equipe em pesquisa de clima'},'Gestão de conflitos e clima da loja':{acao:'Abordar conflitos em até 24h, de forma privada e empática.',recurso:'Livro: Comunicação Não-Violenta — Marshall Rosenberg',ind:'Zero conflitos não resolvidos'},'Desenvolvimento das vendedoras':{acao:'Fazer 1 observação de atendimento por semana com cada vendedora.',recurso:'Metodologia: Feedforward — Marshall Goldsmith',ind:'Melhora mensurável nas avaliações das vendedoras'},'Delegação e distribuição de tarefas':{acao:'Mapear as forças de cada vendedora e delegar tarefas alinhadas ao perfil.',recurso:'Livro: As 5 Disfunções de uma Equipe — Patrick Lencioni',ind:'Equipe executa rotinas sem precisar ser solicitada'},'Feedback contínuo e construtivo':{acao:'Praticar o modelo SBI (Situação-Comportamento-Impacto) em todos os feedbacks.',recurso:'Modelo: SBI Feedback — Center for Creative Leadership',ind:'Feedbacks dados e registrados semanalmente'},'Exemplo e postura de liderança':{acao:'Revisitar diariamente: estou sendo o exemplo que quero ver na minha equipe?',recurso:'Livro: As 21 Irrefutáveis Leis da Liderança — John Maxwell',ind:'Equipe espelha comportamentos positivos da líder'},'Abertura e fechamento de acordo com processos':{acao:'Criar checklist de abertura e fechamento e validar diariamente.',recurso:'Metodologia: 5S + Checklist operacional Avatim',ind:'100% dos checklists concluídos sem pendências'},'Organização, limpeza e visual da loja':{acao:'Inspeção visual da loja a cada 2 horas durante o turno.',recurso:'Padrão: Manual de Visual Merchandising Avatim',ind:'Loja em conformidade com o padrão visual em 100% das inspeções'},'Controle de estoque e reposição':{acao:'Verificar estoque crítico toda manhã.',recurso:'Prática: Kanban visual + planilha de mínimos de estoque',ind:'Zero rupturas de produtos estratégicos'},'Execução de campanhas e ações da marca':{acao:'Ler o briefing de campanha com antecedência e briefar a equipe.',recurso:'Guia: Manual de campanhas Avatim',ind:'100% das campanhas executadas no prazo'},'Cumprimento de normas e procedimentos':{acao:'Revisar mensalmente o manual de normas com a equipe.',recurso:'Normas operacionais Avatim + reunião mensal de alinhamento',ind:'Zero desvios críticos de procedimentos'},'Comunicação clara com a equipe':{acao:'Fazer briefing de equipe diário (5-10 min).',recurso:'Livro: Comunicação — Brian Tracy',ind:'Equipe tem clareza sobre metas e prioridades'},'Alinhamento com a gestora regional':{acao:'Enviar relatório semanal resumido à gestora regional.',recurso:'Hábito: Check-in semanal estruturado',ind:'Gestora regional informada sem precisar cobrar'},'Atendimento a clientes estratégicos':{acao:'Identificar os top 20 clientes da loja e criar estratégia personalizada.',recurso:'Ferramenta: CRM no WhatsApp Business com etiquetas VIP',ind:'Aumento no retorno e ticket dos clientes estratégicos'},'Resolução de problemas e reclamações':{acao:'Protocolo: ouvir sem interromper, pedir desculpas genuínas, oferecer solução imediata.',recurso:'Livro: Satisfação Garantida — Tony Hsieh',ind:'100% das reclamações resolvidas no mesmo dia'},'Transparência e honestidade':{acao:'Compartilhar resultados reais com a equipe, inclusive em dias difíceis.',recurso:'Livro: Radical Candor — Kim Scott',ind:'Equipe sente segurança para trazer problemas à líder'},'Autoconhecimento e autocrítica':{acao:'Fazer autoavaliação semanal: o que fiz bem, o que faria diferente.',recurso:'Livro: O Líder Que Não Tinha Título — Robin Sharma',ind:'Diário de liderança preenchido semanalmente'},'Abertura a feedbacks da liderança':{acao:'Ao receber feedback, praticar escuta ativa sem defender.',recurso:'Livro: Obrigado pelo Feedback — Douglas Stone',ind:'Aplicação visível de feedbacks recebidos da gestora'},'Gestão emocional e resiliência':{acao:'Criar ritual de "reset" em dias difíceis.',recurso:'Livro: Inteligência Emocional — Daniel Goleman',ind:'Manutenção de liderança equilibrada mesmo sob pressão'},'Visão de negócio e dono da loja':{acao:'Analisar mensalmente os resultados com olhar de dono.',recurso:'Livro: A Mentalidade de Dono — Ram Charan',ind:'Propõe pelo menos 1 melhoria estratégica por mês'},'Proatividade e iniciativa estratégica':{acao:'Semanalmente: identificar 1 risco ou oportunidade e agir antes.',recurso:'Livro: Faça Acontecer — Sheryl Sandberg',ind:'Ações proativas registradas e implementadas mensalmente'}};
+  const starsSnap={...S_lider.stars};let totalPontos=0,totalCrit=0;const fortes=[],criticos=[],medios=[];
+  Object.entries(FCAT_LIDER).forEach(([cat,items])=>{const notas=items.map(item=>starsSnap[cat+'|'+item]||0);const soma=notas.reduce((a,b)=>a+b,0);totalPontos+=soma;totalCrit+=notas.length;notas.forEach((n,i)=>{if(n>=4)fortes.push({cat,item:items[i],nota:n});else if(n>0&&n<=2)criticos.push({cat,item:items[i],nota:n});else if(n===3)medios.push({cat,item:items[i],nota:n})})});
+  const pct=Math.round((totalPontos/(totalCrit*5))*100);const clf=getClf(pct);
   const candidatos=[...criticos,...medios,...fortes.filter(f=>f.nota<5)].slice(0,4);
-  const prioridades=candidatos.map(c=>{
-    const b=BANCO_ACOES_LIDER[c.item]||{
-      acao:`Desenvolver ${c.item.toLowerCase()} com prática intencional e busca de feedback semanal da gestora.`,
-      recurso:'Reflexão semanal com a gestora regional',
-      ind:'Melhora visível na próxima avaliação'
-    };
-    return{item:c.item,cat:c.cat,nota:c.nota,acao:b.acao,recurso:b.recurso,ind:b.ind,prazo:c.nota<=2?'30 dias':c.nota===3?'60 dias':'90 dias'};
-  });
-
-  const catMedias=Object.entries(notasPorCat).map(([cat,d])=>({cat,media:d.media})).sort((a,b)=>b.media-a.media);
-  const melhorCat=catMedias[0];
-  const piorCat=catMedias[catMedias.length-1];
-
-  const diagnosticos={
-    'Excelente':`${nome} demonstra liderança madura e resultados consistentes. Sua equipe é reflexo direto da sua gestão — organizada, engajada e orientada a resultado. Pelo modelo de Liderança Situacional de Blanchard, ela está no estágio de "líder delegadora": o momento de ampliar seu impacto além da loja e inspirar outras líderes.`,
-    'Muito Bom':`${nome} apresenta liderança sólida com pontos de excelência claros, especialmente em ${melhorCat.cat.replace(/[^\w\s]/g,'')}. Pelo framework de John Maxwell, ela já transpôs o nível de liderança por posição e está construindo liderança por relacionamento — o caminho para o próximo nível é desenvolver líderes dentro da equipe.`,
-    'Bom':`${nome} tem base consistente de liderança e mostra comprometimento real com o desenvolvimento da equipe. Carol Dweck nos ensina que líderes com Growth Mindset transformam desafios em aprendizado — e ${nome} tem esse potencial. Com foco em ${piorCat.cat.replace(/[^\w\s]/g,'')}, pode dar um salto significativo.`,
-    'Precisa Melhorar':`${nome} está construindo sua identidade como líder — um processo que exige tempo, apoio e estrutura. Daniel Pink aponta que líderes em desenvolvimento precisam de clareza de propósito e pequenas vitórias para ganhar confiança. Este PDI é um mapa: com as ações certas e o suporte da gestora, a evolução pode ser rápida.`,
-    'Crítico':`${nome} enfrenta desafios significativos na liderança que precisam de atenção imediata. Marshall Goldsmith lembra: o que trouxe até aqui pode não ser o que levará ao próximo nível. Este é um momento de transição — com intervenção estruturada, feedback direto e comprometimento real, a virada é possível.`
-  };
-
-  const perfis={
-    'Excelente':'Líder de alta performance com equipe engajada e resultados consistentes',
-    'Muito Bom':'Líder comprometida em evolução, com forte base relacional e resultados acima da média',
-    'Bom':'Líder em construção com boa base e espaço claro para desenvolvimento estratégico',
-    'Precisa Melhorar':'Líder em transição que precisa de estrutura, suporte próximo e pequenas vitórias',
-    'Crítico':'Liderança em fase crítica que requer intervenção imediata e acompanhamento intensivo'
-  };
-
-  const topFortes=fortes.sort((a,b)=>b.nota-a.nota).slice(0,3).map(f=>{
-    const textos={
-      'Engajamento e motivação da equipe':'Cria energia positiva na equipe — as vendedoras se sentem valorizadas e motivadas',
-      'Exemplo e postura de liderança':'Lidera pelo exemplo — o comportamento dela é o padrão que a equipe segue',
-      'Atingimento da meta da loja':'Forte orientação a resultado — mobiliza a equipe para bater metas consistentemente',
-      'Comunicação clara com a equipe':'Comunicação assertiva que alinha a equipe e evita ruídos e retrabalho',
-      'Desenvolvimento das vendedoras':'Investe genuinamente no crescimento da equipe — forma profissionais melhores',
-      'Transparência e honestidade':'Cria cultura de confiança — equipe sabe que pode contar com ela',
-      'Gestão emocional e resiliência':'Mantém equilíbrio emocional mesmo sob pressão — ancora a equipe nos momentos difíceis',
-    };
-    return textos[f.item]||`Destaque em ${f.item} — competência que fortalece a equipe e os resultados da loja`;
-  });
+  const prioridades=candidatos.map(c=>{const b=BANCO_LIDER[c.item]||{acao:`Desenvolver ${c.item.toLowerCase()} com prática intencional.`,recurso:'Reflexão semanal com a gestora regional',ind:'Melhora visível na próxima avaliação'};return{item:c.item,cat:c.cat,nota:c.nota,acao:b.acao,recurso:b.recurso,ind:b.ind,prazo:c.nota<=2?'30 dias':c.nota===3?'60 dias':'90 dias'}});
+  const topFortes=fortes.sort((a,b)=>b.nota-a.nota).slice(0,3).map(f=>`Destaque em ${f.item} — competência que fortalece a equipe e os resultados da loja`);
   if(topFortes.length===0)topFortes.push('Comprometimento com o papel de líder','Disposição para crescer e receber feedback','Cuidado com a equipe e os resultados da loja');
-
-  const plano={
-    d30:{foco:'Diagnóstico e primeiras ações',acoes:['Alinhar expectativas com a gestora regional e revisar este PDI','Implementar 1 ritual de liderança diário (briefing de equipe)','Iniciar as ações prioritárias identificadas'],entrega:'Primeiros rituais de liderança instalados e equipe percebendo mudança'},
-    d60:{foco:'Desenvolvimento e consistência',acoes:['Executar plano de ação com consistência diária','Fazer observação de atendimento semanal com cada vendedora','Check-in quinzenal com a gestora regional para alinhamento'],entrega:'Melhora visível nos indicadores da loja e clima da equipe'},
-    d90:{foco:'Consolidação e nova liderança',acoes:['Revisar PDI com a gestora: o que evoluiu, o que ainda precisa de atenção','Identificar próximo nível de liderança a desenvolver','Começar a desenvolver uma sucessora dentro da equipe'],entrega:'Liderança consolidada e pelo menos uma vendedora em desenvolvimento acelerado'}
-  };
-
-  const acordos={
-    'Excelente':`A empresa reconhece a excelência de ${nome} e se compromete a oferecer novos desafios e visibilidade. ${nome} se compromete a continuar sendo referência e a desenvolver líderes dentro da equipe.`,
-    'Muito Bom':`A gestora se compromete a dar autonomia crescente e feedbacks estruturados. ${nome} se compromete a buscar o próximo nível de liderança e a compartilhar aprendizados com a equipe.`,
-    'Bom':`A empresa oferece suporte, treinamentos e acompanhamento próximo. ${nome} se compromete a executar as ações deste PDI com consistência e abertura para crescer.`,
-    'Precisa Melhorar':`A gestora se compromete a reuniões semanais de suporte e acompanhamento próximo. ${nome} se compromete a encarar este momento como oportunidade de virada na liderança.`,
-    'Crítico':`A empresa oferece suporte total e estrutura para recuperação. ${nome} se compromete a priorizar as ações críticas e comunicar dificuldades imediatamente à gestora.`
-  };
-
-  const msgs={
-    'Excelente':`${nome}, você chegou a um nível que exige muito de quem lidera. Na Avatim, cada loja tem uma líder que define o aroma da equipe — e você define o seu com maestria. Continue inspirando, continue crescendo. 👑`,
-    'Muito Bom':`${nome}, sua liderança já deixa marca. As vendedoras ao seu redor crescem por causa de você. Na Avatim, acreditamos que o melhor líder é aquele que forma outros líderes. Você está nesse caminho. ✨`,
-    'Bom':`${nome}, liderar é uma das coisas mais difíceis e mais bonitas que existem. Você está construindo algo sólido. Este PDI é um convite para ir mais longe — com apoio, estrutura e muita determinação. 💛`,
-    'Precisa Melhorar':`${nome}, toda grande líder já foi uma líder em construção. O que importa é a decisão de crescer. A Avatim acredita no seu potencial — e este PDI é prova disso. Um passo de cada vez. 🤝`,
-    'Crítico':`${nome}, este é um momento de escolha. Liderar é difícil, mas você não está sozinha. A Avatim oferece o suporte — cabe a você dar o primeiro passo. Uma ação por dia transforma a liderança. 💪`
-  };
-
+  const diagnosticos={'Excelente':`${nome} demonstra liderança madura e resultados consistentes. Pelo modelo de Liderança Situacional de Blanchard, está no estágio de "líder delegadora": o momento de ampliar seu impacto além da loja.`,'Muito Bom':`${nome} apresenta liderança sólida. Pelo framework de John Maxwell, já transpôs o nível de liderança por posição e está construindo liderança por relacionamento.`,'Bom':`${nome} tem base consistente de liderança. Carol Dweck nos ensina que líderes com Growth Mindset transformam desafios em aprendizado — e ${nome} tem esse potencial.`,'Precisa Melhorar':`${nome} está construindo sua identidade como líder. Daniel Pink aponta que líderes em desenvolvimento precisam de clareza de propósito e pequenas vitórias para ganhar confiança.`,'Crítico':`${nome} enfrenta desafios significativos na liderança. Marshall Goldsmith lembra: o que trouxe até aqui pode não ser o que levará ao próximo nível.`};
+  const perfis={'Excelente':'Líder de alta performance com equipe engajada e resultados consistentes','Muito Bom':'Líder comprometida em evolução, com forte base relacional','Bom':'Líder em construção com boa base e espaço claro para desenvolvimento','Precisa Melhorar':'Líder em transição que precisa de estrutura e suporte próximo','Crítico':'Liderança em fase crítica que requer intervenção imediata'};
+  const plano={d30:{foco:'Diagnóstico e primeiras ações',acoes:['Alinhar expectativas com a gestora regional e revisar este PDI','Implementar 1 ritual de liderança diário (briefing de equipe)','Iniciar as ações prioritárias identificadas'],entrega:'Primeiros rituais de liderança instalados e equipe percebendo mudança'},d60:{foco:'Desenvolvimento e consistência',acoes:['Executar plano de ação com consistência diária','Fazer observação de atendimento semanal com cada vendedora','Check-in quinzenal com a gestora regional'],entrega:'Melhora visível nos indicadores da loja e clima da equipe'},d90:{foco:'Consolidação e nova liderança',acoes:['Revisar PDI com a gestora: o que evoluiu, o que ainda precisa de atenção','Identificar próximo nível de liderança a desenvolver','Começar a desenvolver uma sucessora dentro da equipe'],entrega:'Liderança consolidada e pelo menos uma vendedora em desenvolvimento acelerado'}};
+  const acordos={'Excelente':`A empresa reconhece a excelência de ${nome} e oferece novos desafios. ${nome} se compromete a continuar sendo referência.`,'Muito Bom':`A gestora dará autonomia crescente e feedbacks estruturados. ${nome} se compromete a buscar o próximo nível de liderança.`,'Bom':`A empresa oferece suporte e treinamentos. ${nome} se compromete a executar as ações deste PDI com consistência.`,'Precisa Melhorar':`A gestora oferece reuniões semanais de suporte. ${nome} se compromete a encarar este momento como oportunidade de virada.`,'Crítico':`A empresa oferece suporte total. ${nome} se compromete a priorizar as ações críticas e comunicar dificuldades imediatamente.`};
+  const msgs={'Excelente':`${nome}, você chegou a um nível que exige muito de quem lidera. Continue inspirando, continue crescendo. 👑`,'Muito Bom':`${nome}, sua liderança já deixa marca. Na Avatim, o melhor líder é aquele que forma outros líderes. Você está nesse caminho. ✨`,'Bom':`${nome}, liderar é uma das coisas mais difíceis e mais bonitas que existem. Este PDI é um convite para ir mais longe. 💛`,'Precisa Melhorar':`${nome}, toda grande líder já foi uma líder em construção. A Avatim acredita no seu potencial. 🤝`,'Crítico':`${nome}, este é um momento de escolha. A Avatim oferece o suporte — cabe a você dar o primeiro passo. 💪`};
   window._pdiObjLider={classificacao:clf.l,pct,diagnostico:diagnosticos[clf.l]||diagnosticos['Bom'],perfil:perfis[clf.l],fortes:topFortes,prioridades,plano,acordo:acordos[clf.l],msg:msgs[clf.l]};
-
   const pctColor=pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
-  let html=`
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:12px">
-    <div style="font-size:38px">${clf.e}</div>
-    <div><div style="font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${clf.l} · ${pct}%</div>
-    <div style="font-size:12px;font-style:italic;color:var(--dark);margin-top:3px">${perfis[clf.l]}</div></div>
-  </div>
-  <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:11px;padding:16px;margin-bottom:14px">
-    <div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📊 Diagnóstico de Liderança</div>
-    <div style="font-size:13px;line-height:1.7;color:var(--dark)">${diagnosticos[clf.l]||diagnosticos['Bom']}</div>
-  </div>
+  let html=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:12px"><div style="font-size:38px">${clf.e}</div><div><div style="font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${clf.l} · ${pct}%</div><div style="font-size:12px;font-style:italic;color:var(--dark);margin-top:3px">${perfis[clf.l]}</div></div></div>
+  <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:11px;padding:16px;margin-bottom:14px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📊 Diagnóstico de Liderança</div><div style="font-size:13px;line-height:1.7;color:var(--dark)">${diagnosticos[clf.l]||diagnosticos['Bom']}</div></div>
   ${topFortes.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">💪 Forças de Liderança</div>${topFortes.map(p=>`<div style="background:rgba(90,138,106,.08);border:1px solid rgba(90,138,106,.25);border-radius:9px;padding:9px 13px;font-size:12px;color:var(--dark);line-height:1.5;margin-bottom:6px">✨ ${p}</div>`).join('')}</div>`:''}
   ${prioridades.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🎯 Prioridades de Desenvolvimento</div>${prioridades.map(p=>`<div style="background:var(--white);border:1px solid #EDE8E0;border-left:3px solid ${p.nota<=2?'var(--red)':p.nota===3?'var(--gold)':'var(--green)'};border-radius:9px;padding:14px;margin-bottom:10px"><div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap"><span style="font-size:12px;font-weight:700;color:var(--dark)">${p.item}</span><span style="background:${p.nota<=2?'rgba(192,57,43,.1)':p.nota===3?'rgba(201,168,76,.1)':'rgba(90,138,106,.1)'};color:${p.nota<=2?'var(--red)':p.nota===3?'var(--gold-dark)':'var(--green)'};border-radius:18px;padding:2px 9px;font-size:10px;font-weight:700">${p.nota}/5</span><span style="background:rgba(90,122,154,.1);color:var(--blue);border-radius:18px;padding:2px 9px;font-size:10px">${p.prazo}</span></div><div style="font-size:12px;color:var(--dark);margin-bottom:6px">📌 ${p.acao}</div><div style="font-size:11px;color:var(--blue);margin-bottom:5px">📚 ${p.recurso}</div><div style="font-size:11px;color:var(--mid);padding-top:6px;border-top:1px solid #F0EBE3">📈 ${p.ind}</div></div>`).join('')}</div>`:''}
   <div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🗓️ Plano 30 · 60 · 90 dias</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${[{d:'30 dias',k:'d30',c:'var(--green)',bg:'rgba(90,138,106,.08)',bc:'rgba(90,138,106,.2)'},{d:'60 dias',k:'d60',c:'var(--gold-dark)',bg:'rgba(201,168,76,.08)',bc:'rgba(201,168,76,.2)'},{d:'90 dias',k:'d90',c:'var(--blue)',bg:'rgba(90,122,154,.08)',bc:'rgba(90,122,154,.2)'}].map(m=>{const p=plano[m.k];return`<div style="background:${m.bg};border:1px solid ${m.bc};border-radius:9px;padding:12px"><div style="font-size:10px;font-weight:700;color:${m.c};margin-bottom:6px;text-transform:uppercase">${m.d} · ${p.foco}</div>${p.acoes.map(a=>`<div style="font-size:11px;color:var(--dark);margin-bottom:4px;line-height:1.4">• ${a}</div>`).join('')}<div style="font-size:10px;color:var(--mid);margin-top:7px;padding-top:6px;border-top:1px solid ${m.bc};font-style:italic">${p.entrega}</div></div>`;}).join('')}</div></div>
   <div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:11px;padding:14px;margin-bottom:14px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🤝 Acordo de Crescimento</div><div style="font-size:12px;color:var(--dark);line-height:1.6">${acordos[clf.l]}</div></div>
   <div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:11px;padding:18px;text-align:center"><div style="font-size:22px;margin-bottom:8px">👑</div><div style="font-size:13px;font-style:italic;color:var(--gold-light);line-height:1.7">"${msgs[clf.l]}"</div></div>`;
-
-  document.getElementById('liderPdiContent').innerHTML=html;
-  document.getElementById('liderPdiLoadingBadge').textContent='✅ pronto!';
-  btn.textContent='🔄 Gerar novamente';
-  btn.disabled=false;
-  showToast('👑 PDI de Liderança gerado!');
+  document.getElementById('liderPdiContent').innerHTML=html;document.getElementById('liderPdiLoadingBadge').textContent='✅ pronto!';btn.textContent='🔄 Gerar novamente';btn.disabled=false;showToast('👑 PDI de Liderança gerado!');
 }
-
 function submitLider(){
   const nome=document.getElementById('fLN').value,loja=document.getElementById('fLL').value,data=document.getElementById('fLD').value;
   if(!nome||!loja||!data){showToast('⚠️ Preencha nome, loja e data');return}
-
-  const starsSnap={...S_lider.stars};
-  const commSnap={...S_lider.comm};
+  const starsSnap={...S_lider.stars};const commSnap={...S_lider.comm};
   let t=0,cnt=0;const crit={};
-  Object.entries(FCAT_LIDER).forEach(([cat,items])=>{
-    crit[cat]=[];
-    items.forEach(item=>{
-      const k=cat+'|'+item;
-      const n=starsSnap[k]||0;
-      const c=commSnap[k]||'';
-      t+=n;cnt++;
-      crit[cat].push({l:item,n,c});
-    });
-  });
-
+  Object.entries(FCAT_LIDER).forEach(([cat,items])=>{crit[cat]=[];items.forEach(item=>{const k=cat+'|'+item;const n=starsSnap[k]||0;const c=commSnap[k]||'';t+=n;cnt++;crit[cat].push({l:item,n,c})})});
   const m=cnt*5,pct=Math.round((t/m)*100),cl=getClf(pct);
-  const aval={
-    id:Date.now(),tipo:'lider',loja,data,nome,
-    cargo:'Vendedor(a) Líder',
-    tempo:document.getElementById('fLT').value,
-    av:document.getElementById('fLA').value,
-    periodo:document.getElementById('fLP').value,
-    score:t,max:m,pct,clf:cl.l,crit,
-    pm:{obj:document.getElementById('lPmObj').value,acao:document.getElementById('lPmAcao').value,prazo:document.getElementById('lPmPrazo').value,status:document.getElementById('lPmStatus').value},
-    pos:document.getElementById('lFFpos').value,
-    dev:document.getElementById('lFFdev').value,
-    msg:document.getElementById('lFFmsg').value,
-    sAv:sigD.sigLAv,sFn:sigD.sigLFn,
-    acordos:document.getElementById('lAcordos').value,
-    sigAcAv:sigD.sigLAcAv,sigAcFn:sigD.sigLAcFn,
-    pdi:window._pdiObjLider?JSON.parse(JSON.stringify(window._pdiObjLider)):null
-  };
-
-  S.avals.unshift(aval);
-  sv();
-  resetLider();
-  showPage('historico');
-  renderDash();renderHist();renderRank();
-  showToast('👑 Avaliação do Líder salva! '+pct+'% · '+t+'/'+m+' pts');
+  const aval={id:Date.now(),tipo:'lider',loja,data,nome,cargo:'Vendedor(a) Líder',tempo:document.getElementById('fLT').value,av:document.getElementById('fLA').value,periodo:document.getElementById('fLP').value,score:t,max:m,pct,clf:cl.l,crit,pm:{obj:document.getElementById('lPmObj').value,acao:document.getElementById('lPmAcao').value,prazo:document.getElementById('lPmPrazo').value,status:document.getElementById('lPmStatus').value},pos:document.getElementById('lFFpos').value,dev:document.getElementById('lFFdev').value,msg:document.getElementById('lFFmsg').value,sAv:sigD.sigLAv,sFn:sigD.sigLFn,acordos:document.getElementById('lAcordos').value,sigAcAv:sigD.sigLAcAv,sigAcFn:sigD.sigLAcFn,pdi:window._pdiObjLider?JSON.parse(JSON.stringify(window._pdiObjLider)):null};
+  S.avals.unshift(aval);sv();resetLider();showPage('historico');renderDash();renderHist();renderRank();showToast('👑 Avaliação do Líder salva! '+pct+'% · '+t+'/'+m+' pts');
 }
-
 function resetLider(){
   ['fLN','fLT','fLP','lPmObj','lPmAcao','lPmPrazo','lFFpos','lFFdev','lFFmsg','lAcordos'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
-  document.getElementById('lPmStatus').value='';
-  buildLiderCrit();
-  clearSig('sigLAv');clearSig('sigLFn');clearSig('sigLAcAv');clearSig('sigLAcFn');
-  window._pdiObjLider=null;
-  document.getElementById('liderPdiContent').innerHTML='Clique em "Gerar PDI" para criar um plano personalizado de liderança.';
-  document.getElementById('liderPdiLoadingBadge').textContent='';
-  document.getElementById('btnGerarPDILider').textContent='✨ Gerar PDI';
-  document.getElementById('btnGerarPDILider').disabled=false;
+  document.getElementById('lPmStatus').value='';buildLiderCrit();clearSig('sigLAv');clearSig('sigLFn');clearSig('sigLAcAv');clearSig('sigLAcFn');
+  window._pdiObjLider=null;document.getElementById('liderPdiContent').innerHTML='Clique em "Gerar PDI" para criar um plano personalizado de liderança.';document.getElementById('liderPdiLoadingBadge').textContent='';document.getElementById('btnGerarPDILider').textContent='✨ Gerar PDI';document.getElementById('btnGerarPDILider').disabled=false;
 }
-
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
 </script>
 </body>
