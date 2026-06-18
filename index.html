@@ -690,11 +690,9 @@ function buildChk(){
     CHK[sec].forEach((item,i)=>{
       const k=sec+'_'+i;S.chk[k]=null;
       const d=document.createElement('div');d.className='check-item';d.id='ci'+k;
-      d.setAttribute('data-key',k);
+      d.setAttribute('data-k',k);
       d.innerHTML=`<div class="check-box" id="cb${k}">?</div><span class="check-label">${item.l}</span><span class="check-points">+${item.p}</span>`;
-      d.style.cursor='pointer';
-      // BUGFIX: usar addEventListener em vez de onclick simples
-      d.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();togChk(k);},false);
+      d.addEventListener('click',function(e){e.preventDefault();togChk(k);},false);
       c.appendChild(d);
     });
   });updScore();
@@ -703,11 +701,7 @@ function togChk(k){
   const c=S.chk[k];const n=c===null?true:c===true?false:null;S.chk[k]=n;
   const ci=document.getElementById('ci'+k);const cb=document.getElementById('cb'+k);
   if(ci)ci.className='check-item'+(n===true?' checked':n===false?' unchecked':'');
-  if(cb){
-    cb.textContent=n===true?'✓':n===false?'✕':'?';
-    cb.style.background=n===true?'rgba(90,138,106,.3)':n===false?'rgba(192,57,43,.3)':'';
-  }
-  console.log('[togChk] key='+k+' value='+S.chk[k]);
+  if(cb){cb.textContent=n===true?'✓':n===false?'✕':'?';cb.style.background=n===true?'rgba(90,138,106,.3)':n===false?'rgba(192,57,43,.3)':'';}
   updScore();
 }
 function updScore(){
@@ -719,9 +713,8 @@ function updScore(){
   if(pb)pb.style.width=pct+'%';
   if(sd)sd.textContent=t;
   if(pl)pl.textContent=t+'/'+m+' pts ('+pct+'%)';
-  // DEBUG
-  if(Object.values(S.chk).some(v=>v!==null)){console.log('[updScore] t='+t+' m='+m+' pct='+pct);}
 }
+
 function buildAtn(){
   S.atn={};const c=document.getElementById('atnRatings');c.innerHTML='';
   ATN.forEach(r=>{
@@ -730,7 +723,7 @@ function buildAtn(){
     const btns=document.createElement('div');btns.className='atn-btns';
     ['SIM','PARCIAL','NÃO'].forEach(opt=>{
       const b=document.createElement('button');b.className='atn-btn';b.textContent=opt;
-      b.onclick=()=>{S.atn[r.id]=opt;btns.querySelectorAll('.atn-btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');updScore()};
+      b.addEventListener('click',function(e){e.preventDefault();S.atn[r.id]=opt;btns.querySelectorAll('.atn-btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');updScore();},false);
       btns.appendChild(b);
     });
     row.innerHTML=`<span class="atn-label">${r.l} <small style="color:var(--gold);font-size:10px">(+${r.p}pts)</small></span>`;
@@ -748,7 +741,7 @@ function buildFuncCrit(){
       const row=document.createElement('div');row.className='star-row';
       const wrap=document.createElement('div');wrap.style.cssText='display:flex;gap:3px;align-items:center';
       const lbl=document.createElement('span');lbl.className='star-score-lbl';lbl.id='fsl'+encodeKey(k);lbl.textContent='0';
-      [1,2,3,4,5].forEach(n=>{const b=document.createElement('button');b.className='star-btn';b.textContent='★';b.onclick=()=>setStar(k,n);wrap.appendChild(b)});
+      [1,2,3,4,5].forEach(n=>{const b=document.createElement('button');b.className='star-btn';b.textContent='★';b.addEventListener('click',function(e){e.preventDefault();setStar(k,n);},false);wrap.appendChild(b)});
       wrap.appendChild(lbl);
       const info=document.createElement('div');info.className='star-info';
       info.innerHTML=`<div class="star-label-text">${item}</div>`;
@@ -771,10 +764,11 @@ function setStar(k,n){
 function updFuncScore(){
   const vals=Object.values(S.fstars);const t=vals.reduce((a,b)=>a+b,0);const m=vals.length*5;
   const pct=m>0?Math.round((t/m)*100):0;
-  document.getElementById('funcBar').style.width=pct+'%';
-  document.getElementById('funcScore').textContent=t;
-  const cl=getClf(pct);
-  document.getElementById('funcClassifEl').innerHTML=`<span class="classif-badge ${cl.c}">${cl.e} ${cl.l}</span>`;
+  const fb=document.getElementById('funcBar');const fs=document.getElementById('funcScore');const fc=document.getElementById('funcClassifEl');
+  if(fb)fb.style.width=pct+'%';
+  if(fs)fs.textContent=pct+'%';
+  if(fc){const cl=getClf(pct);fc.innerHTML=`<span class="classif-badge ${cl.c}">${cl.e} ${cl.l}</span>`;}
+  console.log('[updFuncScore] vendedora t='+t+' pct='+pct);
 }
 function getClf(pct){return CLFS.find(c=>pct>=c.min)||CLFS[CLFS.length-1]}
 
@@ -1162,7 +1156,7 @@ function buildLiderCrit(){
       const row=document.createElement('div');row.className='star-row';
       const wrap=document.createElement('div');wrap.style.cssText='display:flex;gap:3px;align-items:center';
       const lbl=document.createElement('span');lbl.className='star-score-lbl';lbl.id='lsl'+encodeKey(k);lbl.textContent='0';
-      [1,2,3,4,5].forEach(n=>{const b=document.createElement('button');b.className='star-btn';b.textContent='★';b.onclick=()=>setStarLider(k,n);wrap.appendChild(b)});
+      [1,2,3,4,5].forEach(n=>{const b=document.createElement('button');b.className='star-btn';b.textContent='★';b.addEventListener('click',function(e){e.preventDefault();setStarLider(k,n);},false);wrap.appendChild(b)});
       wrap.appendChild(lbl);
       const info=document.createElement('div');info.className='star-info';
       info.innerHTML=`<div class="star-label-text">${item}</div>`;
