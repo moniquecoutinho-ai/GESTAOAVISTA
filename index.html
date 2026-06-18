@@ -672,7 +672,7 @@ function initApp(){
   window.addEventListener('resize',()=>{const m=window.innerWidth<=768;document.getElementById('bottomNav').style.display=m?'block':'none';document.querySelector('nav .nav-tabs').style.display=m?'none':'flex'});
   const t=new Date();
   document.getElementById('dashDate').textContent=t.toLocaleDateString('pt-BR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  const ds=t.toISOString().split('T')[0];
+  const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');const ds=y+'-'+m+'-'+d;
   document.getElementById('fData').value=ds;document.getElementById('fFD').value=ds;document.getElementById('fLD').value=ds;
   document.getElementById('monthDisplay').textContent=S.rMonth.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
   buildChk();buildAtn();buildFuncCrit();buildLiderCrit();
@@ -690,27 +690,38 @@ function buildChk(){
     CHK[sec].forEach((item,i)=>{
       const k=sec+'_'+i;S.chk[k]=null;
       const d=document.createElement('div');d.className='check-item';d.id='ci'+k;
+      d.setAttribute('data-key',k);
       d.innerHTML=`<div class="check-box" id="cb${k}">?</div><span class="check-label">${item.l}</span><span class="check-points">+${item.p}</span>`;
-      d.onclick=()=>togChk(k);c.appendChild(d);
+      d.style.cursor='pointer';
+      // BUGFIX: usar addEventListener em vez de onclick simples
+      d.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();togChk(k);},false);
+      c.appendChild(d);
     });
   });updScore();
 }
 function togChk(k){
   const c=S.chk[k];const n=c===null?true:c===true?false:null;S.chk[k]=n;
-  document.getElementById('ci'+k).className='check-item'+(n===true?' checked':n===false?' unchecked':'');
-  document.getElementById('cb'+k).textContent=n===true?'✓':n===false?'✕':'?';
+  const ci=document.getElementById('ci'+k);const cb=document.getElementById('cb'+k);
+  if(ci)ci.className='check-item'+(n===true?' checked':n===false?' unchecked':'');
+  if(cb){
+    cb.textContent=n===true?'✓':n===false?'✕':'?';
+    cb.style.background=n===true?'rgba(90,138,106,.3)':n===false?'rgba(192,57,43,.3)':'';
+  }
+  console.log('[togChk] key='+k+' value='+S.chk[k]);
   updScore();
 }
 function updScore(){
   let t=0,m=0;
   Object.keys(CHK).forEach(s=>CHK[s].forEach((it,i)=>{m+=it.p;if(S.chk[s+'_'+i]===true)t+=it.p}));
   ATN.forEach(r=>{m+=r.p;const v=S.atn[r.id];if(v==='SIM')t+=r.p;else if(v==='PARCIAL')t+=Math.floor(r.p*.5)});
-  const pct=Math.round((t/m)*100);
-  document.getElementById('progressBar').style.width=pct+'%';
-  document.getElementById('scoreDisplay').textContent=t;
-  document.getElementById('progressLabel').textContent=t+'/'+m+' pts';
+  const pct=m>0?Math.round((t/m)*100):0;
+  const pb=document.getElementById('progressBar');const sd=document.getElementById('scoreDisplay');const pl=document.getElementById('progressLabel');
+  if(pb)pb.style.width=pct+'%';
+  if(sd)sd.textContent=t;
+  if(pl)pl.textContent=t+'/'+m+' pts ('+pct+'%)';
+  // DEBUG
+  if(Object.values(S.chk).some(v=>v!==null)){console.log('[updScore] t='+t+' m='+m+' pct='+pct);}
 }
-
 function buildAtn(){
   S.atn={};const c=document.getElementById('atnRatings');c.innerHTML='';
   ATN.forEach(r=>{
