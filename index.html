@@ -60,7 +60,7 @@ nav{background:var(--dark);padding:0 20px;display:flex;align-items:center;justif
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-group{margin-bottom:12px}
 .form-group label{display:block;font-size:10px;font-weight:600;color:var(--mid);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
-.form-group select,.form-group input[type=text],.form-group input[type=date],.form-group textarea{width:100%;background:var(--cream);border:1px solid #DDD5CA;border-radius:9px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--dark);outline:none;transition:border-color .2s}
+.form-group select,.form-group input[type=text],.form-group input[type=date],.form-group input[type=password],.form-group textarea{width:100%;background:var(--cream);border:1px solid #DDD5CA;border-radius:9px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--dark);outline:none;transition:border-color .2s}
 .form-group select:focus,.form-group input:focus,.form-group textarea:focus{border-color:var(--gold)}
 .form-group textarea{min-height:70px;resize:vertical}
 .checklist-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
@@ -192,6 +192,16 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
 .report-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .report-item{font-size:11px;padding:6px 10px;background:var(--white);border-radius:7px;border:1px solid #EDE8E0}
 .report-item.ok{border-color:rgba(90,138,106,.3)}.report-item.nok{border-color:rgba(192,57,43,.3)}
+.user-card{display:flex;align-items:center;gap:12px;padding:13px 16px;border:1px solid #EDE8E0;border-radius:11px;margin-bottom:9px;background:var(--white)}
+.user-card .u-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:var(--dark);background:linear-gradient(135deg,var(--gold),var(--rose));flex-shrink:0}
+.role-badge{border-radius:18px;padding:2px 10px;font-size:10px;font-weight:700}
+.role-admin{background:rgba(201,168,76,.15);color:var(--gold-dark);border:1px solid var(--gold-light)}
+.role-user{background:rgba(90,122,154,.12);color:var(--blue);border:1px solid rgba(90,122,154,.3)}
+.sync-dot{width:9px;height:9px;border-radius:50%;background:var(--light);flex-shrink:0;transition:all .3s}
+.sync-dot.online{background:#5AD18A;box-shadow:0 0 8px rgba(90,209,138,.6)}
+.sync-dot.local{background:var(--light)}
+.sync-dot.error{background:var(--red)}
+.sync-dot.connecting{background:var(--gold)}
 
 @media(max-width:768px){
   nav{padding:0 8px;height:56px}
@@ -256,6 +266,10 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
 </head>
 <body>
 
+<!-- Firebase (opcional — sincronização entre dispositivos). Só é usado se você colar a config em ☁️ Sincronizar -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo">AVATIM</div>
@@ -264,6 +278,7 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
     <input type="password" id="loginPass" placeholder="Senha"/>
     <button class="btn-gold" onclick="doLogin()">ENTRAR</button>
     <div class="login-error" id="loginError">Usuário ou senha incorretos</div>
+    <div id="loginSyncHint" style="text-align:center;margin-top:18px"></div>
   </div>
 </div>
 
@@ -277,9 +292,12 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
       <button class="nav-tab" onclick="showPage('avaliacao-lider')">👑 Líder</button>
       <button class="nav-tab" onclick="showPage('historico')">📋 Histórico</button>
       <button class="nav-tab" onclick="showPage('ranking')">🏆 Ranking</button>
+      <button class="nav-tab" id="navTabUsuarios" onclick="showPage('usuarios')" style="display:none">👥 Usuários</button>
     </div>
     <div class="nav-user">
-      <div class="nav-avatar">G</div>
+      <div class="sync-dot local" id="syncDot" title="Status da sincronização"></div>
+      <div class="nav-avatar" id="navAvatar">G</div>
+      <button class="btn-logout" style="border-color:rgba(201,168,76,.3);color:var(--gold)" onclick="openSyncModal()">☁️ Sync</button>
       <button class="btn-logout" style="border-color:rgba(201,168,76,.3);color:var(--gold)" onclick="backupData()">💾 Backup</button>
       <label class="btn-logout" style="cursor:pointer" title="Restaurar backup">📂 Restaurar<input type="file" id="restoreInput" accept=".json" style="display:none" onchange="restoreData(this)"/></label>
       <button class="btn-logout" onclick="doLogout()">Sair</button>
@@ -288,7 +306,7 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
 
   <!-- DASHBOARD -->
   <div class="page active" id="page-dashboard">
-    <div class="page-title">Bom dia, GManjos ✨</div>
+    <div class="page-title" id="dashGreeting">Bom dia ✨</div>
     <div class="page-sub" id="dashDate"></div>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-icon">🏪</div><div class="stat-value" id="statVisitas">0</div><div class="stat-label">Visitas este mês</div></div>
@@ -596,36 +614,69 @@ canvas.sig-canvas{width:100%;height:100px;border:1px solid #DDD5CA;border-radius
     <div class="full-ranking" id="fullRankingList"></div>
   </div>
 
-  <!-- ===== BUG 5 CORRIGIDO: bottom nav com bn5 para Líder ===== -->
+  <!-- USUÁRIOS (somente admin) -->
+  <div class="page" id="page-usuarios">
+    <div class="page-title">Usuários & Acessos</div>
+    <div class="page-sub">Somente administradores podem criar, editar e remover acessos</div>
+    <div class="form-section" style="max-width:800px">
+      <div class="form-section-title">➕ Novo Usuário</div>
+      <div class="form-row">
+        <div class="form-group"><label>Nome completo</label><input type="text" id="nuName" placeholder="Ex: Maria Silva"/></div>
+        <div class="form-group"><label>Usuário (login)</label><input type="text" id="nuUser" placeholder="Ex: maria"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Senha</label><input type="text" id="nuPass" placeholder="Senha de acesso"/></div>
+        <div class="form-group"><label>Perfil de acesso</label>
+          <select id="nuRole">
+            <option value="usuario">👩 Usuário — visitas e avaliações</option>
+            <option value="admin">👑 Administrador — acesso total + usuários</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>Loja / observação (opcional)</label><input type="text" id="nuLoja" placeholder="Ex: Perdizes"/></div>
+      <button class="btn-submit" style="padding:13px" onclick="createUser()">➕ Criar Usuário</button>
+    </div>
+    <div class="form-section" style="max-width:800px">
+      <div class="form-section-title">👥 Usuários Cadastrados <span id="usersCount" style="font-size:10px;font-weight:400;color:var(--mid);margin-left:6px"></span></div>
+      <div id="usersList"></div>
+    </div>
+  </div>
+
   <div id="bottomNav" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--dark);border-top:1px solid rgba(201,168,76,.2);z-index:200;padding:6px 0 env(safe-area-inset-bottom)">
-    <div style="display:flex;justify-content:space-around;align-items:center">
-      <button onclick="showPage('dashboard')" id="bn0" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
-        <span style="font-size:20px">📊</span><span style="font-size:9px">Dashboard</span>
+    <div style="display:flex;justify-content:space-around;align-items:center;overflow-x:auto">
+      <button onclick="showPage('dashboard')" id="bn0" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:44px">
+        <span style="font-size:20px">📊</span><span style="font-size:9px">Início</span>
       </button>
-      <button onclick="showPage('nova-visita')" id="bn1" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
+      <button onclick="showPage('nova-visita')" id="bn1" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:44px">
         <span style="font-size:20px">🏪</span><span style="font-size:9px">Visita</span>
       </button>
-      <button onclick="showPage('avaliacao-func')" id="bn2" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
+      <button onclick="showPage('avaliacao-func')" id="bn2" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:44px">
         <span style="font-size:20px">👩</span><span style="font-size:9px">Vendedora</span>
       </button>
-      <button onclick="showPage('avaliacao-lider')" id="bn5" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
+      <button onclick="showPage('avaliacao-lider')" id="bn5" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:44px">
         <span style="font-size:20px">👑</span><span style="font-size:9px">Líder</span>
       </button>
-      <button onclick="showPage('historico')" id="bn3" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
+      <button onclick="showPage('historico')" id="bn3" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:44px">
         <span style="font-size:20px">📋</span><span style="font-size:9px">Histórico</span>
       </button>
-      <button onclick="showPage('ranking')" id="bn4" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:46px">
+      <button onclick="showPage('ranking')" id="bn4" style="background:none;border:none;color:var(--light);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:44px">
         <span style="font-size:20px">🏆</span><span style="font-size:9px">Ranking</span>
+      </button>
+      <button onclick="showPage('usuarios')" id="bn6" style="display:none;background:none;border:none;color:var(--light);flex-direction:column;align-items:center;gap:2px;padding:6px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;min-width:44px">
+        <span style="font-size:20px">👥</span><span style="font-size:9px">Usuários</span>
       </button>
     </div>
   </div>
 </div>
 
 <div class="modal-overlay" id="visitModal"><div class="modal"><button class="modal-close" onclick="closeModal()">✕</button><div id="modalContent"></div></div></div>
+
+<div class="modal-overlay" id="syncModal"><div class="modal" style="max-width:560px"><button class="modal-close" onclick="closeSyncModal()">✕</button><div id="syncModalContent"></div></div></div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const CRED={user:'GManjos',pass:'Avatim2026'};
+const _ls={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
 const LOJAS=['Shopping Mooca','Jardim Paulista Lorena','Vila Leopoldina','Perdizes','Santana','Alto de Pinheiros','Shop Ibirapuera'];
 const LCOLS=['#C9A84C','#D4847A','#7A9DC9','#84C9A8','#C97AC4','#C9B47A','#7AC4C9'];
 
@@ -646,39 +697,213 @@ const MEDALS=[{id:'bs',e:'🌸',t:'Boas Sensações',d:'Melhor atendimento ao cl
 
 const CLFS=[{min:90,l:'Excelente',c:'classif-excelente',e:'🌟'},{min:75,l:'Muito Bom',c:'classif-muito-bom',e:'✅'},{min:60,l:'Bom',c:'classif-bom',e:'👍'},{min:45,l:'Precisa Melhorar',c:'classif-melhorar',e:'⚠️'},{min:0,l:'Crítico',c:'classif-critico',e:'🔴'}];
 
-let S={visits:JSON.parse(localStorage.getItem('av_v')||'[]'),avals:JSON.parse(localStorage.getItem('av_a')||'[]'),chk:{},atn:{},fstars:{},fcomm:{},photos:[null,null],vLoja:'Shopping Mooca',fLoja:'Shopping Mooca',rMonth:new Date(),rTab:'lojas'};
-const sv=()=>{localStorage.setItem('av_v',JSON.stringify(S.visits));localStorage.setItem('av_a',JSON.stringify(S.avals))};
+let S={visits:JSON.parse(_ls.get('av_v')||'[]'),avals:JSON.parse(_ls.get('av_a')||'[]'),users:JSON.parse(_ls.get('av_u')||'[]'),currentUser:null,chk:{},atn:{},fstars:{},fcomm:{},photos:[null,null],vLoja:'Shopping Mooca',fLoja:'Shopping Mooca',rMonth:new Date(),rTab:'lojas'};
+const sv=()=>{_ls.set('av_v',JSON.stringify(S.visits));_ls.set('av_a',JSON.stringify(S.avals));pushCloud()};
+function svU(){_ls.set('av_u',JSON.stringify(S.users));pushCloud()}
 let sigD={};
 
-function doLogin(){
-  var u=document.getElementById('loginUser').value.replace(/\s/g,'').toLowerCase();
-  var p=document.getElementById('loginPass').value.replace(/\s/g,'').toLowerCase();
-  if(u==='gmanjos'&&p==='avatim2026'){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('app').style.display='block';
-    initApp();
-  } else {
-    var e=document.getElementById('loginError');
-    e.style.display='block';
-    e.textContent='Usuário ou senha incorretos';
+/* ==================== USUÁRIOS & AUTENTICAÇÃO ==================== */
+function _hash(str){let h=5381;const s='AVsalt2026::'+str;for(let i=0;i<s.length;i++){h=((h*33)^s.charCodeAt(i))>>>0}return h.toString(16)}
+function seedAdmin(){
+  if(!S.users||!S.users.length){
+    S.users=[{id:'u_admin',name:'GManjos',username:'gmanjos',pass:_hash('Avatim2026'),role:'admin',active:true,loja:'',createdAt:Date.now()}];
+    _ls.set('av_u',JSON.stringify(S.users));
   }
 }
-document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
-function doLogout(){document.getElementById('app').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';document.getElementById('loginError').style.display='none'}
+function findUser(u){const un=(u||'').trim().toLowerCase();return S.users.find(x=>x.username===un)}
+function doLogin(){
+  seedAdmin();
+  const u=document.getElementById('loginUser').value;
+  const p=document.getElementById('loginPass').value.trim();
+  const usr=findUser(u);
+  const err=document.getElementById('loginError');
+  if(!usr||!usr.active||usr.pass!==_hash(p)){
+    err.style.display='block';
+    err.textContent=(usr&&!usr.active)?'Usuário desativado. Fale com o administrador.':'Usuário ou senha incorretos';
+    return;
+  }
+  S.currentUser=usr;
+  try{_ls.set('av_session',usr.id)}catch(e){}
+  document.getElementById('loginError').style.display='none';
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('app').style.display='block';
+  initApp();
+}
+function doLogout(){
+  S.currentUser=null;try{_ls.del('av_session')}catch(e){}
+  document.getElementById('app').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+  document.getElementById('loginError').style.display='none';
+}
+function isAdmin(){return S.currentUser&&S.currentUser.role==='admin'}
+function applyPerms(){
+  const admin=isAdmin();
+  const tab=document.getElementById('navTabUsuarios');if(tab)tab.style.display=admin?'':'none';
+  const bn6=document.getElementById('bn6');if(bn6)bn6.style.display=admin?(window.innerWidth<=768?'flex':'none'):'none';
+  const nm=S.currentUser?S.currentUser.name:'';
+  const av=document.getElementById('navAvatar');if(av)av.textContent=(nm.charAt(0)||'A').toUpperCase();
+  const h=new Date().getHours();const saud=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
+  const g=document.getElementById('dashGreeting');if(g)g.textContent=saud+', '+(nm.split(' ')[0]||'')+' ✨';
+  ['fAvaliador','fFA','fLA'].forEach(id=>{const e=document.getElementById(id);if(e&&nm)e.value=nm});
+}
+function createUser(){
+  if(!isAdmin()){showToast('⚠️ Apenas administradores');return}
+  const name=document.getElementById('nuName').value.trim();
+  const username=document.getElementById('nuUser').value.trim().toLowerCase().replace(/\s/g,'');
+  const pass=document.getElementById('nuPass').value.trim();
+  const role=document.getElementById('nuRole').value;
+  const loja=document.getElementById('nuLoja').value.trim();
+  if(!name||!username||!pass){showToast('⚠️ Preencha nome, usuário e senha');return}
+  if(findUser(username)){showToast('⚠️ Esse usuário já existe');return}
+  S.users.push({id:'u_'+Date.now(),name,username,pass:_hash(pass),role,active:true,loja,createdAt:Date.now()});
+  svU();
+  ['nuName','nuUser','nuPass','nuLoja'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('nuRole').value='usuario';
+  renderUsers();showToast('✅ Usuário "'+name+'" criado!');
+}
+function delUser(id){
+  if(!isAdmin())return;
+  const u=S.users.find(x=>x.id===id);if(!u)return;
+  if(S.currentUser&&u.id===S.currentUser.id){showToast('⚠️ Você não pode excluir o próprio acesso');return}
+  if(u.role==='admin'&&S.users.filter(x=>x.role==='admin'&&x.active).length<=1){showToast('⚠️ Precisa existir ao menos 1 admin ativo');return}
+  if(!confirm('Excluir o acesso de "'+u.name+'"? Esta ação não pode ser desfeita.'))return;
+  S.users=S.users.filter(x=>x.id!==id);svU();renderUsers();showToast('🗑️ Usuário removido');
+}
+function toggleUser(id){
+  if(!isAdmin())return;
+  const u=S.users.find(x=>x.id===id);if(!u)return;
+  if(S.currentUser&&u.id===S.currentUser.id){showToast('⚠️ Você não pode desativar o próprio acesso');return}
+  if(u.active&&u.role==='admin'&&S.users.filter(x=>x.role==='admin'&&x.active).length<=1){showToast('⚠️ Precisa existir ao menos 1 admin ativo');return}
+  u.active=!u.active;svU();renderUsers();showToast(u.active?'✅ Usuário ativado':'⏸️ Usuário desativado');
+}
+function resetUserPass(id){
+  if(!isAdmin())return;
+  const u=S.users.find(x=>x.id===id);if(!u)return;
+  const np=prompt('Nova senha para "'+u.name+'":');
+  if(np===null)return;const p=np.trim();if(!p){showToast('⚠️ Senha vazia');return}
+  u.pass=_hash(p);svU();showToast('🔑 Senha atualizada');
+}
+function renderUsers(){
+  const box=document.getElementById('usersList');if(!box)return;
+  const cnt=document.getElementById('usersCount');if(cnt)cnt.textContent='('+S.users.length+')';
+  if(!S.users.length){box.innerHTML='<div style="color:var(--mid);font-size:13px;padding:14px;text-align:center">Nenhum usuário</div>';return}
+  const order=[...S.users].sort((a,b)=>(a.role===b.role?a.name.localeCompare(b.name):a.role==='admin'?-1:1));
+  box.innerHTML=order.map(u=>{
+    const me=S.currentUser&&u.id===S.currentUser.id;
+    return `<div class="user-card" style="${u.active?'':'opacity:.55'}">
+      <div class="u-av">${(u.name.charAt(0)||'?').toUpperCase()}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;color:var(--dark)">${u.name} ${me?'<span style="font-size:10px;color:var(--gold-dark)">(você)</span>':''}</div>
+        <div style="font-size:11px;color:var(--mid)">@${u.username}${u.loja?' · '+u.loja:''}${u.active?'':' · <span style="color:var(--red)">desativado</span>'}</div>
+        <div style="margin-top:4px"><span class="role-badge ${u.role==='admin'?'role-admin':'role-user'}">${u.role==='admin'?'👑 Admin':'👩 Usuário'}</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <button class="btn-sm" onclick="resetUserPass('${u.id}')" title="Trocar senha">🔑</button>
+        <button class="btn-sm" onclick="toggleUser('${u.id}')" title="Ativar/desativar">${u.active?'⏸️':'▶️'}</button>
+        <button class="btn-sm" onclick="delUser('${u.id}')" title="Excluir" style="border-color:rgba(192,57,43,.3);color:var(--red)">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
 
+/* ==================== SINCRONIZAÇÃO NA NUVEM (Firebase — opcional) ==================== */
+let DBref=null,cloudOn=false,applyingRemote=false;
+function getFbConfig(){try{return JSON.parse(_ls.get('av_fb')||'null')}catch(e){return null}}
+function setSyncDot(state){const d=document.getElementById('syncDot');if(d)d.className='sync-dot '+state}
+function initCloud(){
+  const cfg=getFbConfig();
+  if(!cfg||typeof firebase==='undefined'){cloudOn=false;setSyncDot('local');return}
+  try{
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
+    DBref=firebase.database().ref('avatim');
+    cloudOn=true;setSyncDot('connecting');
+    DBref.on('value',snap=>{
+      const d=snap.val();
+      if(!d){pushCloud();setSyncDot('online');return}
+      applyingRemote=true;
+      if(Array.isArray(d.visits))S.visits=d.visits;
+      if(Array.isArray(d.avals))S.avals=d.avals;
+      if(Array.isArray(d.users)&&d.users.length)S.users=d.users;
+      _ls.set('av_v',JSON.stringify(S.visits));
+      _ls.set('av_a',JSON.stringify(S.avals));
+      _ls.set('av_u',JSON.stringify(S.users));
+      applyingRemote=false;setSyncDot('online');
+      refreshAll();
+    },err=>{setSyncDot('error')});
+  }catch(e){cloudOn=false;setSyncDot('error')}
+}
+function pushCloud(){
+  if(cloudOn&&DBref&&!applyingRemote){
+    DBref.set({visits:S.visits,avals:S.avals,users:S.users,updatedAt:Date.now()}).then(()=>setSyncDot('online')).catch(()=>setSyncDot('error'));
+  }
+}
+function refreshAll(){
+  if(document.getElementById('app').style.display!=='block')return;
+  try{renderDash();renderHist();renderRank();if(isAdmin())renderUsers()}catch(e){}
+}
+function openSyncModal(){
+  const cfg=getFbConfig();
+  const status=cloudOn?'<span style="color:var(--green);font-weight:700">☁️ Conectado</span>':cfg?'<span style="color:var(--red);font-weight:700">⚠️ Config salva, mas sem conexão</span>':'<span style="color:var(--mid)">💾 Somente neste aparelho (local)</span>';
+  document.getElementById('syncModalContent').innerHTML=`
+    <h2 style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;margin-bottom:4px">☁️ Sincronização entre dispositivos</h2>
+    <p style="color:var(--mid);font-size:12px;margin-bottom:14px">Status: ${status}</p>
+    <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:11px;padding:14px;font-size:12px;line-height:1.7;color:var(--dark);margin-bottom:14px">
+      <strong>Como ativar (grátis, ~5 min, feito 1 única vez):</strong><br>
+      1. Acesse <strong>console.firebase.google.com</strong> e crie um projeto.<br>
+      2. No menu, abra <strong>Realtime Database</strong> → Criar banco de dados → modo de teste.<br>
+      3. Vá em <strong>⚙️ Configurações do projeto</strong> → "Seus apps" → ícone <strong>&lt;/&gt;</strong> (Web) → registre o app.<br>
+      4. Copie o objeto <strong>firebaseConfig</strong> (as chaves entre { }) e cole abaixo.
+    </div>
+    <div class="form-group"><label style="font-size:10px;font-weight:600;color:var(--mid);letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:4px">Cole aqui a configuração do Firebase</label>
+    <textarea id="fbConfigInput" style="width:100%;min-height:150px;background:var(--cream);border:1px solid #DDD5CA;border-radius:9px;padding:11px;font-family:monospace;font-size:12px;color:var(--dark)" placeholder='{\n  "apiKey": "...",\n  "authDomain": "...",\n  "databaseURL": "https://....firebasedatabase.app",\n  "projectId": "...",\n  "storageBucket": "...",\n  "messagingSenderId": "...",\n  "appId": "..."\n}'>${cfg?JSON.stringify(cfg,null,2):''}</textarea></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+      <button class="btn-submit" style="padding:12px;flex:1" onclick="saveFbConfig()">☁️ Salvar e conectar</button>
+      ${cfg?'<button class="btn-sm" style="padding:12px 16px" onclick="clearFbConfig()">Desconectar</button>':''}
+    </div>
+    <p style="font-size:11px;color:var(--mid);margin-top:12px;line-height:1.6">💡 Importante: a config é a mesma em <strong>todos</strong> os aparelhos (PC, celular, tablet). Cole a mesma em cada um e os dados aparecem em todos. O <strong>Backup</strong> continua funcionando como cópia de segurança extra.</p>`;
+  document.getElementById('syncModal').classList.add('open');
+}
+function closeSyncModal(){document.getElementById('syncModal').classList.remove('open')}
+function saveFbConfig(){
+  const raw=document.getElementById('fbConfigInput').value.trim();
+  if(!raw){showToast('⚠️ Cole a configuração');return}
+  let cfg;
+  try{
+    let clean=raw.replace(/^\s*const\s+firebaseConfig\s*=\s*/,'').replace(/;?\s*$/,'');
+    clean=clean.replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g,'$1"$2":').replace(/'/g,'"').replace(/,(\s*})/g,'$1');
+    cfg=JSON.parse(clean);
+  }catch(e){showToast('❌ Configuração inválida — copie o objeto inteiro { ... }');return}
+  if(!cfg.apiKey||!cfg.projectId){showToast('❌ Faltam apiKey/projectId na config');return}
+  if(!cfg.databaseURL){cfg.databaseURL='https://'+cfg.projectId+'-default-rtdb.firebaseio.com';}
+  _ls.set('av_fb',JSON.stringify(cfg));
+  showToast('☁️ Salvo! Conectando...');closeSyncModal();
+  if(typeof firebase!=='undefined'&&firebase.apps.length){location.reload()}else{initCloud()}
+}
+function clearFbConfig(){
+  if(!confirm('Desconectar a nuvem deste aparelho? Os dados locais permanecem.'))return;
+  _ls.del('av_fb');showToast('Desconectado. Recarregando...');setTimeout(()=>location.reload(),600);
+}
+document.getElementById('syncModal').addEventListener('click',function(e){if(e.target===this)closeSyncModal()});
+
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none')doLogin()});
+
+let _resizeBound=false;
 function initApp(){
+  seedAdmin();
   const isMobile=window.innerWidth<=768;
   if(isMobile){document.getElementById('bottomNav').style.display='block';document.querySelector('nav .nav-tabs').style.display='none';document.querySelectorAll('.page').forEach(p=>p.style.paddingBottom='80px')}
-  window.addEventListener('resize',()=>{const m=window.innerWidth<=768;document.getElementById('bottomNav').style.display=m?'block':'none';document.querySelector('nav .nav-tabs').style.display=m?'none':'flex'});
+  if(!_resizeBound){_resizeBound=true;window.addEventListener('resize',()=>{const m=window.innerWidth<=768;document.getElementById('bottomNav').style.display=m?'block':'none';document.querySelector('nav .nav-tabs').style.display=m?'none':'flex';applyPerms()})}
   const t=new Date();
   document.getElementById('dashDate').textContent=t.toLocaleDateString('pt-BR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');
   const ds=y+'-'+m+'-'+d;
   document.getElementById('fData').value=ds;document.getElementById('fFD').value=ds;document.getElementById('fLD').value=ds;
-  document.getElementById('monthDisplay').textContent=S.rMonth.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
+  document.getElementById('monthDisplay').textContent=curMon.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
   buildChk();buildAtn();buildFuncCrit();buildLiderCrit();
   ['sigAv','sigVn','sigFAv','sigFFn','sigAcAv','sigAcFn','sigLAv','sigLFn','sigLAcAv','sigLAcFn'].forEach(setupCanvas);
-  renderDash();renderHist();renderRank();
+  applyPerms();renderUsers();renderDash();renderHist();renderRank();
 }
 
 function selVisitaLoja(el,l){document.querySelectorAll('#visitaLojaTabs .loja-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');S.vLoja=l;document.getElementById('fLoja').value=l}
@@ -708,7 +933,6 @@ function togChk(k){
     cb.style.color=n===true?'#2D7A50':n===false?'#8B0000':'#333';
     cb.style.fontWeight='bold';
   }
-  console.log('[togChk] k='+k+' S.chk[k]='+S.chk[k]);
   updScore();
 }
 function updScore(){
@@ -720,7 +944,6 @@ function updScore(){
   if(pb)pb.style.width=pct+'%';
   if(sd)sd.textContent=t;
   if(pl)pl.textContent=t+'/'+m+' pts ('+pct+'%)';
-  console.log('[updScore] t='+t+' m='+m+' pct='+pct);
 }
 
 function buildAtn(){
@@ -767,7 +990,6 @@ function setStar(k,n){
   const lbl=document.getElementById('fsl'+ek);if(lbl)lbl.textContent=n;
   const row=lbl&&lbl.closest('.star-row');
   if(row){row.querySelectorAll('.star-btn').forEach((b,i)=>{b.style.color=i<n?'var(--gold)':'#DDD5CA';b.style.fontSize=i<n?'26px':'22px';});}
-  console.log('[setStar] k='+k+' n='+n);
   updFuncScore();
 }
 function updFuncScore(){
@@ -777,7 +999,6 @@ function updFuncScore(){
   if(fb)fb.style.width=pct+'%';
   if(fs)fs.textContent=pct+'%';
   if(fc){const cl=getClf(pct);fc.innerHTML=`<span class="classif-badge ${cl.c}">${cl.e} ${cl.l}</span>`;}
-  console.log('[updFuncScore] t='+t+' pct='+pct);
 }
 function getClf(pct){return CLFS.find(c=>pct>=c.min)||CLFS[CLFS.length-1]}
 
@@ -845,7 +1066,6 @@ function renderDash(){
   const ls={};mv.forEach(v=>{if(!ls[v.loja])ls[v.loja]={t:0,c:0};ls[v.loja].t+=v.pct;ls[v.loja].c++});
   const sl=Object.entries(ls).sort((a,b)=>(b[1].t/b[1].c)-(a[1].t/a[1].c));
   if(sl.length>0)document.getElementById('statMelhorLoja').textContent=sl[0][0].split(' ').slice(-1)[0];
-  // Dashboard usa só avaliações de vendedora para top funcionárias
   const maVend=ma.filter(a=>a.tipo==='avaliacao');
   const fs={};maVend.forEach(a=>{if(!fs[a.nome])fs[a.nome]={t:0,c:0};fs[a.nome].t+=a.pct;fs[a.nome].c++});
   const sf=Object.entries(fs).sort((a,b)=>(b[1].t/b[1].c)-(a[1].t/a[1].c));
@@ -890,7 +1110,6 @@ function renderHist(){
   }).join('');
 }
 
-// ===== BUG 1 + 2 CORRIGIDOS: openMod trata tipo 'lider' e exibe PDI =====
 function openMod(id,tipo){
   let html='';
   if(tipo==='visita'){
@@ -914,7 +1133,6 @@ function openMod(id,tipo){
     if(v.sAv||v.sVn){html+=`<div class="report-section"><h3>✍️ Assinaturas</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">`;if(v.sAv)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">AVALIADOR(A)</div><img src="${v.sAv}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;if(v.sVn)html+=`<div><div style="font-size:9px;font-weight:700;color:var(--mid);margin-bottom:3px">VENDEDORA</div><img src="${v.sVn}" style="width:100%;border:1px solid #EDE8E0;border-radius:7px;background:white"/></div>`;html+=`</div></div>`}
 
   } else if(tipo==='avaliacao'||tipo==='lider'){
-    // BUG 1 CORRIGIDO: tanto 'avaliacao' quanto 'lider' abrem corretamente
     const a=S.avals.find(x=>x.id===id);if(!a)return;
     const cl=getClf(a.pct);
     const isLider=a.tipo==='lider';
@@ -935,7 +1153,6 @@ function openMod(id,tipo){
     if(pm.obj||pm.acao)html+=`<div class="report-section"><h3>📈 ${isLider?'Plano de Desenvolvimento':'Plano de Melhoria'}</h3><div style="background:var(--white);border:1px solid #EDE8E0;border-radius:9px;padding:12px;font-size:12px">${pm.obj?`<div><strong>Objetivo:</strong> ${pm.obj}</div>`:''}${pm.acao?`<div style="margin-top:4px"><strong>Ação:</strong> ${pm.acao}</div>`:''}${pm.prazo||pm.status?`<div style="margin-top:6px;display:flex;gap:6px"><span class="tag">⏱️ ${pm.prazo||'—'}</span><span class="tag blue">${pm.status||'—'}</span></div>`:''}</div></div>`;
     if(a.pos)html+=`<div class="report-section"><h3>👍 Pontos Fortes</h3><p style="font-size:12px;line-height:1.6;padding:9px;background:rgba(90,138,106,.08);border-radius:7px;border:1px solid rgba(90,138,106,.2)">${a.pos}</p></div>`;
     if(a.dev)html+=`<div class="report-section"><h3>⚠️ Desenvolvimento</h3><p style="font-size:12px;line-height:1.6;padding:9px;background:rgba(192,57,43,.08);border-radius:7px;border:1px solid rgba(192,57,43,.2)">${a.dev}</p></div>`;
-    // BUG 2 CORRIGIDO: PDI renderizado para ambos (vendedora e líder)
     if(a.pdi&&a.pdi.prioridades){
       const pdiTitulo=isLider?'🚀 PDI — Plano de Desenvolvimento do Líder':'🚀 PDI — Plano de Desenvolvimento Individual';
       html+=`<div class="report-section"><h3 style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700;border-bottom:2px solid var(--gold-light);padding-bottom:6px;margin-bottom:12px">${pdiTitulo}</h3>`+renderPDI(a.pdi)+`</div>`;
@@ -957,7 +1174,6 @@ function delRec(id,tipo){
   sv();closeModal();renderHist();renderDash();renderRank();showToast('Registro excluído');
 }
 
-// ===== BUG 3 CORRIGIDO: expRec com case para 'lider' =====
 function expRec(id,tipo){
   if(tipo==='visita'){
     const v=S.visits.find(x=>x.id===id);if(!v)return;
@@ -971,7 +1187,6 @@ function expRec(id,tipo){
     h+=buildEF(v.pA,v.pD,v.sAv,v.sVn,v.av,v.vend);
     dlHTML(h,`Visita_${v.loja.replace(/ /g,'_')}_${v.data}.html`);
   } else {
-    // BUG 3 CORRIGIDO: 'avaliacao' e 'lider' usam o mesmo path de exportação
     const a=S.avals.find(x=>x.id===id);if(!a)return;
     const cl=getClf(a.pct);
     const isLider=a.tipo==='lider';
@@ -1022,12 +1237,10 @@ let curMon=new Date();
 function changeMonth(d){curMon=new Date(curMon.getFullYear(),curMon.getMonth()+d,1);document.getElementById('monthDisplay').textContent=curMon.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());renderRank()}
 function switchRankTab(tab,el){S.rTab=tab;document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderRank()}
 
-// ===== BUG 4 CORRIGIDO: Ranking separa Vendedoras e Líderes =====
 function renderRank(){
   const mo=curMon.getMonth(),yr=curMon.getFullYear();
   const mv=S.visits.filter(v=>{const d=new Date(v.data);return d.getMonth()===mo&&d.getFullYear()===yr});
   const ma=S.avals.filter(a=>{const d=new Date(a.data);return d.getMonth()===mo&&d.getFullYear()===yr});
-  // Separar avaliações por tipo
   const maVend=ma.filter(a=>a.tipo==='avaliacao');
   const maLider=ma.filter(a=>a.tipo==='lider');
   const ls=getLS(mv),fs=getFS(maVend),fsl=getFS(maLider);
@@ -1045,17 +1258,14 @@ function renderRank(){
     rEl.innerHTML=sl.map((item,i)=>{const[l,d]=item;const pc=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other';return`<div class="full-rank-item"><div class="full-rank-pos ${pc}">${i+1}</div><div class="full-rank-avatar" style="background:${cm[l]||'#C9A84C'}22;color:${cm[l]||'#C9A84C'}">${l.charAt(0)}</div><div class="full-rank-details"><div class="full-rank-name">${l}</div><div class="full-rank-sub">${d.c} visita${d.c!==1?'s':''}</div></div><div class="full-rank-right"><div class="full-rank-score">${d.avg}%</div>${i===0?'<div style="margin-top:3px"><span class="medal-badge">✨ Ouro Puro</span></div>':''}</div></div>`}).join('');
 
   } else if(S.rTab==='funcionarias'){
-    // BUG 4 CORRIGIDO: só vendedoras
     if(!sf.length){rEl.innerHTML='<div style="text-align:center;padding:34px;color:var(--mid)">Nenhuma avaliação de vendedora neste mês</div>';return}
     rEl.innerHTML=sf.map((item,i)=>{const[n,d]=item;const pc=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other';const cl=getClf(d.avg);return`<div class="full-rank-item"><div class="full-rank-pos ${pc}">${i+1}</div><div class="full-rank-avatar" style="background:${cols[i%cols.length]}22;color:${cols[i%cols.length]}">${n.charAt(0).toUpperCase()}</div><div class="full-rank-details"><div class="full-rank-name">${n}</div><div class="full-rank-sub">${d.loja} · ${d.c} avaliação${d.c!==1?'ões':''}</div></div><div class="full-rank-right"><div class="full-rank-score">${d.avg}%</div><div style="margin-top:3px"><span class="classif-badge ${cl.c}" style="font-size:10px;padding:2px 7px">${cl.e} ${cl.l}</span></div>${i===0?'<div style="margin-top:3px"><span class="medal-badge">🌸 Boas Sensações</span></div>':''}</div></div>`}).join('');
 
   } else if(S.rTab==='lideres'){
-    // BUG 4 CORRIGIDO: ranking exclusivo de líderes
     if(!sfL.length){rEl.innerHTML='<div style="text-align:center;padding:34px;color:var(--mid)">Nenhuma avaliação de líder neste mês</div>';return}
     rEl.innerHTML=sfL.map((item,i)=>{const[n,d]=item;const pc=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other';const cl=getClf(d.avg);return`<div class="full-rank-item"><div class="full-rank-pos ${pc}">${i+1}</div><div class="full-rank-avatar" style="background:rgba(201,168,76,.15);color:var(--gold-dark)">${n.charAt(0).toUpperCase()}</div><div class="full-rank-details"><div class="full-rank-name">${n} <span style="font-size:10px;color:var(--gold-dark)">👑</span></div><div class="full-rank-sub">${d.loja} · ${d.c} avaliação${d.c!==1?'ões':''}</div></div><div class="full-rank-right"><div class="full-rank-score">${d.avg}%</div><div style="margin-top:3px"><span class="classif-badge ${cl.c}" style="font-size:10px;padding:2px 7px">${cl.e} ${cl.l}</span></div></div></div>`}).join('');
 
   } else {
-    // aba 'avaliacoes' — mostra todas ordenadas por %
     if(!ma.length){rEl.innerHTML='<div style="text-align:center;padding:34px;color:var(--mid)">Nenhuma avaliação neste mês</div>';return}
     const sorted=[...ma].sort((a,b)=>b.pct-a.pct);
     rEl.innerHTML=sorted.map((a,i)=>{const pc=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other';const cl=getClf(a.pct);const isL=a.tipo==='lider';return`<div class="full-rank-item" onclick="openMod(${a.id},'${a.tipo}')" style="cursor:pointer"><div class="full-rank-pos ${pc}">${i+1}</div><div class="full-rank-avatar" style="background:${isL?'rgba(201,168,76,.15)':'var(--rose-light)'};color:${isL?'var(--gold-dark)':'var(--rose)'}">${a.nome.charAt(0).toUpperCase()}</div><div class="full-rank-details"><div class="full-rank-name">${a.nome} ${isL?'<span style="font-size:10px;color:var(--gold-dark)">👑</span>':''}</div><div class="full-rank-sub">${a.loja} · ${a.cargo||'—'}</div></div><div class="full-rank-right"><div class="full-rank-score">${a.pct}%</div><span class="classif-badge ${cl.c}" style="font-size:10px;padding:2px 7px">${cl.e} ${cl.l}</span></div></div>`}).join('');
@@ -1064,100 +1274,176 @@ function renderRank(){
 function getLS(v){const s={};v.forEach(x=>{if(!x.loja)return;if(!s[x.loja])s[x.loja]={t:0,ts:0,c:0};s[x.loja].t+=x.pct;s[x.loja].ts+=x.score;s[x.loja].c++});Object.keys(s).forEach(k=>s[k].avg=Math.round(s[k].t/s[k].c));return s}
 function getFS(a){const s={};a.forEach(x=>{if(!x.nome)return;if(!s[x.nome])s[x.nome]={t:0,c:0,loja:x.loja};s[x.nome].t+=x.pct;s[x.nome].c++});Object.keys(s).forEach(k=>s[k].avg=Math.round(s[k].t/s[k].c));return s}
 
-// ===== BUG 5 CORRIGIDO: showPage com mapa correto para 'avaliacao-lider' e bn5 =====
+/* ==================== NAVEGAÇÃO ==================== */
 function showPage(id){
+  if(id==='usuarios'&&!isAdmin()){showToast('⚠️ Acesso restrito a administradores');return}
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  // Mapa página → índice da nav-tab desktop (agora tem 6 tabs)
-  const m={dashboard:0,'nova-visita':1,'avaliacao-func':2,'avaliacao-lider':3,historico:4,ranking:5};
-  const tabs=document.querySelectorAll('.nav-tab');
-  if(m[id]!==undefined&&tabs[m[id]])tabs[m[id]].classList.add('active');
-  // Mapa página → id do botão no bottom nav mobile
-  const bnMap={dashboard:'bn0','nova-visita':'bn1','avaliacao-func':'bn2','avaliacao-lider':'bn5',historico:'bn3',ranking:'bn4'};
-  ['bn0','bn1','bn2','bn3','bn4','bn5'].forEach(bid=>{
-    const b=document.getElementById(bid);
-    if(b)b.style.color=bid===bnMap[id]?'var(--gold)':'var(--light)';
-  });
-  if(id==='historico')renderHist();
+  const pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');
+  const idxMap={dashboard:0,'nova-visita':1,'avaliacao-func':2,'avaliacao-lider':3,historico:4,ranking:5,usuarios:6};
+  document.querySelectorAll('nav .nav-tab').forEach((t,i)=>t.classList.toggle('active',i===idxMap[id]));
+  const bnMap={dashboard:'bn0','nova-visita':'bn1','avaliacao-func':'bn2','avaliacao-lider':'bn5',historico:'bn3',ranking:'bn4',usuarios:'bn6'};
+  ['bn0','bn1','bn2','bn3','bn4','bn5','bn6'].forEach(b=>{const el=document.getElementById(b);if(el)el.style.color='var(--light)'});
+  const act=document.getElementById(bnMap[id]);if(act)act.style.color='var(--gold)';
+  if(id==='usuarios')renderUsers();
   if(id==='ranking')renderRank();
   if(id==='dashboard')renderDash();
+  if(id==='historico')renderHist();
   window.scrollTo(0,0);
 }
 
+/* ==================== BACKUP / RESTAURAÇÃO ==================== */
 function backupData(){
-  const data={visits:S.visits,avals:S.avals,exportedAt:new Date().toISOString(),version:'1.0'};
+  const data={_app:'Avatim',_v:2,exportadoEm:new Date().toISOString(),visits:S.visits,avals:S.avals,users:S.users};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  const date=new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
-  a.href=URL.createObjectURL(blob);a.download='avatim_backup_'+date+'.json';a.click();showToast('💾 Backup salvo com sucesso!');
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='backup_avatim_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  showToast('💾 Backup gerado!');
 }
-function restoreData(input){
-  const file=input.files[0];if(!file)return;
-  if(!confirm('Restaurar backup? Os dados atuais serão substituídos.')){input.value='';return}
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{const data=JSON.parse(e.target.result);if(!data.visits&&!data.avals){showToast('❌ Arquivo inválido');return}S.visits=data.visits||[];S.avals=data.avals||[];sv();renderDash();renderHist();renderRank();showToast('✅ Backup restaurado! '+S.visits.length+' visitas e '+S.avals.length+' avaliações.')}catch(err){showToast('❌ Erro ao ler o arquivo')}
-    input.value='';
-  };reader.readAsText(file);
-}
-
-function gerarPDI(){
-  const nome=document.getElementById('fFN').value||'a funcionária';
-  const btn=document.getElementById('btnGerarPDI');
-  btn.disabled=true;btn.textContent='⏳ Gerando...';
-  document.getElementById('pdiLoadingBadge').textContent='analisando...';
-  document.getElementById('pdiContent').innerHTML='<div style="text-align:center;padding:36px;color:var(--mid)"><div style="font-size:32px;margin-bottom:12px">✨</div><div style="font-size:13px">Criando PDI para '+nome+'...</div></div>';
-  const BANCO_ACOES={'Atingimento de metas':{acao:'Definir micro-metas diárias visíveis (post-it no balcão) e revisar resultado ao fim de cada turno. Celebre cada conquista, por menor que seja.',recurso:'Livro: O Gerente Minuto — Ken Blanchard',ind:'Meta diária atingida em ≥ 4 dias/semana'},'Ticket médio e itens por venda':{acao:'Treinar 2 sugestões de produto adicional por atendimento. Criar script pessoal de "complemento natural" para os 5 produtos mais vendidos.',recurso:'Técnica: SPIN Selling — Neil Rackham',ind:'Ticket médio crescendo ≥ 10% em 30 dias'},'Taxa de conversão':{acao:'Mapear os 3 principais motivos de saída sem compra e criar resposta para cada um. Praticar role play semanal com colega.',recurso:'Livro: Objeções — Jeb Blount',ind:'Taxa de conversão aumentando semana a semana'},'Venda adicional (cross sell)':{acao:'Montar "combinações campeãs" com os produtos da loja e apresentar como sugestão natural.',recurso:'Prática: Kit sugestão do mês exposto no balcão',ind:'% de vendas com item adicional'},'Consistência de resultados':{acao:'Criar ritual de abertura: checar meta do dia, revisar resultado do dia anterior e definir 1 foco de melhoria.',recurso:'Livro: O Poder do Hábito — Charles Duhigg',ind:'Resultado dentro da meta em ≥ 80% dos dias'},'Abordagem e receptividade':{acao:'Praticar abordagem com sorriso, nome do cliente e pergunta aberta nos primeiros 30 segundos.',recurso:'Livro: Como Fazer Amigos — Dale Carnegie',ind:'Feedback positivo de clientes e observação da gestora'},'Escuta ativa e empatia':{acao:'Antes de apresentar produto, fazer ao menos 2 perguntas sobre a necessidade do cliente.',recurso:'Livro: Comunicação Não-Violenta — Marshall Rosenberg',ind:'Redução de reclamações, aumento de retorno de clientes'},'Conhecimento técnico dos produtos':{acao:'Estudar 2 produtos por semana (notas olfativas, benefícios, público-alvo). Criar "ficha técnica pessoal".',recurso:'Catálogo Avatim + Perfumería Española (YouTube)',ind:'Conseguir explicar qualquer produto sem consultar material'},'Experiência e encantamento do cliente':{acao:'Criar um momento especial em cada atendimento: deixar cliente testar fragrância no pulso, oferecer água.',recurso:'Livro: Satisfação Garantida — Tony Hsieh',ind:'Aumento no NPS/retorno de clientes fiéis'},'Resolução de objeções':{acao:'Mapear as 5 objeções mais comuns e criar respostas empáticas para cada.',recurso:'Livro: Nunca Divida a Diferença — Chris Voss',ind:'Conversão após objeção ≥ 40%'},'Fidelização e pós-venda':{acao:'Enviar mensagem de acompanhamento no WhatsApp 7 dias após a compra.',recurso:'Ferramenta: WhatsApp Business com etiquetas',ind:'% de clientes que retornam em 60 dias'},'Responsabilidade e autonomia':{acao:'Para cada problema, chegar com pelo menos 1 solução proposta antes de escalar.',recurso:'Livro: Extrema Responsabilidade — Jocko Willink',ind:'Redução de problemas escalados sem tentativa de solução'},'Proatividade e iniciativa':{acao:'Identificar 1 melhoria pequena por semana na loja ou no processo e implementar sem precisar ser pedido.',recurso:'Livro: Faça Acontecer — Sheryl Sandberg',ind:'1 ação proativa documentada por semana'},'Colaboração e trabalho em equipe':{acao:'Oferecer ajuda ativa ao colega em momentos de pico. Compartilhar 1 aprendizado por semana no grupo.',recurso:'Livro: As 5 Disfunções de uma Equipe — Patrick Lencioni',ind:'Percepção positiva da equipe e da gestora'},'Resiliência sob pressão':{acao:'Criar ritual de "reset" entre atendimentos difíceis (respiração, água, 1 minuto).',recurso:'Livro: Inteligência Emocional — Daniel Goleman',ind:'Manutenção da qualidade do atendimento mesmo em dias difíceis'},'Postura e presença profissional':{acao:'Revisar uniformização e postura física diariamente antes de abrir a loja.',recurso:'Livro: O Corpo Fala — Pierre Weil',ind:'Feedback da gestora e clientes sobre apresentação'},'Abertura a feedbacks':{acao:'Solicitar feedback da gestora ao menos 1x por semana. Anotar e implementar 1 sugestão por semana.',recurso:'Livro: Obrigado pelo Feedback — Douglas Stone',ind:'Aplicação visível de feedbacks recebidos'},'Pontualidade':{acao:'Estabelecer alarme com 30 min de antecedência. Comunicar via WhatsApp qualquer imprevisto.',recurso:'Hábito: Regra dos 2 minutos — David Allen (GTD)',ind:'Zero atrasos sem comunicação prévia'},'Frequência e presença':{acao:'Manter calendário pessoal de compromissos e planejar cuidados de saúde preventivos.',recurso:'Hábito: Check-in semanal de agenda e saúde',ind:'Frequência ≥ 95% no período'},'Aviso antecipado de ausência':{acao:'Comunicar qualquer ausência com no mínimo 24h de antecedência.',recurso:'Acordo: Canal direto estabelecido com a gestora',ind:'100% das ausências comunicadas com antecedência'},'Organização e visual da loja':{acao:'Seguir checklist de abertura e fechamento diariamente.',recurso:'Metodologia: 5S adaptado ao varejo',ind:'Checklist de loja 100% concluído diariamente'},'Reposição e gestão de produtos':{acao:'Verificar estoque crítico toda manhã e acionar reposição antes de zerar.',recurso:'Prática: Kanban visual de estoque mínimo',ind:'Zero rupturas de produtos sem sinalização'},'Execução de campanhas e ações':{acao:'Ler briefing de campanha no início da semana e treinar apresentação do produto foco.',recurso:'Guia: Manual de campanhas Avatim',ind:'Campanha do mês executada dentro do prazo e padrão'},'Cumprimento de processos e rotinas':{acao:'Criar checklist pessoal das rotinas obrigatórias do turno e revisar ao final.',recurso:'Livro: A Arte da Execução — Larry Bossidy',ind:'Processos cumpridos em 100% dos turnos'},'Atenção aos indicadores da loja':{acao:'Consultar painel de indicadores no início de cada turno.',recurso:'Hábito: 5 minutos de "briefing de números" na abertura',ind:'Consegue citar os indicadores da loja sem consultar'}};
-  let totalPontos=0,totalCrit=0;const notasPorCat={};const fortes=[],criticos=[],medios=[];
-  Object.entries(FCAT).forEach(([cat,items])=>{const notas=items.map(item=>S.fstars[cat+'|'+item]||0);const soma=notas.reduce((a,b)=>a+b,0);notasPorCat[cat]={media:parseFloat((soma/notas.length).toFixed(1)),itens:items.map((item,i)=>({item,nota:notas[i]}))};totalPontos+=soma;totalCrit+=notas.length;notas.forEach((n,i)=>{if(n>=4)fortes.push({cat,item:items[i],nota:n});else if(n>0&&n<=2)criticos.push({cat,item:items[i],nota:n});else if(n===3)medios.push({cat,item:items[i],nota:n})})});
-  const pct=Math.round((totalPontos/(totalCrit*5))*100);const clf=getClf(pct);
-  const candidatos=[...criticos,...medios,...fortes.filter(f=>f.nota<5)].slice(0,4);
-  const prioridades=candidatos.map(c=>{const b=BANCO_ACOES[c.item]||{acao:`Desenvolver ativamente ${c.item.toLowerCase()} através de prática diária.`,recurso:'Reflexão semanal com a gestora',ind:'Melhora perceptível nas próximas avaliações'};const prazo=c.nota<=2?'30 dias':c.nota===3?'60 dias':'90 dias';return{item:c.item,cat:c.cat,nota:c.nota,acao:b.acao,recurso:b.recurso,ind:b.ind,prazo}});
-  const catMedias=Object.entries(notasPorCat).map(([cat,d])=>({cat,media:d.media})).sort((a,b)=>b.media-a.media);
-  const piorCat=catMedias[catMedias.length-1];
-  const diagnosticos={'Excelente':`${nome} demonstra alto nível de maturidade profissional e consistência nos resultados. Com base na metodologia Gallup, o caminho é potencializar ainda mais o que já é forte para alcançar performance extraordinária.`,'Muito Bom':`${nome} apresenta performance acima da média. Segundo Ken Blanchard, está no nível de "competente comprometida" — o momento ideal para dar mais autonomia e desafios maiores.`,'Bom':`${nome} tem uma base sólida. Pelo conceito de Growth Mindset de Carol Dweck, ela tem tudo para evoluir — a chave está em encarar os desafios como oportunidades de aprendizado.`,'Precisa Melhorar':`${nome} está em um momento de transição. Daniel Pink nos lembra que o engajamento vem quando há clareza de propósito — é essencial alinhar o "porquê" do crescimento e criar pequenas vitórias iniciais.`,'Crítico':`${nome} enfrenta desafios significativos. Marshall Goldsmith aponta que comportamentos limitantes raramente se corrigem sozinhos — é preciso intervenção consciente e comprometimento mútuo.`};
-  const perfis={'Excelente':'Profissional de alta performance com competências consolidadas','Muito Bom':'Executora comprometida com resultados consistentes','Bom':'Colaboradora dedicada com boa base técnica e espaço claro para crescimento','Precisa Melhorar':'Profissional em desenvolvimento que precisa de suporte próximo','Crítico':'Colaboradora em fase crítica que requer acompanhamento intensivo'};
-  const topFortes=fortes.sort((a,b)=>b.nota-a.nota).slice(0,3).map(f=>`Destaque em ${f.item} — competência que agrega valor direto à loja e ao cliente`);
-  if(topFortes.length===0)topFortes.push('Disponibilidade para receber feedback e crescer','Comprometimento com a equipe e a loja','Potencial identificado pelo avaliador');
-  const plano={d30:{foco:'Consciência e primeiros hábitos',acoes:['Alinhar expectativas claras com a gestora e revisar este PDI juntas','Iniciar 1 ação prática por prioridade identificada','Criar rituais de início e fim de turno (checklist pessoal)'],entrega:'Comprometimento visível com o plano e primeiros resultados'},d60:{foco:'Prática e construção de competências',acoes:['Executar as ações de desenvolvimento com consistência diária','Solicitar feedback estruturado da gestora quinzenalmente','Documentar aprendizados e dificuldades encontradas'],entrega:'Melhora perceptível nos critérios críticos'},d90:{foco:'Consolidação e nova avaliação',acoes:['Revisar PDI com a gestora: o que evoluiu, o que ainda precisa de atenção','Celebrar conquistas — reconhecer o crescimento é parte do processo','Definir novos desafios para o próximo ciclo'],entrega:'Evolução mensurável nos indicadores e nova classificação'}};
-  const acordos={'Excelente':`A empresa reconhece o nível de excelência de ${nome} e se compromete a oferecer novos desafios e oportunidades.`,'Muito Bom':`A gestora se compromete a dar feedbacks estruturados quinzenalmente. ${nome} se compromete a buscar evolução contínua.`,'Bom':`A empresa se compromete a oferecer suporte e treinamentos. ${nome} se compromete a executar as ações deste PDI com consistência.`,'Precisa Melhorar':`A gestora se compromete a reuniões semanais de acompanhamento. ${nome} se compromete a encarar este momento como oportunidade real de virada.`,'Crítico':`A empresa oferece suporte total para a recuperação de performance. ${nome} se compromete a priorizar as ações críticas deste PDI.`};
-  const msgs={'Excelente':`${nome}, você já chegou a um nível que poucos alcançam. Continue sendo essa profissional extraordinária e inspirando todos ao seu redor. 🌸`,'Muito Bom':`${nome}, você está construindo algo sólido e bonito. Na Avatim, acreditamos que o melhor de você ainda está por vir. ✨`,'Bom':`${nome}, você tem uma base verdadeira para crescer. A Avatim acredita em você e está ao seu lado nessa jornada. 💛`,'Precisa Melhorar':`${nome}, toda grande profissional passou por um momento de reconstrução. A Avatim acredita no seu potencial. 🤝`,'Crítico':`${nome}, este é um momento difícil, mas também de grande oportunidade. A Avatim não desistiu de você. 💪`};
-  window._pdiObj={classificacao:clf.l,pct,diagnostico:diagnosticos[clf.l]||diagnosticos['Bom'],perfil:perfis[clf.l],fortes:topFortes,prioridades,plano,acordo:acordos[clf.l],msg:msgs[clf.l]};
-  const pctColor=pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
-  let html=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:12px"><div style="font-size:38px">${clf.e}</div><div><div style="font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${clf.l} · ${pct}%</div><div style="font-size:12px;font-style:italic;color:var(--dark);margin-top:3px">${perfis[clf.l]}</div></div></div>
-  <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:11px;padding:16px;margin-bottom:14px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📊 Diagnóstico</div><div style="font-size:13px;line-height:1.7;color:var(--dark)">${diagnosticos[clf.l]||diagnosticos['Bom']}</div></div>
-  ${topFortes.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">💪 Forças a Potencializar</div>${topFortes.map(p=>`<div style="background:rgba(90,138,106,.08);border:1px solid rgba(90,138,106,.25);border-radius:9px;padding:9px 13px;font-size:12px;color:var(--dark);line-height:1.5;margin-bottom:6px">✨ ${p}</div>`).join('')}</div>`:''}
-  ${prioridades.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🎯 Prioridades de Desenvolvimento</div>${prioridades.map(p=>`<div style="background:var(--white);border:1px solid #EDE8E0;border-left:3px solid ${p.nota<=2?'var(--red)':p.nota===3?'var(--gold)':'var(--green)'};border-radius:9px;padding:14px;margin-bottom:10px"><div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap"><span style="font-size:12px;font-weight:700;color:var(--dark)">${p.item}</span><span style="background:${p.nota<=2?'rgba(192,57,43,.1)':p.nota===3?'rgba(201,168,76,.1)':'rgba(90,138,106,.1)'};color:${p.nota<=2?'var(--red)':p.nota===3?'var(--gold-dark)':'var(--green)'};border-radius:18px;padding:2px 9px;font-size:10px;font-weight:700">${p.nota}/5</span><span style="background:rgba(90,122,154,.1);color:var(--blue);border-radius:18px;padding:2px 9px;font-size:10px">${p.prazo}</span></div><div style="font-size:12px;color:var(--dark);margin-bottom:6px">📌 ${p.acao}</div><div style="font-size:11px;color:var(--blue);margin-bottom:5px">📚 ${p.recurso}</div><div style="font-size:11px;color:var(--mid);padding-top:6px;border-top:1px solid #F0EBE3">📈 Indicador: ${p.ind}</div></div>`).join('')}</div>`:''}
-  <div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🗓️ Plano 30 · 60 · 90 dias</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${[{d:'30 dias',k:'d30',c:'var(--green)',bg:'rgba(90,138,106,.08)',bc:'rgba(90,138,106,.2)'},{d:'60 dias',k:'d60',c:'var(--gold-dark)',bg:'rgba(201,168,76,.08)',bc:'rgba(201,168,76,.2)'},{d:'90 dias',k:'d90',c:'var(--blue)',bg:'rgba(90,122,154,.08)',bc:'rgba(90,122,154,.2)'}].map(m=>{const p=plano[m.k];return`<div style="background:${m.bg};border:1px solid ${m.bc};border-radius:9px;padding:12px"><div style="font-size:10px;font-weight:700;color:${m.c};margin-bottom:6px;text-transform:uppercase">${m.d} · ${p.foco}</div>${p.acoes.map(a=>`<div style="font-size:11px;color:var(--dark);margin-bottom:4px;line-height:1.4">• ${a}</div>`).join('')}<div style="font-size:10px;color:var(--mid);margin-top:7px;padding-top:6px;border-top:1px solid ${m.bc};font-style:italic">${p.entrega}</div></div>`;}).join('')}</div></div>
-  <div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:11px;padding:14px;margin-bottom:14px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🤝 Acordo de Crescimento</div><div style="font-size:12px;color:var(--dark);line-height:1.6">${acordos[clf.l]}</div></div>
-  <div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:11px;padding:18px;text-align:center"><div style="font-size:22px;margin-bottom:8px">🌸</div><div style="font-size:13px;font-style:italic;color:var(--gold-light);line-height:1.7">"${msgs[clf.l]}"</div></div>`;
-  document.getElementById('pdiContent').innerHTML=html;
-  document.getElementById('pdiLoadingBadge').textContent='✅ pronto!';
-  btn.textContent='🔄 Gerar novamente';btn.disabled=false;showToast('🚀 PDI gerado!');
+function restoreData(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!d||(!Array.isArray(d.visits)&&!Array.isArray(d.avals)&&!Array.isArray(d.users)))throw 0;
+      if(!confirm('Restaurar este backup? Os dados atuais deste aparelho serão substituídos.'))return;
+      if(Array.isArray(d.visits))S.visits=d.visits;
+      if(Array.isArray(d.avals))S.avals=d.avals;
+      if(Array.isArray(d.users)&&d.users.length)S.users=d.users;
+      _ls.set('av_v',JSON.stringify(S.visits));
+      _ls.set('av_a',JSON.stringify(S.avals));
+      _ls.set('av_u',JSON.stringify(S.users));
+      pushCloud();
+      renderDash();renderHist();renderRank();renderUsers();applyPerms();
+      showToast('📂 Backup restaurado!');
+    }catch(err){showToast('❌ Arquivo inválido')}
+    inp.value='';
+  };
+  r.readAsText(f);
 }
 
+/* ==================== PDI — BANCO DE AÇÕES ==================== */
+const BANCO_ACOES={
+  'Atingimento de metas':{a:'Definir meta diária individual e acompanhar em quadro visível; revisar o gap todo início de turno.',r:'Planilha de metas diárias + reunião relâmpago de 5 min no abre-loja.',i:'% de atingimento da meta individual semanal'},
+  'Ticket médio e itens por venda':{a:'Praticar oferta de 2º e 3º item em toda venda (kit, reposição, presente).',r:'Roteiro de sugestão de adicionais por linha de produto.',i:'Ticket médio e PA (peças por atendimento)'},
+  'Taxa de conversão':{a:'Registrar entradas x vendas e treinar abordagem para não deixar cliente sair sem oferta.',r:'Contador de fluxo + script de abordagem ativa.',i:'Taxa de conversão semanal'},
+  'Venda adicional (cross sell)':{a:'Associar sempre um item complementar ao produto principal (hidratante + sabonete, etc.).',r:'Tabela de combinações que mais convertem.',i:'% de vendas com item adicional'},
+  'Consistência de resultados':{a:'Acompanhar resultado diário e criar plano de recuperação nos dias fracos.',r:'Histórico diário de vendas.',i:'Desvio entre melhor e pior dia da semana'},
+  'Abordagem e receptividade':{a:'Abordar em até 30s com simpatia, nome e pergunta aberta; evitar "posso ajudar?".',r:'Treino de abordagem em dupla (role-play).',i:'Feedback de cliente oculto / observação da líder'},
+  'Escuta ativa e empatia':{a:'Identificar a necessidade real antes de mostrar produto; confirmar entendimento.',r:'Técnica SPIN adaptada ao varejo de perfumaria.',i:'Adequação da oferta à necessidade (observação)'},
+  'Conhecimento técnico dos produtos':{a:'Estudar 2 produtos/linha por semana (notas, benefícios, diferenciais).',r:'Ficha técnica das linhas Avatim + degustação guiada.',i:'Quiz interno de produtos'},
+  'Experiência e encantamento do cliente':{a:'Criar um "momento uau" por atendimento (teste na pele, embalagem caprichada, mimo).',r:'Checklist de experiência sensorial.',i:'NPS / elogios espontâneos'},
+  'Resolução de objeções':{a:'Mapear as 5 objeções mais comuns e treinar resposta com foco em valor.',r:'Banco de objeções e respostas.',i:'Conversão após objeção'},
+  'Fidelização e pós-venda':{a:'Cadastrar cliente e enviar mensagem de pós-venda/reposição via WhatsApp.',r:'Modelo de mensagens de pós-venda.',i:'Nº de clientes recompradores'},
+  'Responsabilidade e autonomia':{a:'Assumir tarefas do turno sem precisar ser lembrada; reportar pendências.',r:'Checklist de rotina do turno.',i:'Tarefas concluídas sem cobrança'},
+  'Proatividade e iniciativa':{a:'Trazer 1 ideia de ação de venda por semana e executar.',r:'Mural de ideias da equipe.',i:'Ideias propostas e executadas'},
+  'Colaboração e trabalho em equipe':{a:'Apoiar colegas em picos de fluxo e dividir informações de produto.',r:'Combinados de equipe.',i:'Observação da líder / clima'},
+  'Resiliência sob pressão':{a:'Manter padrão de atendimento em dias cheios; usar respiração e foco no cliente.',r:'Técnicas de gestão de estresse no varejo.',i:'Constância de resultado em dias de pico'},
+  'Postura e presença profissional':{a:'Uniforme completo, linguagem cordial e postura ativa no salão (nunca no celular).',r:'Padrão de imagem e postura Avatim.',i:'Checklist de postura'},
+  'Abertura a feedbacks':{a:'Aplicar cada feedback recebido e retornar o resultado na semana seguinte.',r:'Registro de feedbacks e ações.',i:'Feedbacks aplicados'},
+  'Pontualidade':{a:'Chegar 10 min antes para o abre-loja organizado.',r:'Escala e registro de ponto.',i:'Atrasos no mês'},
+  'Frequência e presença':{a:'Comunicar ausências com antecedência e cumprir a escala combinada.',r:'Política de escala da loja.',i:'Faltas/ausências no mês'},
+  'Aviso antecipado de ausência':{a:'Avisar líder com o máximo de antecedência para reorganizar a escala.',r:'Combinado de comunicação da equipe.',i:'% de ausências avisadas com antecedência'},
+  'Organização e visual da loja':{a:'Executar o checklist de organização no abre e fecha-loja.',r:'Checklist de visual merchandising.',i:'Nota de visita à loja'},
+  'Reposição e gestão de produtos':{a:'Repor gôndolas e vitrine sem espaços vazios, respeitando validade e giro.',r:'Rotina de reposição por giro.',i:'Rupturas na prateleira'},
+  'Execução de campanhas e ações':{a:'Montar e sinalizar a campanha do mês logo no início e oferecer ativamente.',r:'Kit de campanha do mês.',i:'% de vendas dentro da campanha'},
+  'Cumprimento de processos e rotinas':{a:'Seguir os processos de caixa, troca e cadastro sem pular etapas.',r:'POP (procedimento operacional padrão).',i:'Erros de processo no mês'},
+  'Atenção aos indicadores da loja':{a:'Conhecer meta, ticket e conversão do dia e agir sobre eles.',r:'Painel de indicadores diário.',i:'Domínio dos números pela vendedora'}
+};
+const ACAO_FALLBACK={a:'Definir plano de ação específico com a líder para este ponto e acompanhar semanalmente.',r:'Acompanhamento individual com a líder.',i:'Evolução da nota na próxima avaliação'};
+
+function _prazoNota(n){return n<=2?'30 dias (urgente)':n===3?'60 dias':'90 dias'}
+function _montarPDI(fstars,titulo){
+  const itens=[];
+  Object.entries(fstars).forEach(([k,n])=>{const item=k.split('|')[1]||k;itens.push({item,nota:n})});
+  const total=itens.reduce((a,b)=>a+b.nota,0);const max=itens.length*5;
+  const pct=max>0?Math.round((total/max)*100):0;const cl=getClf(pct);
+  const fortes=itens.filter(x=>x.nota>=4).map(x=>x.item);
+  const prioridades=itens.filter(x=>x.nota>0&&x.nota<=3).sort((a,b)=>a.nota-b.nota).slice(0,6).map(x=>{
+    const b=BANCO_ACOES[x.item]||ACAO_FALLBACK;
+    return{item:x.item,nota:x.nota,prazo:_prazoNota(x.nota),acao:b.a,recurso:b.r,ind:b.i};
+  });
+  let diagnostico;
+  if(pct>=90)diagnostico='Desempenho de excelência. O foco do PDI é manter a consistência e assumir novos desafios, servindo de referência para a equipe.';
+  else if(pct>=75)diagnostico='Ótimo desempenho, com pontos claros de refinamento. Pequenos ajustes elevam '+titulo+' ao nível de excelência.';
+  else if(pct>=60)diagnostico='Desempenho bom, mas com oportunidades relevantes. O PDI prioriza os critérios de menor nota para destravar resultado.';
+  else if(pct>=45)diagnostico='Desempenho abaixo do esperado em vários critérios. É necessário um plano firme, com acompanhamento próximo e prazos curtos.';
+  else diagnostico='Desempenho crítico. Requer intervenção imediata, metas semanais e acompanhamento diário da liderança.';
+  const p1=prioridades[0],p2=prioridades[1],p3=prioridades[2];
+  const plano={
+    d30:{foco:p1?p1.item:'Consolidar pontos fortes',acoes:[p1?p1.acao:'Manter o padrão atual e documentar boas práticas',p2?p2.acao:'Acompanhar indicadores semanalmente'],entrega:'Primeiros resultados mensuráveis e rotina ajustada'},
+    d60:{foco:p2?p2.item:'Aprofundar consistência',acoes:[p2?p2.acao:'Ampliar boas práticas para todos os turnos',p3?p3.acao:'Assumir uma ação de venda da loja'],entrega:'Melhora visível nos indicadores dos pontos priorizados'},
+    d90:{foco:p3?p3.item:'Autonomia e referência',acoes:['Rever com a líder a evolução de cada indicador do PDI','Assumir protagonismo em uma frente da loja'],entrega:'Critérios priorizados reavaliados com nota superior'}
+  };
+  const acordo='Avaliador(a) e '+titulo+' acordam revisar este PDI a cada 30 dias, ajustando ações conforme a evolução dos indicadores.';
+  const msg=pct>=75?'Seu talento já aparece nos resultados. Com disciplina nos próximos passos, você vira referência. Conte comigo. ✨':'Acredito no seu potencial. Vamos juntas, um passo de cada vez — cada ação aqui é um degrau. Você consegue. 💛';
+  return{classificacao:cl.l,pct,diagnostico,fortes,prioridades,plano,acordo,msg};
+}
 function renderPDI(pdi){
-  if(!pdi)return'';
-  const pctColor=pdi.pct>=80?'var(--green)':pdi.pct>=60?'var(--gold)':'var(--red)';
-  const clf=getClf(pdi.pct);
-  let h=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:13px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:11px"><div style="font-size:34px">${clf.e}</div><div><div style="font-size:10px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${pdi.classificacao} · ${pdi.pct}%</div><div style="font-size:12px;font-style:italic;color:var(--dark);margin-top:2px">${pdi.perfil||''}</div></div></div>
-  <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:10px;padding:14px;margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">📊 Diagnóstico</div><div style="font-size:12px;line-height:1.7;color:var(--dark)">${pdi.diagnostico}</div></div>`;
-  if(pdi.fortes&&pdi.fortes.length){h+=`<div style="margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">💪 Forças a Potencializar</div>${pdi.fortes.map(p=>`<div style="background:rgba(90,138,106,.08);border:1px solid rgba(90,138,106,.25);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--dark);line-height:1.5;margin-bottom:5px">✨ ${p}</div>`).join('')}</div>`}
-  if(pdi.prioridades&&pdi.prioridades.length){h+=`<div style="margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🎯 Ações Prioritárias</div>`;pdi.prioridades.forEach((p,i)=>{const cor=p.nota<=2?'var(--red)':p.nota===3?'var(--gold)':'var(--green)';h+=`<div style="background:${p.nota<=2?'rgba(192,57,43,.06)':p.nota===3?'rgba(201,168,76,.06)':'rgba(90,138,106,.06)'};border:1px solid ${p.nota<=2?'rgba(192,57,43,.2)':p.nota===3?'rgba(201,168,76,.2)':'rgba(90,138,106,.2)'};border-left:3px solid ${cor};border-radius:9px;padding:12px;margin-bottom:9px"><div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--dark)">${i+1}. ${p.item}</span><span style="background:${p.nota<=2?'rgba(192,57,43,.12)':p.nota===3?'rgba(201,168,76,.12)':'rgba(90,138,106,.12)'};color:${cor};border-radius:18px;padding:2px 8px;font-size:10px;font-weight:700">${p.nota}/5 · ${p.prazo}</span></div><div style="font-size:12px;color:var(--dark);margin-bottom:5px;line-height:1.5">📌 ${p.acao}</div><div style="font-size:11px;color:var(--blue);margin-bottom:4px">📚 ${p.recurso}</div><div style="font-size:11px;color:var(--mid);padding-top:5px;border-top:1px solid rgba(0,0,0,.06)">📈 ${p.ind}</div></div>`});h+=`</div>`}
-  if(pdi.plano){h+=`<div style="margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🗓️ Plano 30 · 60 · 90 dias</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">${[{d:'30 dias',k:'d30',c:'var(--green)',bg:'rgba(90,138,106,.08)',bc:'rgba(90,138,106,.2)'},{d:'60 dias',k:'d60',c:'var(--gold-dark)',bg:'rgba(201,168,76,.08)',bc:'rgba(201,168,76,.2)'},{d:'90 dias',k:'d90',c:'var(--blue)',bg:'rgba(90,122,154,.08)',bc:'rgba(90,122,154,.2)'}].map(m=>{const p=pdi.plano[m.k];if(!p)return'';return`<div style="background:${m.bg};border:1px solid ${m.bc};border-radius:8px;padding:10px"><div style="font-size:9px;font-weight:700;color:${m.c};margin-bottom:5px;text-transform:uppercase">${m.d} · ${p.foco}</div>${p.acoes.map(a=>`<div style="font-size:10px;color:var(--dark);margin-bottom:3px;line-height:1.4">• ${a}</div>`).join('')}<div style="font-size:10px;color:var(--mid);margin-top:5px;padding-top:5px;border-top:1px solid ${m.bc};font-style:italic">${p.entrega}</div></div>`;}).join('')}</div></div>`}
-  if(pdi.acordo){h+=`<div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:12px;margin-bottom:12px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">🤝 Acordo de Crescimento</div><div style="font-size:12px;color:var(--dark);line-height:1.6">${pdi.acordo}</div></div>`}
-  if(pdi.msg){h+=`<div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:10px;padding:16px;text-align:center"><div style="font-size:20px;margin-bottom:7px">🌸</div><div style="font-size:12px;font-style:italic;color:var(--gold-light);line-height:1.7">"${pdi.msg}"</div></div>`}
+  if(!pdi||!pdi.prioridades)return'<p style="font-size:12px;color:var(--mid)">PDI não gerado.</p>';
+  let h=`<div style="background:linear-gradient(135deg,#FFF8E8,#FFE9B3);border:1px solid var(--gold-light);border-radius:10px;padding:12px 14px;margin-bottom:12px">
+    <div style="font-size:12px;font-weight:700;color:var(--gold-dark)">${pdi.classificacao} · ${pdi.pct}%</div>
+    <div style="font-size:12px;color:var(--dark);line-height:1.6;margin-top:4px">${pdi.diagnostico}</div></div>`;
+  if(pdi.fortes&&pdi.fortes.length){h+=`<div style="margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:5px">💪 Forças a potencializar</div><div style="display:flex;flex-wrap:wrap;gap:5px">${pdi.fortes.map(f=>`<span class="tag green">✨ ${f}</span>`).join('')}</div></div>`}
+  h+=`<div style="font-size:11px;font-weight:700;color:var(--gold-dark);margin-bottom:8px">🎯 Ações prioritárias</div>`;
+  pdi.prioridades.forEach((p,i)=>{h+=`<div style="background:var(--white);border:1px solid #EDE8E0;border-left:4px solid var(--gold);border-radius:8px;padding:11px;margin-bottom:8px">
+    <div style="font-size:12px;font-weight:700;color:var(--dark)">${i+1}. ${p.item} <span style="font-weight:400;color:var(--mid)">— ${p.nota}/5 · ${p.prazo}</span></div>
+    <div style="font-size:11px;color:var(--dark);margin-top:4px">📌 <strong>Ação:</strong> ${p.acao}</div>
+    <div style="font-size:11px;color:var(--mid);margin-top:2px">📚 ${p.recurso}</div>
+    <div style="font-size:11px;color:var(--mid);margin-top:2px">📈 Indicador: ${p.ind}</div></div>`});
+  if(pdi.plano){h+=`<div style="font-size:11px;font-weight:700;color:var(--gold-dark);margin:12px 0 8px">🗓️ Plano 30 / 60 / 90 dias</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">`;
+    [['d30','30 dias'],['d60','60 dias'],['d90','90 dias']].forEach(([k,label])=>{const p=pdi.plano[k];if(!p)return;h+=`<div style="background:var(--cream);border:1px solid #EDE8E0;border-radius:8px;padding:10px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark)">${label}</div><div style="font-size:11px;font-weight:600;color:var(--dark);margin:3px 0">${p.foco}</div>${p.acoes.map(a=>`<div style="font-size:10px;color:var(--mid);margin-bottom:3px">• ${a}</div>`).join('')}<div style="font-size:10px;font-style:italic;color:var(--green);margin-top:4px">✓ ${p.entrega}</div></div>`});
+    h+=`</div>`}
+  if(pdi.acordo)h+=`<div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:10px;font-size:11px;color:var(--dark);margin-top:12px">🤝 ${pdi.acordo}</div>`;
+  if(pdi.msg)h+=`<div style="background:var(--dark);color:var(--gold-light);border-radius:8px;padding:11px;font-size:12px;font-style:italic;margin-top:8px">"${pdi.msg}"</div>`;
   return h;
 }
+function gerarPDI(){
+  const nome=document.getElementById('fFN').value.trim()||'a funcionária';
+  const badge=document.getElementById('pdiLoadingBadge');badge.textContent='gerando...';
+  const btn=document.getElementById('btnGerarPDI');btn.disabled=true;
+  setTimeout(()=>{
+    const pdi=_montarPDI(S.fstars,nome);
+    window._pdiObj=pdi;window._pdiGerado='ok';
+    document.getElementById('pdiContent').innerHTML=renderPDI(pdi);
+    badge.textContent='✓ gerado';btn.disabled=false;btn.textContent='🔄 Regerar PDI';
+    showToast('🚀 PDI gerado!');
+  },250);
+}
 
-// ===== AVALIAÇÃO LÍDER =====
-const FCAT_LIDER={'🎯 RESULTADOS E METAS':['Atingimento da meta da loja','Gestão do ticket médio da equipe','Acompanhamento de indicadores diários','Planejamento de ações para bater meta','Consistência e previsibilidade de resultados'],'👥 LIDERANÇA DE EQUIPE':['Engajamento e motivação da equipe','Gestão de conflitos e clima da loja','Desenvolvimento das vendedoras','Delegação e distribuição de tarefas','Feedback contínuo e construtivo','Exemplo e postura de liderança'],'🏪 GESTÃO DA LOJA':['Abertura e fechamento de acordo com processos','Organização, limpeza e visual da loja','Controle de estoque e reposição','Execução de campanhas e ações da marca','Cumprimento de normas e procedimentos'],'💬 COMUNICAÇÃO E RELACIONAMENTO':['Comunicação clara com a equipe','Alinhamento com a gestora regional','Atendimento a clientes estratégicos','Resolução de problemas e reclamações','Transparência e honestidade'],'🌱 DESENVOLVIMENTO PESSOAL':['Autoconhecimento e autocrítica','Abertura a feedbacks da liderança','Gestão emocional e resiliência','Visão de negócio e dono da loja','Proatividade e iniciativa estratégica']};
-let S_lider={loja:'Shopping Mooca',stars:{},comm:{}};
+/* ==================== AVALIAÇÃO DE LÍDER ==================== */
+const FCAT_LIDER={
+  '👑 LIDERANÇA E GESTÃO DE EQUIPE':['Comunicação e clareza de direção','Delegação e distribuição de tarefas','Desenvolvimento e treinamento do time','Feedback e acompanhamento individual','Gestão de conflitos','Engajamento e motivação da equipe'],
+  '📊 GESTÃO DE RESULTADOS':['Cumprimento das metas da loja','Acompanhamento de indicadores (ticket, PA, conversão)','Planos de ação para resultado','Gestão de campanhas e ações comerciais'],
+  '🏪 GESTÃO OPERACIONAL':['Organização e visual da loja','Gestão de estoque e reposição','Cumprimento de processos e rotinas','Gestão de escala e assiduidade do time'],
+  '🌟 POSTURA E EXEMPLO':['Postura e presença profissional','Proatividade e iniciativa','Resiliência e gestão emocional','Abertura a feedback e autodesenvolvimento']
+};
+const BANCO_LIDER={
+  'Comunicação e clareza de direção':{a:'Iniciar o dia comunicando meta, foco e prioridades em 5 min; confirmar entendimento do time.',r:'Ritual de abertura de loja (daily de 5 min).',i:'Clareza percebida pela equipe / metas conhecidas por todas'},
+  'Delegação e distribuição de tarefas':{a:'Distribuir responsabilidades por turno com dono claro, evitando centralizar.',r:'Quadro de responsabilidades do turno.',i:'Tarefas com responsável definido'},
+  'Desenvolvimento e treinamento do time':{a:'Realizar 1 treino curto por semana (produto, abordagem ou objeção).',r:'Cronograma de treinos + fichas de produto.',i:'Treinos realizados / evolução do time'},
+  'Feedback e acompanhamento individual':{a:'Dar feedback individual quinzenal com base em números e comportamento.',r:'Roteiro de 1:1 e registro de feedbacks.',i:'1:1 realizados no mês'},
+  'Gestão de conflitos':{a:'Tratar ruídos na hora, em particular, com foco em fato e solução.',r:'Técnica de conversa difícil (CNV).',i:'Conflitos resolvidos sem escalonar'},
+  'Engajamento e motivação da equipe':{a:'Reconhecer resultados diariamente e criar pequenas metas com celebração.',r:'Mural de conquistas / ritual de reconhecimento.',i:'Clima e turnover da equipe'},
+  'Cumprimento das metas da loja':{a:'Quebrar a meta mensal em diária/individual e agir sobre o gap em tempo real.',r:'Painel de metas da loja.',i:'% de atingimento da meta da loja'},
+  'Acompanhamento de indicadores (ticket, PA, conversão)':{a:'Ler os indicadores 2x ao dia e direcionar ações imediatas ao time.',r:'Relatório de indicadores diário.',i:'Evolução de ticket, PA e conversão'},
+  'Planos de ação para resultado':{a:'Montar plano de ação semanal por indicador fraco, com responsável e prazo.',r:'Modelo de plano de ação (5W2H simplificado).',i:'Planos executados x planejados'},
+  'Gestão de campanhas e ações comerciais':{a:'Garantir montagem, sinalização e oferta ativa da campanha desde o dia 1.',r:'Kit de campanha + briefing para o time.',i:'% de vendas dentro da campanha'},
+  'Organização e visual da loja':{a:'Auditar o visual no abre e fecha, cobrando padrão de vitrine e salão.',r:'Checklist de visual merchandising.',i:'Nota de visita à loja'},
+  'Gestão de estoque e reposição':{a:'Garantir reposição por giro e validade, sem rupturas na prateleira.',r:'Rotina de estoque e inventário cíclico.',i:'Rupturas e divergência de estoque'},
+  'Cumprimento de processos e rotinas':{a:'Assegurar que caixa, trocas e cadastros sigam o padrão, sem atalhos.',r:'POP da loja.',i:'Erros de processo no mês'},
+  'Gestão de escala e assiduidade do time':{a:'Montar escala equilibrada, cobrindo picos, e tratar ausências rapidamente.',r:'Ferramenta de escala.',i:'Cobertura nos horários de pico / faltas'},
+  'Postura e presença profissional':{a:'Ser exemplo em uniforme, postura e energia no salão.',r:'Padrão de imagem Avatim.',i:'Observação e referência para o time'},
+  'Proatividade e iniciativa':{a:'Antecipar problemas e propor ações antes de serem cobradas.',r:'Mural de ideias / reunião semanal.',i:'Iniciativas propostas e implementadas'},
+  'Resiliência e gestão emocional':{a:'Manter equilíbrio e clareza sob pressão, protegendo o clima da equipe.',r:'Técnicas de autogestão emocional.',i:'Constância de postura em dias de pico'},
+  'Abertura a feedback e autodesenvolvimento':{a:'Buscar feedback ativamente e aplicar, mostrando evolução.',r:'Registro de feedbacks recebidos e ações.',i:'Feedbacks aplicados / evolução própria'}
+};
+
+let S_lider={stars:{},comm:{},loja:'Shopping Mooca'};
 function selLiderLoja(el,l){document.querySelectorAll('#liderLojaTabs .loja-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');S_lider.loja=l;document.getElementById('fLL').value=l}
 function buildLiderCrit(){
   S_lider.stars={};S_lider.comm={};
-  const c=document.getElementById('liderCriterios');c.innerHTML='';
+  const c=document.getElementById('liderCriterios');if(!c)return;c.innerHTML='';
   Object.entries(FCAT_LIDER).forEach(([cat,items])=>{
     const h=document.createElement('div');h.className='cat-header';h.textContent=cat;c.appendChild(h);
     items.forEach(item=>{
@@ -1169,55 +1455,62 @@ function buildLiderCrit(){
       wrap.appendChild(lbl);
       const info=document.createElement('div');info.className='star-info';
       info.innerHTML=`<div class="star-label-text">${item}</div>`;
-      const ta=document.createElement('textarea');ta.className='star-comment-input';ta.placeholder='Comentário opcional...';ta.oninput=()=>{S_lider.comm[k]=ta.value};
+      const ta=document.createElement('textarea');ta.className='star-comment-input';ta.placeholder='Comentário opcional...';
+      ta.oninput=()=>{S_lider.comm[k]=ta.value};
       info.appendChild(ta);
       row.appendChild(info);row.appendChild(wrap);c.appendChild(row);
     });
   });updLiderScore();
 }
 function setStarLider(k,n){
-  S_lider.stars[k]=n;const ek=encodeKey(k);const lbl=document.getElementById('lsl'+ek);if(lbl)lbl.textContent=n;
-  const row=lbl&&lbl.closest('.star-row');if(row){row.querySelectorAll('.star-btn').forEach((b,i)=>{b.style.color=i<n?'var(--gold)':'#DDD5CA';b.style.fontSize=i<n?'26px':'22px';});}
-  console.log('[setStarLider] k='+k+' n='+n);
+  S_lider.stars[k]=n;const ek=encodeKey(k);
+  const lbl=document.getElementById('lsl'+ek);if(lbl)lbl.textContent=n;
+  const row=lbl&&lbl.closest('.star-row');
+  if(row){row.querySelectorAll('.star-btn').forEach((b,i)=>{b.style.color=i<n?'var(--gold)':'#DDD5CA';b.style.fontSize=i<n?'26px':'22px'})}
   updLiderScore();
 }
 function updLiderScore(){
-  const vals=Object.values(S_lider.stars);const t=vals.reduce((a,b)=>a+b,0);const m=vals.length*5;const pct=m>0?Math.round((t/m)*100):0;
-  const lb=document.getElementById('liderBar');const ls=document.getElementById('liderScore');const lc=document.getElementById('liderClassifEl');
-  if(lb)lb.style.width=pct+'%';
-  if(ls)ls.textContent=pct+'%';
-  if(lc){const cl=getClf(pct);lc.innerHTML=`<span class="classif-badge ${cl.c}">${cl.e} ${cl.l}</span>`;}
-  console.log('[updLiderScore] t='+t+' pct='+pct);
+  const vals=Object.values(S_lider.stars);const t=vals.reduce((a,b)=>a+b,0);const m=vals.length*5;
+  const pct=m>0?Math.round((t/m)*100):0;
+  const b=document.getElementById('liderBar');const s=document.getElementById('liderScore');const c=document.getElementById('liderClassifEl');
+  if(b)b.style.width=pct+'%';if(s)s.textContent=pct+'%';
+  if(c){const cl=getClf(pct);c.innerHTML=`<span class="classif-badge ${cl.c}">${cl.e} ${cl.l}</span>`}
 }
 function gerarPDILider(){
-  const nome=document.getElementById('fLN').value||'o(a) líder';
-  const btn=document.getElementById('btnGerarPDILider');
-  btn.disabled=true;btn.textContent='⏳ Gerando...';
-  document.getElementById('liderPdiLoadingBadge').textContent='analisando...';
-  document.getElementById('liderPdiContent').innerHTML='<div style="text-align:center;padding:36px;color:var(--mid)"><div style="font-size:32px;margin-bottom:12px">👑</div><div style="font-size:13px">Criando PDI de liderança para '+nome+'...</div></div>';
-  const BANCO_LIDER={'Atingimento da meta da loja':{acao:'Criar painel visual de acompanhamento diário da meta. Reunião de 10 min com a equipe ao abrir a loja.',recurso:'Livro: Execução — Larry Bossidy',ind:'Meta da loja atingida em ≥ 80% dos dias'},'Gestão do ticket médio da equipe':{acao:'Treinar a equipe semanalmente em técnicas de venda adicional.',recurso:'Técnica: SPIN Selling + Kit sugestão do mês',ind:'Ticket médio crescendo ≥ 10% ao mês'},'Acompanhamento de indicadores diários':{acao:'Consultar painel de indicadores 3x ao dia.',recurso:'Hábito: Dashboard Avatim atualizado diariamente',ind:'Conhece e comunica todos os indicadores sem consultar'},'Planejamento de ações para bater meta':{acao:'No início de cada semana, montar 1 plano de ação com táticas para a semana.',recurso:'Ferramenta: Método PDCA aplicado ao varejo',ind:'Plano semanal documentado e executado'},'Consistência e previsibilidade de resultados':{acao:'Analisar os dias/turnos de pior performance e criar estratégia específica.',recurso:'Livro: As Leis do Líder — John Maxwell',ind:'Variação de resultado entre dias reduzindo mês a mês'},'Engajamento e motivação da equipe':{acao:'Reconhecer publicamente 1 conquista de cada vendedora por semana.',recurso:'Livro: O Gerente Minuto — Ken Blanchard',ind:'Percepção positiva da equipe em pesquisa de clima'},'Gestão de conflitos e clima da loja':{acao:'Abordar conflitos em até 24h, de forma privada e empática.',recurso:'Livro: Comunicação Não-Violenta — Marshall Rosenberg',ind:'Zero conflitos não resolvidos'},'Desenvolvimento das vendedoras':{acao:'Fazer 1 observação de atendimento por semana com cada vendedora.',recurso:'Metodologia: Feedforward — Marshall Goldsmith',ind:'Melhora mensurável nas avaliações das vendedoras'},'Delegação e distribuição de tarefas':{acao:'Mapear as forças de cada vendedora e delegar tarefas alinhadas ao perfil.',recurso:'Livro: As 5 Disfunções de uma Equipe — Patrick Lencioni',ind:'Equipe executa rotinas sem precisar ser solicitada'},'Feedback contínuo e construtivo':{acao:'Praticar o modelo SBI (Situação-Comportamento-Impacto) em todos os feedbacks.',recurso:'Modelo: SBI Feedback — Center for Creative Leadership',ind:'Feedbacks dados e registrados semanalmente'},'Exemplo e postura de liderança':{acao:'Revisitar diariamente: estou sendo o exemplo que quero ver na minha equipe?',recurso:'Livro: As 21 Irrefutáveis Leis da Liderança — John Maxwell',ind:'Equipe espelha comportamentos positivos da líder'},'Abertura e fechamento de acordo com processos':{acao:'Criar checklist de abertura e fechamento e validar diariamente.',recurso:'Metodologia: 5S + Checklist operacional Avatim',ind:'100% dos checklists concluídos sem pendências'},'Organização, limpeza e visual da loja':{acao:'Inspeção visual da loja a cada 2 horas durante o turno.',recurso:'Padrão: Manual de Visual Merchandising Avatim',ind:'Loja em conformidade com o padrão visual em 100% das inspeções'},'Controle de estoque e reposição':{acao:'Verificar estoque crítico toda manhã.',recurso:'Prática: Kanban visual + planilha de mínimos de estoque',ind:'Zero rupturas de produtos estratégicos'},'Execução de campanhas e ações da marca':{acao:'Ler o briefing de campanha com antecedência e briefar a equipe.',recurso:'Guia: Manual de campanhas Avatim',ind:'100% das campanhas executadas no prazo'},'Cumprimento de normas e procedimentos':{acao:'Revisar mensalmente o manual de normas com a equipe.',recurso:'Normas operacionais Avatim + reunião mensal de alinhamento',ind:'Zero desvios críticos de procedimentos'},'Comunicação clara com a equipe':{acao:'Fazer briefing de equipe diário (5-10 min).',recurso:'Livro: Comunicação — Brian Tracy',ind:'Equipe tem clareza sobre metas e prioridades'},'Alinhamento com a gestora regional':{acao:'Enviar relatório semanal resumido à gestora regional.',recurso:'Hábito: Check-in semanal estruturado',ind:'Gestora regional informada sem precisar cobrar'},'Atendimento a clientes estratégicos':{acao:'Identificar os top 20 clientes da loja e criar estratégia personalizada.',recurso:'Ferramenta: CRM no WhatsApp Business com etiquetas VIP',ind:'Aumento no retorno e ticket dos clientes estratégicos'},'Resolução de problemas e reclamações':{acao:'Protocolo: ouvir sem interromper, pedir desculpas genuínas, oferecer solução imediata.',recurso:'Livro: Satisfação Garantida — Tony Hsieh',ind:'100% das reclamações resolvidas no mesmo dia'},'Transparência e honestidade':{acao:'Compartilhar resultados reais com a equipe, inclusive em dias difíceis.',recurso:'Livro: Radical Candor — Kim Scott',ind:'Equipe sente segurança para trazer problemas à líder'},'Autoconhecimento e autocrítica':{acao:'Fazer autoavaliação semanal: o que fiz bem, o que faria diferente.',recurso:'Livro: O Líder Que Não Tinha Título — Robin Sharma',ind:'Diário de liderança preenchido semanalmente'},'Abertura a feedbacks da liderança':{acao:'Ao receber feedback, praticar escuta ativa sem defender.',recurso:'Livro: Obrigado pelo Feedback — Douglas Stone',ind:'Aplicação visível de feedbacks recebidos da gestora'},'Gestão emocional e resiliência':{acao:'Criar ritual de "reset" em dias difíceis.',recurso:'Livro: Inteligência Emocional — Daniel Goleman',ind:'Manutenção de liderança equilibrada mesmo sob pressão'},'Visão de negócio e dono da loja':{acao:'Analisar mensalmente os resultados com olhar de dono.',recurso:'Livro: A Mentalidade de Dono — Ram Charan',ind:'Propõe pelo menos 1 melhoria estratégica por mês'},'Proatividade e iniciativa estratégica':{acao:'Semanalmente: identificar 1 risco ou oportunidade e agir antes.',recurso:'Livro: Faça Acontecer — Sheryl Sandberg',ind:'Ações proativas registradas e implementadas mensalmente'}};
-  const starsSnap={...S_lider.stars};let totalPontos=0,totalCrit=0;const fortes=[],criticos=[],medios=[];
-  Object.entries(FCAT_LIDER).forEach(([cat,items])=>{const notas=items.map(item=>starsSnap[cat+'|'+item]||0);const soma=notas.reduce((a,b)=>a+b,0);totalPontos+=soma;totalCrit+=notas.length;notas.forEach((n,i)=>{if(n>=4)fortes.push({cat,item:items[i],nota:n});else if(n>0&&n<=2)criticos.push({cat,item:items[i],nota:n});else if(n===3)medios.push({cat,item:items[i],nota:n})})});
-  const pct=Math.round((totalPontos/(totalCrit*5))*100);const clf=getClf(pct);
-  const candidatos=[...criticos,...medios,...fortes.filter(f=>f.nota<5)].slice(0,4);
-  const prioridades=candidatos.map(c=>{const b=BANCO_LIDER[c.item]||{acao:`Desenvolver ${c.item.toLowerCase()} com prática intencional.`,recurso:'Reflexão semanal com a gestora regional',ind:'Melhora visível na próxima avaliação'};return{item:c.item,cat:c.cat,nota:c.nota,acao:b.acao,recurso:b.recurso,ind:b.ind,prazo:c.nota<=2?'30 dias':c.nota===3?'60 dias':'90 dias'}});
-  const topFortes=fortes.sort((a,b)=>b.nota-a.nota).slice(0,3).map(f=>`Destaque em ${f.item} — competência que fortalece a equipe e os resultados da loja`);
-  if(topFortes.length===0)topFortes.push('Comprometimento com o papel de líder','Disposição para crescer e receber feedback','Cuidado com a equipe e os resultados da loja');
-  const diagnosticos={'Excelente':`${nome} demonstra liderança madura e resultados consistentes. Pelo modelo de Liderança Situacional de Blanchard, está no estágio de "líder delegadora": o momento de ampliar seu impacto além da loja.`,'Muito Bom':`${nome} apresenta liderança sólida. Pelo framework de John Maxwell, já transpôs o nível de liderança por posição e está construindo liderança por relacionamento.`,'Bom':`${nome} tem base consistente de liderança. Carol Dweck nos ensina que líderes com Growth Mindset transformam desafios em aprendizado — e ${nome} tem esse potencial.`,'Precisa Melhorar':`${nome} está construindo sua identidade como líder. Daniel Pink aponta que líderes em desenvolvimento precisam de clareza de propósito e pequenas vitórias para ganhar confiança.`,'Crítico':`${nome} enfrenta desafios significativos na liderança. Marshall Goldsmith lembra: o que trouxe até aqui pode não ser o que levará ao próximo nível.`};
-  const perfis={'Excelente':'Líder de alta performance com equipe engajada e resultados consistentes','Muito Bom':'Líder comprometida em evolução, com forte base relacional','Bom':'Líder em construção com boa base e espaço claro para desenvolvimento','Precisa Melhorar':'Líder em transição que precisa de estrutura e suporte próximo','Crítico':'Liderança em fase crítica que requer intervenção imediata'};
-  const plano={d30:{foco:'Diagnóstico e primeiras ações',acoes:['Alinhar expectativas com a gestora regional e revisar este PDI','Implementar 1 ritual de liderança diário (briefing de equipe)','Iniciar as ações prioritárias identificadas'],entrega:'Primeiros rituais de liderança instalados e equipe percebendo mudança'},d60:{foco:'Desenvolvimento e consistência',acoes:['Executar plano de ação com consistência diária','Fazer observação de atendimento semanal com cada vendedora','Check-in quinzenal com a gestora regional'],entrega:'Melhora visível nos indicadores da loja e clima da equipe'},d90:{foco:'Consolidação e nova liderança',acoes:['Revisar PDI com a gestora: o que evoluiu, o que ainda precisa de atenção','Identificar próximo nível de liderança a desenvolver','Começar a desenvolver uma sucessora dentro da equipe'],entrega:'Liderança consolidada e pelo menos uma vendedora em desenvolvimento acelerado'}};
-  const acordos={'Excelente':`A empresa reconhece a excelência de ${nome} e oferece novos desafios. ${nome} se compromete a continuar sendo referência.`,'Muito Bom':`A gestora dará autonomia crescente e feedbacks estruturados. ${nome} se compromete a buscar o próximo nível de liderança.`,'Bom':`A empresa oferece suporte e treinamentos. ${nome} se compromete a executar as ações deste PDI com consistência.`,'Precisa Melhorar':`A gestora oferece reuniões semanais de suporte. ${nome} se compromete a encarar este momento como oportunidade de virada.`,'Crítico':`A empresa oferece suporte total. ${nome} se compromete a priorizar as ações críticas e comunicar dificuldades imediatamente.`};
-  const msgs={'Excelente':`${nome}, você chegou a um nível que exige muito de quem lidera. Continue inspirando, continue crescendo. 👑`,'Muito Bom':`${nome}, sua liderança já deixa marca. Na Avatim, o melhor líder é aquele que forma outros líderes. Você está nesse caminho. ✨`,'Bom':`${nome}, liderar é uma das coisas mais difíceis e mais bonitas que existem. Este PDI é um convite para ir mais longe. 💛`,'Precisa Melhorar':`${nome}, toda grande líder já foi uma líder em construção. A Avatim acredita no seu potencial. 🤝`,'Crítico':`${nome}, este é um momento de escolha. A Avatim oferece o suporte — cabe a você dar o primeiro passo. 💪`};
-  window._pdiObjLider={classificacao:clf.l,pct,diagnostico:diagnosticos[clf.l]||diagnosticos['Bom'],perfil:perfis[clf.l],fortes:topFortes,prioridades,plano,acordo:acordos[clf.l],msg:msgs[clf.l]};
-  const pctColor=pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
-  let html=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,${pctColor}18,${pctColor}08);border:1px solid ${pctColor}33;border-radius:12px"><div style="font-size:38px">${clf.e}</div><div><div style="font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px">${clf.l} · ${pct}%</div><div style="font-size:12px;font-style:italic;color:var(--dark);margin-top:3px">${perfis[clf.l]}</div></div></div>
-  <div style="background:var(--white);border:1px solid #EDE8E0;border-radius:11px;padding:16px;margin-bottom:14px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">📊 Diagnóstico de Liderança</div><div style="font-size:13px;line-height:1.7;color:var(--dark)">${diagnosticos[clf.l]||diagnosticos['Bom']}</div></div>
-  ${topFortes.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">💪 Forças de Liderança</div>${topFortes.map(p=>`<div style="background:rgba(90,138,106,.08);border:1px solid rgba(90,138,106,.25);border-radius:9px;padding:9px 13px;font-size:12px;color:var(--dark);line-height:1.5;margin-bottom:6px">✨ ${p}</div>`).join('')}</div>`:''}
-  ${prioridades.length?`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🎯 Prioridades de Desenvolvimento</div>${prioridades.map(p=>`<div style="background:var(--white);border:1px solid #EDE8E0;border-left:3px solid ${p.nota<=2?'var(--red)':p.nota===3?'var(--gold)':'var(--green)'};border-radius:9px;padding:14px;margin-bottom:10px"><div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap"><span style="font-size:12px;font-weight:700;color:var(--dark)">${p.item}</span><span style="background:${p.nota<=2?'rgba(192,57,43,.1)':p.nota===3?'rgba(201,168,76,.1)':'rgba(90,138,106,.1)'};color:${p.nota<=2?'var(--red)':p.nota===3?'var(--gold-dark)':'var(--green)'};border-radius:18px;padding:2px 9px;font-size:10px;font-weight:700">${p.nota}/5</span><span style="background:rgba(90,122,154,.1);color:var(--blue);border-radius:18px;padding:2px 9px;font-size:10px">${p.prazo}</span></div><div style="font-size:12px;color:var(--dark);margin-bottom:6px">📌 ${p.acao}</div><div style="font-size:11px;color:var(--blue);margin-bottom:5px">📚 ${p.recurso}</div><div style="font-size:11px;color:var(--mid);padding-top:6px;border-top:1px solid #F0EBE3">📈 ${p.ind}</div></div>`).join('')}</div>`:''}
-  <div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🗓️ Plano 30 · 60 · 90 dias</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${[{d:'30 dias',k:'d30',c:'var(--green)',bg:'rgba(90,138,106,.08)',bc:'rgba(90,138,106,.2)'},{d:'60 dias',k:'d60',c:'var(--gold-dark)',bg:'rgba(201,168,76,.08)',bc:'rgba(201,168,76,.2)'},{d:'90 dias',k:'d90',c:'var(--blue)',bg:'rgba(90,122,154,.08)',bc:'rgba(90,122,154,.2)'}].map(m=>{const p=plano[m.k];return`<div style="background:${m.bg};border:1px solid ${m.bc};border-radius:9px;padding:12px"><div style="font-size:10px;font-weight:700;color:${m.c};margin-bottom:6px;text-transform:uppercase">${m.d} · ${p.foco}</div>${p.acoes.map(a=>`<div style="font-size:11px;color:var(--dark);margin-bottom:4px;line-height:1.4">• ${a}</div>`).join('')}<div style="font-size:10px;color:var(--mid);margin-top:7px;padding-top:6px;border-top:1px solid ${m.bc};font-style:italic">${p.entrega}</div></div>`;}).join('')}</div></div>
-  <div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:11px;padding:14px;margin-bottom:14px"><div style="font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🤝 Acordo de Crescimento</div><div style="font-size:12px;color:var(--dark);line-height:1.6">${acordos[clf.l]}</div></div>
-  <div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:11px;padding:18px;text-align:center"><div style="font-size:22px;margin-bottom:8px">👑</div><div style="font-size:13px;font-style:italic;color:var(--gold-light);line-height:1.7">"${msgs[clf.l]}"</div></div>`;
-  document.getElementById('liderPdiContent').innerHTML=html;document.getElementById('liderPdiLoadingBadge').textContent='✅ pronto!';btn.textContent='🔄 Gerar novamente';btn.disabled=false;showToast('👑 PDI de Liderança gerado!');
+  const nome=document.getElementById('fLN').value.trim()||'o(a) líder';
+  const badge=document.getElementById('liderPdiLoadingBadge');badge.textContent='gerando...';
+  const btn=document.getElementById('btnGerarPDILider');btn.disabled=true;
+  setTimeout(()=>{
+    const pdi=_montarPDILider(S_lider.stars,nome);
+    window._pdiLiderObj=pdi;
+    document.getElementById('liderPdiContent').innerHTML=renderPDI(pdi);
+    badge.textContent='✓ gerado';btn.disabled=false;btn.textContent='🔄 Regerar PDI';
+    showToast('🚀 PDI do líder gerado!');
+  },250);
+}
+function _montarPDILider(stars,titulo){
+  const itens=[];Object.entries(stars).forEach(([k,n])=>itens.push({item:k.split('|')[1]||k,nota:n}));
+  const total=itens.reduce((a,b)=>a+b.nota,0);const max=itens.length*5;
+  const pct=max>0?Math.round((total/max)*100):0;const cl=getClf(pct);
+  const fortes=itens.filter(x=>x.nota>=4).map(x=>x.item);
+  const prioridades=itens.filter(x=>x.nota>0&&x.nota<=3).sort((a,b)=>a.nota-b.nota).slice(0,6).map(x=>{
+    const b=BANCO_LIDER[x.item]||ACAO_FALLBACK;return{item:x.item,nota:x.nota,prazo:_prazoNota(x.nota),acao:b.a,recurso:b.r,ind:b.i};
+  });
+  let diagnostico;
+  if(pct>=90)diagnostico='Liderança de excelência. O foco é escalar boas práticas e desenvolver sucessores dentro do time.';
+  else if(pct>=75)diagnostico='Liderança forte, com ajustes finos. Pequenas melhorias de gestão elevam o resultado da loja.';
+  else if(pct>=60)diagnostico='Liderança boa, com lacunas relevantes de gestão. O PDI prioriza os pontos que mais impactam equipe e resultado.';
+  else if(pct>=45)diagnostico='Liderança abaixo do esperado. É preciso estruturar rotina de gestão, com acompanhamento próximo e prazos curtos.';
+  else diagnostico='Liderança crítica. Requer plano firme de desenvolvimento, mentoria e acompanhamento semanal da gestão comercial.';
+  const p1=prioridades[0],p2=prioridades[1],p3=prioridades[2];
+  const plano={
+    d30:{foco:p1?p1.item:'Consolidar rotina de gestão',acoes:[p1?p1.acao:'Manter os rituais de gestão que já funcionam',p2?p2.acao:'Estruturar acompanhamento de indicadores'],entrega:'Rotina de liderança ajustada e primeiros ganhos'},
+    d60:{foco:p2?p2.item:'Desenvolver o time',acoes:[p2?p2.acao:'Aprofundar desenvolvimento individual da equipe',p3?p3.acao:'Fortalecer planos de ação por indicador'],entrega:'Time mais autônomo e indicadores em evolução'},
+    d90:{foco:p3?p3.item:'Autonomia e resultado sustentável',acoes:['Reavaliar cada indicador do PDI com a gestão comercial','Formar um ponto focal/sucessor no time'],entrega:'Critérios priorizados reavaliados com nota superior'}
+  };
+  const acordo='Avaliador(a) e '+titulo+' acordam revisar este PDI de liderança a cada 30 dias, ajustando conforme a evolução da equipe e dos resultados.';
+  const msg=pct>=75?'Sua liderança já move a loja. Refine os próximos passos e você multiplica resultado através do time. Conte comigo. 👑':'Liderar é um caminho de evolução. Vamos estruturar juntas, passo a passo — cada ação aqui fortalece você e o seu time. 💛';
+  return{classificacao:cl.l,pct,diagnostico,fortes,prioridades,plano,acordo,msg};
 }
 function submitLider(){
   const nome=document.getElementById('fLN').value,loja=document.getElementById('fLL').value,data=document.getElementById('fLD').value;
@@ -1226,15 +1519,36 @@ function submitLider(){
   let t=0,cnt=0;const crit={};
   Object.entries(FCAT_LIDER).forEach(([cat,items])=>{crit[cat]=[];items.forEach(item=>{const k=cat+'|'+item;const n=starsSnap[k]||0;const c=commSnap[k]||'';t+=n;cnt++;crit[cat].push({l:item,n,c})})});
   const m=cnt*5,pct=Math.round((t/m)*100),cl=getClf(pct);
-  const aval={id:Date.now(),tipo:'lider',loja,data,nome,cargo:'Vendedor(a) Líder',tempo:document.getElementById('fLT').value,av:document.getElementById('fLA').value,periodo:document.getElementById('fLP').value,score:t,max:m,pct,clf:cl.l,crit,pm:{obj:document.getElementById('lPmObj').value,acao:document.getElementById('lPmAcao').value,prazo:document.getElementById('lPmPrazo').value,status:document.getElementById('lPmStatus').value},pos:document.getElementById('lFFpos').value,dev:document.getElementById('lFFdev').value,msg:document.getElementById('lFFmsg').value,sAv:sigD.sigLAv,sFn:sigD.sigLFn,acordos:document.getElementById('lAcordos').value,sigAcAv:sigD.sigLAcAv,sigAcFn:sigD.sigLAcFn,pdi:window._pdiObjLider?JSON.parse(JSON.stringify(window._pdiObjLider)):null};
-  S.avals.unshift(aval);sv();resetLider();showPage('historico');renderDash();renderHist();renderRank();showToast('👑 Avaliação do Líder salva! '+pct+'% · '+t+'/'+m+' pts');
+  const aval={id:Date.now(),tipo:'lider',loja,data,nome,cargo:'Líder',tempo:document.getElementById('fLT').value,av:document.getElementById('fLA').value,periodo:document.getElementById('fLP').value,score:t,max:m,pct,clf:cl.l,crit,pm:{obj:document.getElementById('lPmObj').value,acao:document.getElementById('lPmAcao').value,prazo:document.getElementById('lPmPrazo').value,status:document.getElementById('lPmStatus').value},pos:document.getElementById('lFFpos').value,dev:document.getElementById('lFFdev').value,msg:document.getElementById('lFFmsg').value,sAv:sigD.sigLAv,sFn:sigD.sigLFn,acordos:document.getElementById('lAcordos').value,sigAcAv:sigD.sigLAcAv,sigAcFn:sigD.sigLAcFn,pdi:window._pdiLiderObj?JSON.parse(JSON.stringify(window._pdiLiderObj)):null};
+  S.avals.unshift(aval);sv();resetLider();showPage('historico');renderDash();renderHist();renderRank();showToast('👑 Avaliação de líder salva! '+aval.pct+'%');
 }
 function resetLider(){
   ['fLN','fLT','fLP','lPmObj','lPmAcao','lPmPrazo','lFFpos','lFFdev','lFFmsg','lAcordos'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
-  document.getElementById('lPmStatus').value='';buildLiderCrit();clearSig('sigLAv');clearSig('sigLFn');clearSig('sigLAcAv');clearSig('sigLAcFn');
-  window._pdiObjLider=null;document.getElementById('liderPdiContent').innerHTML='Clique em "Gerar PDI" para criar um plano personalizado de liderança.';document.getElementById('liderPdiLoadingBadge').textContent='';document.getElementById('btnGerarPDILider').textContent='✨ Gerar PDI';document.getElementById('btnGerarPDILider').disabled=false;
+  document.getElementById('lPmStatus').value='';buildLiderCrit();
+  clearSig('sigLAv');clearSig('sigLFn');clearSig('sigLAcAv');clearSig('sigLAcFn');
+  window._pdiLiderObj=null;
+  document.getElementById('liderPdiContent').innerHTML='Clique em "Gerar PDI" para criar um plano personalizado de liderança.';
+  document.getElementById('liderPdiLoadingBadge').textContent='';
+  const b=document.getElementById('btnGerarPDILider');b.textContent='✨ Gerar PDI';b.disabled=false;
 }
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+
+/* ==================== TOAST ==================== */
+let _toastT=null;
+function showToast(msg){
+  const t=document.getElementById('toast');if(!t)return;
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(_toastT);_toastT=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* ==================== BOOT ==================== */
+(function boot(){
+  seedAdmin();
+  initCloud();
+  const hint=document.getElementById('loginSyncHint');
+  if(hint){const cfg=getFbConfig();hint.innerHTML=cfg?'<span style="color:#5AD18A;font-size:11px">☁️ Sincronização na nuvem ativa</span>':'<span style="color:rgba(255,255,255,.35);font-size:11px">💾 Modo local — ative ☁️ Sync após entrar para usar em vários aparelhos</span>'}
+  const sid=_ls.get('av_session');
+  if(sid){const u=S.users.find(x=>x.id===sid&&x.active);if(u){S.currentUser=u;document.getElementById('loginScreen').style.display='none';document.getElementById('app').style.display='block';initApp()}}
+})();
 </script>
 </body>
 </html>
